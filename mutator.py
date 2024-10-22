@@ -3,6 +3,7 @@ import os
 import re
 import json
 from loguru import logger
+import javalang
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -37,50 +38,110 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+extracted_elements = {"classes": [], "methods": [], "variables": [], "operations": []}
 
 
+def parse_java_code(java_code):
+    tokens = list(javalang.tokenizer.tokenize(java_code))
+    parser = javalang.parser.Parser(tokens)
 
-def extract_elements(java_code):
     try:
-        # Regex patterns
-        class_pattern = r"\bclass\s+(\w+)"
-        function_pattern = r"\b(?:public|private|protected|static|\s)*(?:<\w+>)?\s*[\w\<\>\[\]]+\s+(\w+)\s*\([^\)]*\)\s*\{"
-        variable_pattern = r"\b(?:int|float|double|boolean|char|String|long|short|byte)\s+(\w+)\s*(?:=.*?)?\s*[;,]"
-        operation_pattern = r"(\+=|-=|\*=|/=|%=|\+\+|--|==|!=|>=|<=|&&|\|\||!)"
-        operand_pattern = (
-            r"\b(\w+)\s*(?:\+|\-|\*|\/|\=|\+\+|\-\-)?(?:=|\+|\-|\*|\/|\%)?"
+        tree = parser.parse_member_declaration()
+        traverse_ast(tree, java_code)
+    except javalang.parser.JavaSyntaxError as e:
+        logger.error(f"Java syntax error while parsing: {e}")
+    except Exception as e:
+        logger.error(f"Unexpected error while parsing: {e}")
+
+
+def extract_node_info(node, code_text):
+    position = get_node_position(node)
+
+    if position["line"] is not None and position["column"] is not None:
+        start_index = get_index_from_position(
+            code_text, position["line"], position["column"]
+        )
+    else:
+        start_index = None
+
+    if isinstance(node, javalang.tree.MethodDeclaration):
+        extracted_elements["methods"].append(
+            {
+                "name": node.name,
+                "parameters": [param.name for param in node.parameters],
+                "position": position,
+                "start_index": start_index,
+            }
         )
 
-        # Extract elements
-        classes = re.findall(class_pattern, java_code)
-        functions = re.findall(function_pattern, java_code)
-        variables = re.findall(variable_pattern, java_code)
+    elif isinstance(node, javalang.tree.VariableDeclarator):
+        extracted_elements["variables"].append(
+            {"name": node.name, "position": position, "start_index": start_index}
+        )
 
-        classes = [
-            (m.group(0), m.start()) for m in re.finditer(class_pattern, java_code)
-        ]
-        functions = [
-            (m.group(0), m.start()) for m in re.finditer(function_pattern, java_code)
-        ]
-        variables = [
-            (m.group(0), m.start()) for m in re.finditer(variable_pattern, java_code)
-        ]
-        operations = [
-            (m.group(1), m.start()) for m in re.finditer(operation_pattern, java_code)
-        ]
-        operands = [
-            (m.group(1), m.start()) for m in re.finditer(operand_pattern, java_code)
-        ]
+    elif isinstance(node, javalang.tree.BinaryOperation):
+        operands = get_operands(node, code_text)
+        extracted_elements["operations"].append(
+            {
+                "operation": node.operator,
+                "operands": operands,
+                "position": position,
+                "start_index": start_index,
+            }
+        )
 
-        return {
-            "classes": classes,
-            "functions": functions,
-            "variables": variables,
-            "operations": operations,
-            "operands": operands,
-        }
-    except Exception as e:
-        logger.opt(exception=True).error(f"Error extracting elements: {e}")
+
+def get_node_position(node):
+    if hasattr(node, "position") and node.position is not None:
+        return {"line": node.position.line, "column": node.position.column}
+    return {"line": None, "column": None}
+
+
+def get_index_from_position(code_text, line, column):
+    lines = code_text.splitlines()
+    if line - 1 < len(lines):
+        return sum(len(lines[i]) + 1 for i in range(line - 1)) + column - 1
+    return None
+
+
+def get_operands(node, code_text):
+    operands = []
+    if hasattr(node, "operandl") and node.operandl:
+        if isinstance(node.operandl, javalang.tree.Literal) or isinstance(
+            node.operandl, javalang.tree.MemberReference
+        ):
+            operands.append(str(node.operandl))
+        else:
+            operands.append(get_expression_text(node.operandl, code_text))
+    if hasattr(node, "operandr") and node.operandr:
+        if isinstance(node.operandr, javalang.tree.Literal) or isinstance(
+            node.operandr, javalang.tree.MemberReference
+        ):
+            operands.append(str(node.operandr))
+        else:
+            operands.append(get_expression_text(node.operandr, code_text))
+    return operands
+
+
+def get_expression_text(node, code_text):
+    position = get_node_position(node)
+    if position["line"] is not None and position["column"] is not None:
+        start_index = get_index_from_position(
+            code_text, position["line"], position["column"]
+        )
+        return code_text[start_index : start_index + len(str(node))]
+    return ""
+
+
+def traverse_ast(node, code_text):
+    extract_node_info(node, code_text)
+    if hasattr(node, "children") and node.children is not None:
+        for child in node.children:
+            if isinstance(child, list):
+                for sub_child in child:
+                    traverse_ast(sub_child, code_text)
+            elif child:
+                traverse_ast(child, code_text)
 
 
 def replace_at_position(text, old_text, new_text, position):
@@ -118,7 +179,7 @@ def main():
             "r",
         )
     )
-    code_elements = extract_elements(project_details["code"])
+    parse_java_code(project_details["code"])
     print("hi")
 
 
