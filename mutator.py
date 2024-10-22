@@ -4,6 +4,39 @@ import re
 
 from loguru import logger
 
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--cache_dir",
+    type=str,
+    default=os.path.join(os.getcwd(), "cache", "bug_details_cache"),
+    help="Path to the json cache directory",
+)
+parser.add_argument(
+    "--project",
+    type=str,
+    default="Cli-1",
+    help="Project name [e.g., Chart, Cli, etc.]",
+)
+parser.add_argument(
+    "--mutation",
+    type=str,
+    default="AOD",
+    help="Mutation operator [e.g., AOD, AOR, etc.]",
+)
+parser.add_argument(
+    "--number_of_mutants",
+    type=int,
+    default=1,
+    help="Number of mutants to generate",
+)
+parser.add_argument(
+    "--store",
+    type=bool,
+    default=False,
+    help="Whether to store the mutated files in defects4j",
+)
+args = parser.parse_args()
+
 
 def read_java_files(directory):
     java_files = {}
@@ -77,9 +110,6 @@ def save_mutated_file(original_path, mutated_content):
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("directory", help="Directory containing Java files")
-    args = parser.parse_args()
 
     if not os.path.isdir(args.directory):
         print("The specified path is not a directory.")
