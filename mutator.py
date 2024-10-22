@@ -1,7 +1,7 @@
 import argparse
 import os
 import re
-
+import json
 from loguru import logger
 
 parser = argparse.ArgumentParser()
@@ -14,7 +14,7 @@ parser.add_argument(
 parser.add_argument(
     "--project",
     type=str,
-    default="Cli-1",
+    default="Cli-11",
     help="Project name [e.g., Chart, Cli, etc.]",
 )
 parser.add_argument(
@@ -38,34 +38,33 @@ parser.add_argument(
 args = parser.parse_args()
 
 
-def read_java_files(directory):
-    java_files = {}
-    for root, _, files in os.walk(directory):
-        java_files.update(
-            {
-                os.path.join(root, file): open(os.path.join(root, file), "r").read()
-                for file in files
-                if file.endswith(".java")
-            }
-        )
-    return java_files
 
 
 def extract_elements(java_code):
     try:
         # Regex patterns
         class_pattern = r"\bclass\s+(\w+)"
-        function_pattern = r"\b(?:public|private|protected|static|\s) +[\w\<\>\[\]]+\s+(\w+) *\([^\)]*\) *\{"
-        variable_pattern = r"\b(?:int|float|double|boolean|char|String)\s+(\w+)\s*[=;]"
+        function_pattern = r"\b(?:public|private|protected|static|\s)*(?:<\w+>)?\s*[\w\<\>\[\]]+\s+(\w+)\s*\([^\)]*\)\s*\{"
+        variable_pattern = r"\b(?:int|float|double|boolean|char|String|long|short|byte)\s+(\w+)\s*(?:=.*?)?\s*[;,]"
         operation_pattern = r"(\+=|-=|\*=|/=|%=|\+\+|--|==|!=|>=|<=|&&|\|\||!)"
-        operand_pattern = r"\b(\w+)\s*(?:\+=|-=|\*=|/=|%=|=|\+\+|--)"
+        operand_pattern = (
+            r"\b(\w+)\s*(?:\+|\-|\*|\/|\=|\+\+|\-\-)?(?:=|\+|\-|\*|\/|\%)?"
+        )
 
         # Extract elements
         classes = re.findall(class_pattern, java_code)
         functions = re.findall(function_pattern, java_code)
         variables = re.findall(variable_pattern, java_code)
 
-        # Extract operations and operands with their positions
+        classes = [
+            (m.group(0), m.start()) for m in re.finditer(class_pattern, java_code)
+        ]
+        functions = [
+            (m.group(0), m.start()) for m in re.finditer(function_pattern, java_code)
+        ]
+        variables = [
+            (m.group(0), m.start()) for m in re.finditer(variable_pattern, java_code)
+        ]
         operations = [
             (m.group(1), m.start()) for m in re.finditer(operation_pattern, java_code)
         ]
@@ -110,18 +109,17 @@ def save_mutated_file(original_path, mutated_content):
 
 
 def main():
-
-    if not os.path.isdir(args.directory):
-        print("The specified path is not a directory.")
-        return
-
-    java_files = read_java_files(args.directory)
-
-    if not java_files:
-        logger.info("No Java files found.")
-        return
-    else:
-        logger.info(f"Found {len(java_files)} Java files.")
+    project_details = json.load(
+        open(
+            os.path.join(
+                args.cache_dir,
+                f"{args.project}.json",
+            ),
+            "r",
+        )
+    )
+    code_elements = extract_elements(project_details["code"])
+    print("hi")
 
 
 if __name__ == "__main__":
