@@ -1,9 +1,8 @@
 import argparse
 import os
-import re
 import json
 from loguru import logger
-import javalang
+import random
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -39,6 +38,14 @@ parser.add_argument(
 args = parser.parse_args()
 
 extracted_elements = {"classes": [], "methods": [], "variables": [], "operations": []}
+mapping = {
+    "project": args.project,
+    "mutation": args.mutation,
+    "number_of_mutants": args.number_of_mutants,
+    "original_lines": None,
+    "mutated_lines": None,
+    "mutated_files": None,
+}
 
 
 def save_mutated_file(original_path, mutated_content):
@@ -72,10 +79,11 @@ def find_fixed_lines_indices(code, fixed_lines):
 
 def mutate_fixed_lines(code, fixed_lines_indices):
     code_lines = code.splitlines()
-    for index in fixed_lines_indices:
-        line = code_lines[index]
-        mutated_line = mutate_line(line)
-        code_lines[index] = mutated_line
+
+    line = code_lines[fixed_lines_indices]
+    mutated_line = mutate_line(line)
+    mapping["mutated_lines"] = mutated_line
+    code_lines[fixed_lines_indices] = mutated_line
     return "\n".join(code_lines)
 
 
@@ -95,10 +103,14 @@ def main():
         )
     )
     fixed_lines = project_details.get("fixed_lines", "").split("\n")
-    code = project_details["code"]
+    code = project_details["fixed_code"]
 
     fixed_lines_indices = find_fixed_lines_indices(code, fixed_lines)
-    mutated_code = mutate_fixed_lines(code, fixed_lines_indices)
+    indice_to_change = random.choice(fixed_lines_indices)
+    mapping["original_lines"] = code.splitlines()[indice_to_change]
+
+    mutated_code = mutate_fixed_lines(code, indice_to_change)
+    mapping["mutated_files"] = mutated_code
 
     if args.store:
         save_mutated_file(args.project, mutated_code)
