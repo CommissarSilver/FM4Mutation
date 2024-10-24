@@ -3,6 +3,7 @@ import os
 import json
 from loguru import logger
 import random
+import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -49,21 +50,19 @@ mapping = {
 
 
 def save_mutated_file(original_path, mutated_content):
-    directory, filename = os.path.split(original_path)
-    name, _ = os.path.splitext(filename)
-    new_filename = f"{name}_mutated.java"
-    new_path = os.path.join(directory, new_filename)
+    project_name = args.project.split('-')[0]
+    bug_id = args.project.split('-')[1]
+    defects4j_command = f"defects4j checkout -p {project_name} -v {bug_id}b -w {project_name}_{bug_id}_mutated"
+    subprocess.run(defects4j_command, shell=True, check=True)
 
-    counter = 1
-    while os.path.exists(new_path):
-        new_filename = f"{name}_mutated_{counter}.java"
-        new_path = os.path.join(directory, new_filename)
-        counter += 1
-
-    with open(new_path, "w") as f:
+    mutated_file_path = os.path.join(f"{project_name}_{bug_id}_mutated", original_path)
+    with open(mutated_file_path, "w") as f:
         f.write(mutated_content)
 
-    return new_path
+    defects4j_command = f"defects4j export -p {project_name} -w {project_name}_{bug_id}_mutated"
+    subprocess.run(defects4j_command, shell=True, check=True)
+
+    return mutated_file_path
 
 
 def find_fixed_lines_indices(code, fixed_lines):
