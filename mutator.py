@@ -41,114 +41,9 @@ args = parser.parse_args()
 extracted_elements = {"classes": [], "methods": [], "variables": [], "operations": []}
 
 
-def parse_java_code(java_code):
-    tokens = list(javalang.tokenizer.tokenize(java_code))
-    parser = javalang.parser.Parser(tokens)
-
-    try:
-        tree = parser.parse_member_declaration()
-        traverse_ast(tree, java_code)
-    except javalang.parser.JavaSyntaxError as e:
-        logger.error(f"Java syntax error while parsing: {e}")
-    except Exception as e:
-        logger.error(f"Unexpected error while parsing: {e}")
 
 
-def extract_node_info(node, code_text):
-    position = get_node_position(node)
 
-    if position["line"] is not None and position["column"] is not None:
-        start_index = get_index_from_position(
-            code_text, position["line"], position["column"]
-        )
-    else:
-        start_index = None
-
-    if isinstance(node, javalang.tree.MethodDeclaration):
-        extracted_elements["methods"].append(
-            {
-                "name": node.name,
-                "parameters": [param.name for param in node.parameters],
-                "position": position,
-                "start_index": start_index,
-            }
-        )
-
-    elif isinstance(node, javalang.tree.VariableDeclarator):
-        extracted_elements["variables"].append(
-            {"name": node.name, "position": position, "start_index": start_index}
-        )
-
-    elif isinstance(node, javalang.tree.BinaryOperation):
-        operands = get_operands(node, code_text)
-        extracted_elements["operations"].append(
-            {
-                "operation": node.operator,
-                "operands": operands,
-                "position": position,
-                "start_index": start_index,
-            }
-        )
-
-
-def get_node_position(node):
-    if hasattr(node, "position") and node.position is not None:
-        return {"line": node.position.line, "column": node.position.column}
-    return {"line": None, "column": None}
-
-
-def get_index_from_position(code_text, line, column):
-    lines = code_text.splitlines()
-    if line - 1 < len(lines):
-        return sum(len(lines[i]) + 1 for i in range(line - 1)) + column - 1
-    return None
-
-
-def get_operands(node, code_text):
-    operands = []
-    if hasattr(node, "operandl") and node.operandl:
-        if isinstance(node.operandl, javalang.tree.Literal) or isinstance(
-            node.operandl, javalang.tree.MemberReference
-        ):
-            operands.append(str(node.operandl))
-        else:
-            operands.append(get_expression_text(node.operandl, code_text))
-    if hasattr(node, "operandr") and node.operandr:
-        if isinstance(node.operandr, javalang.tree.Literal) or isinstance(
-            node.operandr, javalang.tree.MemberReference
-        ):
-            operands.append(str(node.operandr))
-        else:
-            operands.append(get_expression_text(node.operandr, code_text))
-    return operands
-
-
-def get_expression_text(node, code_text):
-    position = get_node_position(node)
-    if position["line"] is not None and position["column"] is not None:
-        start_index = get_index_from_position(
-            code_text, position["line"], position["column"]
-        )
-        return code_text[start_index : start_index + len(str(node))]
-    return ""
-
-
-def traverse_ast(node, code_text):
-    extract_node_info(node, code_text)
-    if hasattr(node, "children") and node.children is not None:
-        for child in node.children:
-            if isinstance(child, list):
-                for sub_child in child:
-                    traverse_ast(sub_child, code_text)
-            elif child:
-                traverse_ast(child, code_text)
-
-
-def replace_at_position(text, old_text, new_text, position):
-    try:
-        return text[:position] + text[position:].replace(old_text, new_text, 1)
-    except Exception as e:
-        logger.opt(exception=True).error(f"Error replacing text at position: {e}")
 
 
 def save_mutated_file(original_path, mutated_content):
@@ -169,6 +64,31 @@ def save_mutated_file(original_path, mutated_content):
     return new_path
 
 
+def find_fixed_lines_indices(code, fixed_lines):
+    fixed_lines_indices = []
+    code_lines = code.splitlines()
+    for fixed_line in fixed_lines:
+        for i, line in enumerate(code_lines):
+            if fixed_line in line:
+                fixed_lines_indices.append(i)
+                break
+    return fixed_lines_indices
+
+
+def mutate_fixed_lines(code, fixed_lines_indices):
+    code_lines = code.splitlines()
+    for index in fixed_lines_indices:
+        line = code_lines[index]
+        mutated_line = mutate_line(line)
+        code_lines[index] = mutated_line
+    return "\n".join(code_lines)
+
+
+def mutate_line(line):
+    # Example mutation: replace '==' with '!='
+    return line.replace("==", "!=")
+
+
 def main():
     project_details = json.load(
         open(
@@ -179,8 +99,16 @@ def main():
             "r",
         )
     )
-    parse_java_code(project_details["code"])
-    print("hi")
+    fixed_lines = project_details.get("fixed_lines", "").split("\n")
+    code = project_details["code"]
+
+    fixed_lines_indices = find_fixed_lines_indices(code, fixed_lines)
+    mutated_code = mutate_fixed_lines(code, fixed_lines_indices)
+
+    if args.store:
+        save_mutated_file(args.project, mutated_code)
+
+    print(mutated_code)
 
 
 if __name__ == "__main__":
