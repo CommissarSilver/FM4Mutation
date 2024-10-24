@@ -41,11 +41,6 @@ args = parser.parse_args()
 extracted_elements = {"classes": [], "methods": [], "variables": [], "operations": []}
 
 
-
-
-
-
-
 def save_mutated_file(original_path, mutated_content):
     directory, filename = os.path.split(original_path)
     name, _ = os.path.splitext(filename)
