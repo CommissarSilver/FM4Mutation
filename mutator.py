@@ -33,10 +33,14 @@ parser.add_argument(
 parser.add_argument(
     "--store",
     type=bool,
-    default=False,
+    default=True,
     help="Whether to store the mutated files in defects4j",
 )
 args = parser.parse_args()
+
+if args.store:
+    if not os.path.exists(os.path.join(os.getcwd(), "mutated_codes")):
+        os.makedirs(os.path.join(os.getcwd(), "mutated_codes"))
 
 extracted_elements = {"classes": [], "methods": [], "variables": [], "operations": []}
 mapping = {
@@ -50,8 +54,8 @@ mapping = {
 
 
 def save_mutated_file(original_path, mutated_content):
-    project_name = args.project.split('-')[0]
-    bug_id = args.project.split('-')[1]
+    project_name = args.project.split("-")[0]
+    bug_id = args.project.split("-")[1]
     defects4j_command = f"defects4j checkout -p {project_name} -v {bug_id}b -w {project_name}_{bug_id}_mutated"
     subprocess.run(defects4j_command, shell=True, check=True)
 
@@ -59,7 +63,9 @@ def save_mutated_file(original_path, mutated_content):
     with open(mutated_file_path, "w") as f:
         f.write(mutated_content)
 
-    defects4j_command = f"defects4j export -p {project_name} -w {project_name}_{bug_id}_mutated"
+    defects4j_command = (
+        f"defects4j export -p {project_name} -w {project_name}_{bug_id}_mutated"
+    )
     subprocess.run(defects4j_command, shell=True, check=True)
 
     return mutated_file_path
