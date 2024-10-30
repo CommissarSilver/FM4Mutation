@@ -42,6 +42,8 @@ if args.store:
     if not os.path.exists(os.path.join(os.getcwd(), "mutated_codes")):
         os.makedirs(os.path.join(os.getcwd(), "mutated_codes"))
 
+    mutated_files_dir = os.path.join(os.getcwd(), "mutated_codes")
+
 extracted_elements = {"classes": [], "methods": [], "variables": [], "operations": []}
 mapping = {
     "project": args.project,
@@ -53,22 +55,30 @@ mapping = {
 }
 
 
-def save_mutated_file(original_path, mutated_content):
-    project_name = args.project.split("-")[0]
-    bug_id = args.project.split("-")[1]
-    defects4j_command = f"defects4j checkout -p {project_name} -v {bug_id}b -w {project_name}_{bug_id}_mutated"
-    subprocess.run(defects4j_command, shell=True, check=True)
-
-    mutated_file_path = os.path.join(f"{project_name}_{bug_id}_mutated", original_path)
-    with open(mutated_file_path, "w") as f:
-        f.write(mutated_content)
-
-    defects4j_command = (
-        f"defects4j export -p {project_name} -w {project_name}_{bug_id}_mutated"
+def save_mutated_file(mutated_content: str, mutation_num: int):
+    original_json = json.load(
+        open(
+            os.path.join(
+                args.cache_dir,
+                f"{args.project}.json",
+            ),
+            "r",
+        )
     )
-    subprocess.run(defects4j_command, shell=True, check=True)
+    original_json["code"] = mutated_content
+    original_json["bug_id"] = mutation_num
+    with open(
+        os.path.join(
+            mutated_files_dir,
+            f"{args.project}_{args.mutation}_{mutation_num}.json",
+        ),
+        "w",
+    ) as f:
+        json.dump(original_json, f, indent=4)
 
-    return mutated_file_path
+    logger.info(
+        f"Mutated file saved successfully at: {mutated_files_dir}/{args.project}_{args.mutation}_{mutation_num}.json"
+    )
 
 
 def find_fixed_lines_indices(code, fixed_lines):
