@@ -1,13 +1,12 @@
 import json
 import os
-from typing import Dict, List, Optional, Union
+import yaml
+from typing import Dict, List, Optional, Union, Any
 
 from langchain_core.callbacks import StdOutCallbackHandler
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from loguru import logger
-
-from prompt_manager import PromptManager
 
 
 class LLMInterface:
@@ -47,13 +46,47 @@ class LLMInterface:
             config_file_path (str): Path to the JSON file containing prompt and LLM configurations.
             verbose (bool): Flag to enable verbose logging. Defaults to False.
         """
-        self.prompt_manager: PromptManager = PromptManager(config_file_path)
+        self.config_file_path = config_file_path
+        self.prompts: Dict[str, Dict[str, Any]] = {}
+        self.load_prompts()
         self.role: Optional[str] = None
         self.llm: Optional[ChatOpenAI] = None
         self.system_prompt: Optional[str] = None
         self.conversation_history: List[Union[HumanMessage, AIMessage]] = []
         self.verbose: bool = verbose
         self.interaction_string = None
+
+    def load_prompts(self):
+        with open(self.config_file_path, "r") as file:
+            data = yaml.safe_load(file)
+            self.prompts = data.get("prompts", {})
+
+    def get_prompt_config(self, role: str) -> Optional[Dict[str, Any]]:
+        return self.prompts.get(role)
+
+    def get_prompt_template(self, role: str) -> Optional[str]:
+        prompt_config = self.get_prompt_config(role)
+        if prompt_config:
+            return prompt_config.get("template")
+        return None
+
+    def get_llm_config(self, role: str) -> Optional[Dict[str, Any]]:
+        with open(self.config_file_path, "r") as file:
+            data = yaml.safe_load(file)
+            llms = data.get("llms", {})
+            return llms.get(role)
+
+    def get_interaction_template(self, role: str) -> Optional[List[Dict[str, Any]]]:
+        with open(self.config_file_path, "r") as file:
+            data = yaml.safe_load(file)
+            interactions = data.get("interaction_templates", {})
+            role_interactions = interactions.get(role)
+            if role_interactions:
+                return role_interactions.get("templates")
+        return None
+
+    def get_available_roles(self) -> List[str]:
+        return list(self.prompts.keys())
 
     def set_role(self, role: str) -> bool:
         """
@@ -69,9 +102,9 @@ class LLMInterface:
             bool: True if the role was successfully set, False otherwise.
         """
         self.role = role
-        self.system_prompt = self.prompt_manager.get_prompt_template(role)
-        self.interaction_template = self.prompt_manager.get_interaction_template(role)
-        llm_config = self.prompt_manager.get_llm_config(role)
+        self.system_prompt = self.get_prompt_template(role)
+        self.interaction_template = self.get_interaction_template(role)
+        llm_config = self.get_llm_config(role)
 
         if llm_config["local"]:
             os.environ["OPENAI_API_KEY"] = "local_key"
@@ -160,15 +193,6 @@ class LLMInterface:
         """
         return self.role
 
-    def get_available_roles(self) -> List[str]:
-        """
-        Get a list of all available roles from the configuration.
-
-        Returns:
-            List[str]: A list of available role names.
-        """
-        return self.prompt_manager.get_roles()
-
     def get_conversation_history(self) -> List[Dict[str, str]]:
         """
         Retrieve the conversation history.
@@ -201,21 +225,16 @@ if __name__ == "__main__":
     load_dotenv()
 
     # Initialize the LLMInterface with the configuration file and verbose logging
-    json_file_path = "src/agent_config_v6.yml"
+    json_file_path = "agent_config.yml"
     agent = LLMInterface(json_file_path, verbose=False)
 
     logger.info(f"Available roles: {agent.get_available_roles()}")
-    # Example usage with the "question_designer" role
-    if agent.set_role("challenge_designer"):
-        response = agent.interact(
-            input_text="Generate a coding problem for the following concept: two sum and the difficulty: very hard",
-        )
-        logger.info(f"Question Designer response: {response}")
-        response = agent.interact(
-            input_text="Generate a coding problem for the following concept: binary search",
-        )
 
+    if agent.set_role("mutator"):
+        response = agent.interact(
+            concepts="two sum",
+            difficulty_level="easy",
+        )
         logger.info(f"Question Designer response: {response}")
+
         print(agent.get_conversation_history())
-        # Store the question for use with the test generator
-        question = response
