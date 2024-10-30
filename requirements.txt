@@ -1,4 +1,6 @@
 loguru
 javalang
 langchain
-yaml
+PyYAML
+python-dotenv
+langchain-openai
