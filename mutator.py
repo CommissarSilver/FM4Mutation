@@ -1,9 +1,10 @@
 import argparse
 import os
 import json
+import xml.etree.ElementTree as ET
+import re
 from loguru import logger
-import random
-import subprocess
+from llm_interface import LLMInterface
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -44,16 +45,6 @@ if args.store:
 
     mutated_files_dir = os.path.join(os.getcwd(), "mutated_codes")
 
-extracted_elements = {"classes": [], "methods": [], "variables": [], "operations": []}
-mapping = {
-    "project": args.project,
-    "mutation": args.mutation,
-    "number_of_mutants": args.number_of_mutants,
-    "original_lines": None,
-    "mutated_lines": None,
-    "mutated_files": None,
-}
-
 
 def save_mutated_file(mutated_content: str, mutation_num: int):
     original_json = json.load(
@@ -81,22 +72,62 @@ def save_mutated_file(mutated_content: str, mutation_num: int):
     )
 
 
+def parse_llm_output(xml_output: str) -> dict:
+    try:
+        root = ET.fromstring(xml_output)
+        mutation_result_elem = root.find('mutation_result')
+        if mutation_result_elem is None:
+            logger.error("No <mutation_result> found in LLM output")
+            return {}
+        mutation_result = {}
+        for elem in mutation_result_elem:
+            if elem.tag == 'mutation_details':
+                mutation_result['mutation_details'] = {
+                    child.tag: child.text.strip() for child in elem
+                }
+            else:
+                mutation_result[elem.tag] = elem.text.strip()
+        return mutation_result
+    except ET.ParseError as e:
+        logger.error(f"Failed to parse XML output: {e}")
+        return {}
+
+
 def main():
-    project_details = json.load(
-        open(
-            os.path.join(
-                args.cache_dir,
-                f"{args.project}.json",
-            ),
-            "r",
+    try:
+        mutator = LLMInterface(config_file_path="agent_config.yml", verbose=False)
+        mutator.set_role("mutator")
+    except Exception as e:
+        logger.opt(exception=True).error(f"Unable to instantiate LLMInterface: {e}")
+        exit(1)
+
+    try:
+        project_details = json.load(
+            open(
+                os.path.join(
+                    args.cache_dir,
+                    f"{args.project}.json",
+                ),
+                "r",
+            )
         )
-    )
-    fixed_lines = project_details.get("code", "").split("\n")
+        code_to_mutate = project_details.get("code", "").split("\n")
+    except Exception as e:
+        logger.opt(exception=True).error(f"Unable to load project details: {e}")
+        exit(1)
 
+    try:
+        mutated_code_xml = mutator.interact(mutation=args.mutation, code=code_to_mutate)
+        mutation_data = parse_llm_output(mutated_code_xml)
+        mutated_code = mutation_data.get('mutated_code', '')
+    except Exception as e:
+        logger.opt(exception=True).error(f"Unable to mutate code: {e}")
+        exit(1)
     if args.store:
-        save_mutated_file(args.project, mutated_code)
+        save_mutated_file(mutated_code, 1)
+    import pprint
 
-    print(mutated_code)
+    pprint.pprint(mutated_code)
 
 
 if __name__ == "__main__":
