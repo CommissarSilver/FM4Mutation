@@ -17,13 +17,13 @@ prompts:
       You must provide your response in the following XML format:
 
       <mutation_result>
-          <original_code>
+          <original_code><![CDATA[
               [Original code goes here]
-          </original_code>
+          ]]></original_code>
           
-          <mutated_code>
+          <mutated_code><![CDATA[
               [Mutated code goes here]
-          </mutated_code>
+          ]]></mutated_code>
           
           <mutation_details>
               <type>[Mutation type applied]</type>
@@ -56,17 +56,17 @@ prompts:
 
       Output:
       <mutation_result>
-          <original_code>
+          <original_code><![CDATA[
           for i in range(10):
               print(i)
-          </original_code>
+          ]]></original_code>
           
-          <mutated_code>
+          <mutated_code><![CDATA[
           i = 0
           while i < 10:
               print(i)
               i += 1
-          </mutated_code>
+          ]]></mutated_code>
           
           <mutation_details>
               <type>loop</type>
@@ -90,9 +90,15 @@ interaction_templates:
     templates:
       - name: basic
         required_keys: [mutation, code]
-        template: >
-          Apply the following mutation to the given code snippet. Mutation: {mutation}/n/n{code}
+        template: |
+          Apply the following mutation to the given code snippet.
 
+          Mutation: {mutation}
+
+          Code:
+          {code}
+
+          **Important:** Provide only the XML output as specified, without additional explanations or text.
 
 llms:
   mutator:
