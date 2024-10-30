@@ -48,7 +48,17 @@ if args.store:
     mutated_files_dir = os.path.join(os.getcwd(), "mutated_codes")
 
 
-def save_mutated_file(mutated_content: str, mutation_num: int):
+def save_mutated_file(
+    mutated_content: str,
+    mutation_num: int,
+) -> None:
+    """
+    Save the mutated content to a JSON file with updated mutation information.
+
+    Args:
+        mutated_content (str): The mutated code content to be saved.
+        mutation_num (int): The mutation number to be included in the JSON file.
+    """
     original_json = json.load(
         open(
             os.path.join(
@@ -82,7 +92,22 @@ def save_data_trail(
     prompt: str,
     mutation_details: dict,
     trail_num: int,
-):
+) -> None:
+    """
+    Saves a data trail of the mutation process to a JSON file.
+
+    Args:
+        original_code (str): The original source code before mutation.
+        mutated_code (str): The mutated source code.
+        mutation_type (str): The type of mutation applied.
+        model (str): The model used for mutation.
+        prompt (str): The prompt used for the mutation.
+        mutation_details (dict): Additional details about the mutation.
+        trail_num (int): The trail number to uniquely identify the data trail file.
+
+    Returns:
+        None
+    """
     data_trail = {
         "original_code": original_code,
         "mutated_code": mutated_code,
@@ -98,6 +123,24 @@ def save_data_trail(
 
 
 def parse_llm_output(xml_output: str) -> dict:
+    """
+    Parses the XML output from an LLM and extracts the mutation result.
+
+    Args:
+        xml_output (str): The XML string output from the LLM.
+
+    Returns:
+        dict: A dictionary containing the parsed mutation result. If no
+              <mutation_result> section is found or if there is a parsing
+              error, an empty dictionary is returned.
+
+    The dictionary structure is as follows:
+        - "mutation_details": A dictionary containing the details of the
+          mutation, where each key-value pair corresponds to a tag and its
+          text content.
+        - Other tags: The text content of other tags, with CDATA sections
+          handled appropriately.
+    """
     try:
         # Extract the <mutation_result> section using regex
         match = re.search(
