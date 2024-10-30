@@ -81,32 +81,6 @@ def save_mutated_file(mutated_content: str, mutation_num: int):
     )
 
 
-def find_fixed_lines_indices(code, fixed_lines):
-    fixed_lines_indices = []
-    code_lines = code.splitlines()
-    for fixed_line in fixed_lines:
-        for i, line in enumerate(code_lines):
-            if fixed_line in line:
-                fixed_lines_indices.append(i)
-                break
-    return fixed_lines_indices
-
-
-def mutate_fixed_lines(code, fixed_lines_indices):
-    code_lines = code.splitlines()
-
-    line = code_lines[fixed_lines_indices]
-    mutated_line = mutate_line(line)
-    mapping["mutated_lines"] = mutated_line
-    code_lines[fixed_lines_indices] = mutated_line
-    return "\n".join(code_lines)
-
-
-def mutate_line(line):
-    # Example mutation: replace '==' with '!='
-    return line.replace("==", "!=")
-
-
 def main():
     project_details = json.load(
         open(
@@ -117,15 +91,7 @@ def main():
             "r",
         )
     )
-    fixed_lines = project_details.get("fixed_lines", "").split("\n")
-    code = project_details["fixed_code"]
-
-    fixed_lines_indices = find_fixed_lines_indices(code, fixed_lines)
-    indice_to_change = random.choice(fixed_lines_indices)
-    mapping["original_lines"] = code.splitlines()[indice_to_change]
-
-    mutated_code = mutate_fixed_lines(code, indice_to_change)
-    mapping["mutated_files"] = mutated_code
+    fixed_lines = project_details.get("code", "").split("\n")
 
     if args.store:
         save_mutated_file(args.project, mutated_code)
