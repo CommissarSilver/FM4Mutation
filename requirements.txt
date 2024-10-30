@@ -1,2 +1,4 @@
 loguru
 javalang
+langchain
+yaml
