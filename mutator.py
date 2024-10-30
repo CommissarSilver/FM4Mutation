@@ -72,21 +72,58 @@ def save_mutated_file(mutated_content: str, mutation_num: int):
     )
 
 
+def save_data_trail(
+    original_code: str,
+    mutated_code: str,
+    mutation_type: str,
+    model: str,
+    prompt: str,
+    mutation_details: dict,
+    trail_num: int,
+):
+    data_trail = {
+        "original_code": original_code,
+        "mutated_code": mutated_code,
+        "mutation_type": mutation_type,
+        "model": model,
+        "prompt": prompt,
+        "mutation_details": mutation_details,
+    }
+    trail_file_path = os.path.join(mutated_files_dir, f"data_trail_{trail_num}.json")
+    with open(trail_file_path, "w") as f:
+        json.dump(data_trail, f, indent=4)
+    logger.info(f"Data trail saved successfully at: {trail_file_path}")
+
+
 def parse_llm_output(xml_output: str) -> dict:
     try:
-        root = ET.fromstring(xml_output)
-        mutation_result_elem = root.find('mutation_result')
-        if mutation_result_elem is None:
+        # Extract the <mutation_result> section using regex
+        match = re.search(
+            r"<mutation_result>(.*?)</mutation_result>", xml_output, re.DOTALL
+        )
+        if not match:
             logger.error("No <mutation_result> found in LLM output")
             return {}
+
+        mutation_result_xml = f"<mutation_result>{match.group(1)}</mutation_result>"
+        root = ET.fromstring(mutation_result_xml)
+
         mutation_result = {}
-        for elem in mutation_result_elem:
-            if elem.tag == 'mutation_details':
-                mutation_result['mutation_details'] = {
+        for elem in root:
+            if elem.tag == "mutation_details":
+                mutation_result["mutation_details"] = {
                     child.tag: child.text.strip() for child in elem
                 }
             else:
-                mutation_result[elem.tag] = elem.text.strip()
+                # Handle CDATA sections
+                if (
+                    elem.text
+                    and elem.text.startswith("<![CDATA[")
+                    and elem.text.endswith("]]>")
+                ):
+                    mutation_result[elem.tag] = elem.text[9:-3].strip()
+                else:
+                    mutation_result[elem.tag] = elem.text.strip()
         return mutation_result
     except ET.ParseError as e:
         logger.error(f"Failed to parse XML output: {e}")
@@ -111,7 +148,7 @@ def main():
                 "r",
             )
         )
-        code_to_mutate = project_details.get("code", "").split("\n")
+        code_to_mutate = project_details.get("code", "")
     except Exception as e:
         logger.opt(exception=True).error(f"Unable to load project details: {e}")
         exit(1)
@@ -119,12 +156,22 @@ def main():
     try:
         mutated_code_xml = mutator.interact(mutation=args.mutation, code=code_to_mutate)
         mutation_data = parse_llm_output(mutated_code_xml)
-        mutated_code = mutation_data.get('mutated_code', '')
+        mutated_code = mutation_data.get("mutated_code", "")
+        mutation_details = mutation_data.get("mutation_details", {})
     except Exception as e:
         logger.opt(exception=True).error(f"Unable to mutate code: {e}")
         exit(1)
     if args.store:
         save_mutated_file(mutated_code, 1)
+        save_data_trail(
+            original_code=code_to_mutate,
+            mutated_code=mutated_code,
+            mutation_type=args.mutation,
+            model=mutator.llm.model_name,
+            prompt=mutator.system_prompt,
+            mutation_details=mutation_details,
+            trail_num=1,
+        )
     import pprint
 
     pprint.pprint(mutated_code)
