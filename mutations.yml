@@ -1,0 +1,8 @@
+mutations:
+  - name: "loop"
+    description: "change the type of a loop in the code. For example, change a for loop to a while loop."
+
+  - name: "operation"
+    description: "change the operation in the code. For example, change a + to a -."
+
+

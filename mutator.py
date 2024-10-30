@@ -1,8 +1,10 @@
 import argparse
 import os
 import json
+import xml.etree.ElementTree as ET
+import re
 from loguru import logger
-import random
+from llm_interface import LLMInterface
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -32,68 +34,20 @@ parser.add_argument(
 parser.add_argument(
     "--store",
     type=bool,
-    default=False,
+    default=True,
     help="Whether to store the mutated files in defects4j",
 )
 args = parser.parse_args()
 
-extracted_elements = {"classes": [], "methods": [], "variables": [], "operations": []}
-mapping = {
-    "project": args.project,
-    "mutation": args.mutation,
-    "number_of_mutants": args.number_of_mutants,
-    "original_lines": None,
-    "mutated_lines": None,
-    "mutated_files": None,
-}
+if args.store:
+    if not os.path.exists(os.path.join(os.getcwd(), "mutated_codes")):
+        os.makedirs(os.path.join(os.getcwd(), "mutated_codes"))
+
+    mutated_files_dir = os.path.join(os.getcwd(), "mutated_codes")
 
 
-def save_mutated_file(original_path, mutated_content):
-    directory, filename = os.path.split(original_path)
-    name, _ = os.path.splitext(filename)
-    new_filename = f"{name}_mutated.java"
-    new_path = os.path.join(directory, new_filename)
-
-    counter = 1
-    while os.path.exists(new_path):
-        new_filename = f"{name}_mutated_{counter}.java"
-        new_path = os.path.join(directory, new_filename)
-        counter += 1
-
-    with open(new_path, "w") as f:
-        f.write(mutated_content)
-
-    return new_path
-
-
-def find_fixed_lines_indices(code, fixed_lines):
-    fixed_lines_indices = []
-    code_lines = code.splitlines()
-    for fixed_line in fixed_lines:
-        for i, line in enumerate(code_lines):
-            if fixed_line in line:
-                fixed_lines_indices.append(i)
-                break
-    return fixed_lines_indices
-
-
-def mutate_fixed_lines(code, fixed_lines_indices):
-    code_lines = code.splitlines()
-
-    line = code_lines[fixed_lines_indices]
-    mutated_line = mutate_line(line)
-    mapping["mutated_lines"] = mutated_line
-    code_lines[fixed_lines_indices] = mutated_line
-    return "\n".join(code_lines)
-
-
-def mutate_line(line):
-    # Example mutation: replace '==' with '!='
-    return line.replace("==", "!=")
-
-
-def main():
-    project_details = json.load(
+def save_mutated_file(mutated_content: str, mutation_num: int):
+    original_json = json.load(
         open(
             os.path.join(
                 args.cache_dir,
@@ -102,20 +56,125 @@ def main():
             "r",
         )
     )
-    fixed_lines = project_details.get("fixed_lines", "").split("\n")
-    code = project_details["fixed_code"]
+    original_json["code"] = mutated_content
+    original_json["bug_id"] = mutation_num
+    with open(
+        os.path.join(
+            mutated_files_dir,
+            f"{args.project}_{args.mutation}_{mutation_num}.json",
+        ),
+        "w",
+    ) as f:
+        json.dump(original_json, f, indent=4)
 
-    fixed_lines_indices = find_fixed_lines_indices(code, fixed_lines)
-    indice_to_change = random.choice(fixed_lines_indices)
-    mapping["original_lines"] = code.splitlines()[indice_to_change]
+    logger.info(
+        f"Mutated file saved successfully at: {mutated_files_dir}/{args.project}_{args.mutation}_{mutation_num}.json"
+    )
 
-    mutated_code = mutate_fixed_lines(code, indice_to_change)
-    mapping["mutated_files"] = mutated_code
 
+def save_data_trail(
+    original_code: str,
+    mutated_code: str,
+    mutation_type: str,
+    model: str,
+    prompt: str,
+    mutation_details: dict,
+    trail_num: int,
+):
+    data_trail = {
+        "original_code": original_code,
+        "mutated_code": mutated_code,
+        "mutation_type": mutation_type,
+        "model": model,
+        "prompt": prompt,
+        "mutation_details": mutation_details,
+    }
+    trail_file_path = os.path.join(mutated_files_dir, f"data_trail_{trail_num}.json")
+    with open(trail_file_path, "w") as f:
+        json.dump(data_trail, f, indent=4)
+    logger.info(f"Data trail saved successfully at: {trail_file_path}")
+
+
+def parse_llm_output(xml_output: str) -> dict:
+    try:
+        # Extract the <mutation_result> section using regex
+        match = re.search(
+            r"<mutation_result>(.*?)</mutation_result>", xml_output, re.DOTALL
+        )
+        if not match:
+            logger.error("No <mutation_result> found in LLM output")
+            return {}
+
+        mutation_result_xml = f"<mutation_result>{match.group(1)}</mutation_result>"
+        root = ET.fromstring(mutation_result_xml)
+
+        mutation_result = {}
+        for elem in root:
+            if elem.tag == "mutation_details":
+                mutation_result["mutation_details"] = {
+                    child.tag: child.text.strip() for child in elem
+                }
+            else:
+                # Handle CDATA sections
+                if (
+                    elem.text
+                    and elem.text.startswith("<![CDATA[")
+                    and elem.text.endswith("]]>")
+                ):
+                    mutation_result[elem.tag] = elem.text[9:-3].strip()
+                else:
+                    mutation_result[elem.tag] = elem.text.strip()
+        return mutation_result
+    except ET.ParseError as e:
+        logger.error(f"Failed to parse XML output: {e}")
+        return {}
+
+
+def main():
+    try:
+        mutator = LLMInterface(config_file_path="agent_config.yml", verbose=False)
+        mutator.set_role("mutator")
+    except Exception as e:
+        logger.opt(exception=True).error(f"Unable to instantiate LLMInterface: {e}")
+        exit(1)
+
+    try:
+        project_details = json.load(
+            open(
+                os.path.join(
+                    args.cache_dir,
+                    f"{args.project}.json",
+                ),
+                "r",
+            )
+        )
+        code_to_mutate = project_details.get("code", "")
+    except Exception as e:
+        logger.opt(exception=True).error(f"Unable to load project details: {e}")
+        exit(1)
+
+    try:
+        mutated_code_xml = mutator.interact(mutation=args.mutation, code=code_to_mutate)
+        mutation_data = parse_llm_output(mutated_code_xml)
+        mutated_code = mutation_data.get("mutated_code", "")
+        mutation_details = mutation_data.get("mutation_details", {})
+    except Exception as e:
+        logger.opt(exception=True).error(f"Unable to mutate code: {e}")
+        exit(1)
     if args.store:
-        save_mutated_file(args.project, mutated_code)
+        save_mutated_file(mutated_code, 1)
+        save_data_trail(
+            original_code=code_to_mutate,
+            mutated_code=mutated_code,
+            mutation_type=args.mutation,
+            model=mutator.llm.model_name,
+            prompt=mutator.system_prompt,
+            mutation_details=mutation_details,
+            trail_num=1,
+        )
+    import pprint
 
-    print(mutated_code)
+    pprint.pprint(mutated_code)
 
 
 if __name__ == "__main__":
