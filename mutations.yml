@@ -1,8 +1,33 @@
-mutations:
-  - name: "loop"
-    description: "change the type of a loop in the code. For example, change a for loop to a while loop."
 
-  - name: "operation"
-    description: "change the operation in the code. For example, change a + to a -."
+loop:
+  description: "change the type of a loop in the code. For example, change a for loop to a while loop."
 
+operation:
+  description: "change the operation in the code. For example, change a + to a -."
 
+dead_code_insertion:
+  description: "insert dead code into the code. For example, replace a with a * 1 or b + 0 where applicable. It seems redundant but is a valid mutation for equivalence."
+
+logical_operator_replacement:
+  description: "replace logical operators with equivalent formulations. For example, replace a && b with b && a, or change (a || b) to (!(!a && !b))."
+
+switch_to_if:
+  description: "change a switch statement to an if-else statement. For example, change switch (a) { case 1: ... } to if (a == 1) { ... }."
+
+introduce_unused_variables:
+  description: "add a variable that is assigned a value but never used. For example, introduce int unused = a * b; which is never used in the rest of the code."
+
+casting_addition:
+  description: "introduce explicit casting where it is already implied, making the code look different but not changing its meaning. For example, replace double result = a / b with double result = (double) a / b."
+
+opration_shuffling:
+  description: "swap operands in addition or multiplication while ensuring no functional impact on complex arithmetic expressions. For example, replace int result = a + b with int result = b + a."
+
+parameter_reordering:
+  description: "reorder parameters in method definitions and calls, while keeping the argument order consistent in both places. For example, change a method from void example(int a, String b) to void example(String b, int a)."
+
+alter_return:
+  description: "create a local variable before the return statement, which stores the returned value, to make it look different while doing the same thing. For example, replace return x + y with int result = x + y; return result."
+
+reorder_if_else:
+  description: "change the order of mutually exclusive else-if branches, making sure there is no dependency conflict between conditions. For example, switch the order of else-if blocks without altering the functionality."
