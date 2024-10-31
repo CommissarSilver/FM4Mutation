@@ -4,6 +4,7 @@ import os
 import re
 import xml.etree.ElementTree as ET
 
+import yaml
 from loguru import logger
 
 from llm_interface import LLMInterface
@@ -24,8 +25,8 @@ parser.add_argument(
 parser.add_argument(
     "--mutation",
     type=str,
-    default="AOD",
-    help="Mutation operator [e.g., AOD, AOR, etc.]",
+    default="loop",
+    help="Mutation operator [e.g., loop, operation, dead_code_insertion, etc.]",
 )
 parser.add_argument(
     "--number_of_mutants",
@@ -183,6 +184,9 @@ def main():
         logger.opt(exception=True).error(f"Unable to instantiate LLMInterface: {e}")
         exit(1)
 
+    with open("mutations.yml", "r") as file:
+        mutations = yaml.safe_load(file)
+
     try:
         project_details = json.load(
             open(
@@ -199,7 +203,10 @@ def main():
         exit(1)
 
     try:
-        mutated_code_xml = mutator.interact(mutation=args.mutation, code=code_to_mutate)
+
+        mutated_code_xml = mutator.interact(
+            mutation=mutations[args.mutation]["description"], code=code_to_mutate
+        )
         mutation_data = parse_llm_output(mutated_code_xml)
         mutated_code = mutation_data.get("mutated_code", "")
         mutation_details = mutation_data.get("mutation_details", {})
