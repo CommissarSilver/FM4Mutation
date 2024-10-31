@@ -1,4 +1,10 @@
 
+***FIRST OF ALL, creat a .env file with the following content:***
+
+```
+OPENAI_API_KEY=your_openai_api_key
+```
+
 # Data Flow
 1. Input Parameters: The `mutator.py` script accepts various command-line arguments such as project name, mutation type, number of mutants, and cache directory.
 2. LLM Interaction: Using the `LLMInterface`, the system communicates with the configured LLM to generate mutated code based on the provided mutation type and source code.
@@ -22,9 +28,12 @@ python mutator.py --project <PROJECT_NAME> --mutation <MUTATION_TYPE> --number_o
 ```
 - Parameters:
     - `--project`: Name of the project (e.g., Cli-11).
-    - `--mutation`: Type of mutation (e.g., AOD, AOR).
+    - `--mutation`: Type of mutation (e.g., loop, dead_code_insertion, etc.).
     - `--number_of_mutants`: Number of mutants to generate.
     - `--store`: Whether to store the mutated files.
+
+# Mutation Types
+The mutator supports various mutation types that can be applied to source code. Each mutation type has specific rules and behaviors that guide the LLM in generating mutated code. They can be found in `mutations.yml`. New mutaions can be added by following the existing format.
 
 # LLM Interface
 The `LLMInterface` class facilitates interaction with the configured Language Model. It manages roles, handles conversation history, and processes responses from the LLM.

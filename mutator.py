@@ -203,7 +203,6 @@ def main():
         exit(1)
 
     try:
-
         mutated_code_xml = mutator.interact(
             mutation=mutations[args.mutation]["description"], code=code_to_mutate
         )
