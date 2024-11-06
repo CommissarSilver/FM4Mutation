@@ -1,0 +1,18 @@
+{
+    "bug_id": 34,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "            if (m instanceof CapturesArguments) {",
+    "code": "    public void captureArgumentsFrom(Invocation i) {\n        int k = 0;\n        for (Matcher m : matchers) {\n            if (m instanceof CapturesArguments) {\n                ((CapturesArguments) m).captureFrom(i.getArguments()[k]);\n            }\n            k++;\n        }\n    }",
+    "fixed_code": "    public void captureArgumentsFrom(Invocation i) {\n        int k = 0;\n        for (Matcher m : matchers) {\n            if (m instanceof CapturesArguments && i.getArguments().length > k) {\n                ((CapturesArguments) m).captureFrom(i.getArguments()[k]);\n            }\n            k++;\n        }\n    }",
+    "fixed_lines": "            if (m instanceof CapturesArguments && i.getArguments().length > k) {",
+    "masked_code": "    public void captureArgumentsFrom(Invocation i) {\n        int k = 0;\n        for (Matcher m : matchers) {\n>>> [ INFILL ] <<<\n                ((CapturesArguments) m).captureFrom(i.getArguments()[k]);\n            }\n            k++;\n        }\n    }",
+    "project": "Mockito",
+    "test_error_message": "java.lang.ArrayIndexOutOfBoundsException: 0",
+    "test_framework": "defects4j",
+    "test_line": "        invocationMatcher.captureArgumentsFrom(invocation);",
+    "test_name": "shouldMatchCaptureArgumentsWhenArgsCountDoesNOTMatch",
+    "test_suite": "org.mockito.internal.invocation.InvocationMatcherTest",
+    "time_buggy": "2009-12-11 20:30:31 +0000",
+    "time_fixed": "2009-12-11 20:30:44 +0000",
+    "bug_description": "Bug ID: 34\n\nTitle: ArrayIndexOutOfBoundsException in the Mockito Project\n\nDescription: \nThe bug is of type SL SH SF, which denotes the categories system output check, standard system output check, and single fault respectively in the Mockito project. The bug leads to a system output error, displaying the error message \"java.lang.ArrayOutOfBoundsException: 0\". \n\nSteps to Reproduce:\n\nThe error is encountered while executing the method captureArgumentsFrom in the Invocation i class. Inside this method, the following operations take place step-by-step:\n\n1. An integer variable 'k' is initialized to 0.\n2. A for-each loop is run on the matchers collection, and for every Matcher object 'm' in this collection, the condition (m instanceof CapturesArguments) is checked.\n3. If this condition is true, the method captureFrom of object 'm' is executed with an argument taken from the Invocation 'i' object's arguments, specifically, the argument at position 'k'.\n4. Then, 'k' is incremented (k++).\n\nProblem:\n\nThe problem occurs due to the array of the Invocation being accessed without ensuring that it has sufficient arguments. If Invocation doesn't have any argument or less than 'k' arguments, the error java.lang.ArrayIndexOutOfBoundsException is thrown.\n\nFix:\n\nThe issue was fixed by ensuring that the Invocation has an argument in position 'k' before trying to access the argument. In the fixed code, before accessing the array i.getArguments()[k], it is validated against the length of the array i.getArguments(). This implies at the time of accessing argument at index 'k', length of array 'i.getArguments()' should be greater than 'k'. \n\nFinal Code:\n```    \npublic void captureArgumentsFrom(Invocation i) {\n    int k = 0;\n    for (Matcher m : matchers) {\n        if (m instanceof CapturesArguments && i.getArguments().length > k) {\n            ((CapturesArguments) m).captureFrom(i.getArguments()[k]);\n        }\n        k++;\n    }\n}\n```\n\nWith this modified code, the array index out of bounds exception will be avoided, ensuring the successful execution of code without any runtime error."
+}

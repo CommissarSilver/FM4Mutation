@@ -1,0 +1,18 @@
+{
+    "bug_id": 88,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return val;",
+    "code": "    public String getValue() {\n        return val;\n    }",
+    "fixed_code": "    public String getValue() {\n        return Attributes.checkNotNull(val);\n    }",
+    "fixed_lines": "        return Attributes.checkNotNull(val);",
+    "masked_code": "    public String getValue() {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Jsoup",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<> but was:<null>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"\", first.getValue());",
+    "test_name": "booleanAttributesAreEmptyStringValues",
+    "test_suite": "org.jsoup.nodes.AttributeTest",
+    "time_buggy": "2018-12-23 20:30:47 -0800",
+    "time_fixed": "2018-12-23 22:02:59 -0800",
+    "bug_description": "Bug Description:\n\nBug ID: 88 is found in the Jsoup project. The detected bug type is SL SH SF which represents a simple subtle bug: changes in sequencing, logic, and shifts respectively. \n\nIssue: The problem here lies within the getValue() method as it keeps returning the 'val' variable without performing any null check. Evidently, the test error message says 'junit.framework.AssertionFailedError: expected:<> but was:<null>' implying that the 'val' variable could sometimes be null during the testing phase. This means that there is a potential Null Pointer Exception (NPE) not properly handled, and hence, causing the program to fail and interrupt normal execution.\n\nBuggy Code:\n```\npublic String getValue() {\n    return val;\n}\n```\nIn the buggy code above, the getValue() method directly returns the value of the 'val' variable. This can result in a Null Pointer Exception if 'val' is null.\n\nFixed Code:\n```\npublic String getValue() {\n    return Attributes.checkNotNull(val);\n}\n```\nIn contrast, the fixed code includes an added function 'Attributes.checkNotNull(val)'. This function most likely checks if the variable 'val' is null. If null, this function likely throws a meaningful exception or returns a default value, preventing the occurrence of an unexpected Null Pointer Exception.\n\nBy comparing the fixed code with the buggy code, it seems the bug that caused an Assertion Failed Error during testing relates to the neglect of the null check on the 'val' object before performing any operation on it. This has led to a mismatch between the expected and actual outcomes, thereby failing the test case.\n\nFor developers to generate similar artificial bugs in Java, they should neglect to check whether objects have been correctly initialized or contain valid data before attempting to use those objects in any operations or return statements. By doing this, the program will act unexpectedly when encountering null values."
+}

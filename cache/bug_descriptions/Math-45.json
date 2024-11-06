@@ -1,0 +1,18 @@
+{
+    "bug_id": 45,
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "    public OpenMapRealMatrix(int rowDimension, int columnDimension) {\n        super(rowDimension, columnDimension);\n        this.rows = rowDimension;\n        this.columns = columnDimension;\n        this.entries = new OpenIntToDoubleHashMap(0.0);\n    }",
+    "fixed_code": "    public OpenMapRealMatrix(int rowDimension, int columnDimension) {\n        super(rowDimension, columnDimension);\n        long lRow = (long) rowDimension;\n        long lCol = (long) columnDimension;\n        if (lRow * lCol >= (long) Integer.MAX_VALUE) {\n            throw new NumberIsTooLargeException(lRow * lCol, Integer.MAX_VALUE, false);\n        }\n        this.rows = rowDimension;\n        this.columns = columnDimension;\n        this.entries = new OpenIntToDoubleHashMap(0.0);\n    }",
+    "fixed_lines": "        long lRow = (long) rowDimension;\n        long lCol = (long) columnDimension;\n        if (lRow * lCol >= (long) Integer.MAX_VALUE) {\n            throw new NumberIsTooLargeException(lRow * lCol, Integer.MAX_VALUE, false);\n        }",
+    "masked_code": "    public OpenMapRealMatrix(int rowDimension, int columnDimension) {\n        super(rowDimension, columnDimension);\n>>> [ INFILL ] <<<\n        this.rows = rowDimension;\n        this.columns = columnDimension;\n        this.entries = new OpenIntToDoubleHashMap(0.0);\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError: Expected exception: org.apache.commons.math.exception.NumberIsTooLargeException",
+    "test_framework": "defects4j",
+    "test_line": "",
+    "test_name": "testMath679",
+    "test_suite": "org.apache.commons.math.linear.OpenMapRealMatrixTest",
+    "time_buggy": "2011-10-10 19:50:53 +0000",
+    "time_fixed": "2011-10-10 19:56:03 +0000",
+    "bug_description": "Bug Description:\n\nIn the 'Math' project, there is a bug of type SH SF, with ID 45. \n\nFirst, let's decipher the error received during testing. The error is a 'junit.framework.AssertionFailedError', indicating that a test case failed because an assertion condition was not met. More specifically, the test case expected an instance of 'org.apache.commons.math.exception.NumberIsTooLargeException' to be thrown, but this did not occur in the execution. \n\nThe problematic code lies within the 'OpenMapRealMatrix' class constructor which takes two parameters, 'rowDimension' and 'columnDimension'. This constructor initializes a couple of instance variables 'rows' and 'columns' with the input values and initializes 'entries' with a new instance of 'OpenIntToDoubleHashMap'. \n\nThe exact bug in this code is better understood by looking at the fixed code. The potential problem occurs when the product of 'rowDimension' and 'columnDimension' exceeds the maximum limit of an integer. In such a case, a 'NumberIsTooLargeException' should be thrown, however, this isn't done in the original buggy code.\n\nIn the fixed code, 'rowDimension' and 'columnDimension' are first cast to a long type respectively. It then checks whether their product exceeds the maximum limit for an integer, and if it does, it throws a 'NumberIsTooLargeException'. The rest of the constructor remains the same as in the buggy code. \n\nTherefore, the main bug here was the program's inability to handle instances where the number of entries in the 'OpenMapRealMatrix' exceeds the maximum allowable size of an integer. This potential issue was not being identified and caught by throwing an appropriate exception. This bug could cause significant issues down the line when other methods and functionalities rely on the size of the 'entries' and does not expect it to be larger than Integer.MAX_VALUE."
+}

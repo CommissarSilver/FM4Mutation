@@ -1,0 +1,18 @@
+{
+    "bug_id": 79,
+    "bug_type": "SF",
+    "buggy_lines": "      int sum = 0;\n          final int dp = p1[i] - p2[i];",
+    "code": "    public static double distance(int[] p1, int[] p2) {\n      int sum = 0;\n      for (int i = 0; i < p1.length; i++) {\n          final int dp = p1[i] - p2[i];\n          sum += dp * dp;\n      }\n      return Math.sqrt(sum);\n    }",
+    "fixed_code": "    public static double distance(int[] p1, int[] p2) {\n      double sum = 0;\n      for (int i = 0; i < p1.length; i++) {\n          final double dp = p1[i] - p2[i];\n          sum += dp * dp;\n      }\n      return Math.sqrt(sum);\n    }",
+    "fixed_lines": "      double sum = 0;\n          final double dp = p1[i] - p2[i];",
+    "masked_code": "    public static double distance(int[] p1, int[] p2) {\n      for (int i = 0; i < p1.length; i++) {\n>>> [ INFILL ] <<<\n          sum += dp * dp;\n      }\n      return Math.sqrt(sum);\n    }",
+    "project": "Math",
+    "test_error_message": "java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "        List<Cluster<EuclideanIntegerPoint>> clusters = transformer.cluster(Arrays.asList(points), 1, 1);",
+    "test_name": "testPerformClusterAnalysisDegenerate",
+    "test_suite": "org.apache.commons.math.stat.clustering.KMeansPlusPlusClustererTest",
+    "time_buggy": "2009-11-27 21:05:04 +0000",
+    "time_fixed": "2009-11-27 21:45:38 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 79\nProject: Math\nBug Type: Semantic Fault (SF) \n\nOperations:\nIn the Math project, inside the function distance(), a java.lang.NullPointerException error occurred.\n\nDescription:\nThe bug type is a semantic fault, which means the syntax of the code is correct, but the logic written by the developer is not as intended, leading to incorrect results or errors.\n\nThe \u2018distance\u2019 function calculates the Euclidean distance between two points in space. The function iterates through each dimension (represented by indices in the arrays passed as parameters 'p1' and 'p2') and calculates the difference in that dimension, squares it, and adds it to a running sum (variable 'sum'). As a result, this should provide the sum of squares of differences in all dimensions.\n\nBuggy Code:\nIn the buggy version of the code, the method declares 'sum' as integer variable and 'dp' as integer variable (for calculating the difference in each dimension). Although the language allows for this, it could result in a wrong calculation due to integer overflow, or precision loss due to integer division.\n\nFixed Code:\nIn the fixed version of the code, 'sum' and 'dp' are correctly declared as a double variables, accommodating for the precise and large values resulted from adding and squaring the differences in each dimension.\n\nStep-by-step Guidance:\n1. Find the function 'distance'.\n2. Check the variable 'sum' and 'dp', which are initially declared as integers.\n3. Change the variable 'sum' and 'dp' type into 'double'.\n4. Retest the function to ensure the bug has been fixed.\n\nIt is notable that the bug reported, i.e., java.lang.NullPointerException may not necessarily be a result of the mentioned code and seems unrelated to the change from 'int' to 'double' for variable 'sum', thus, it could be a typographical error in the provided data. We advise to verify the exact origin and the relation with the error type."
+}

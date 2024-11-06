@@ -1,0 +1,18 @@
+{
+    "bug_id": 12,
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "  private boolean hasExceptionHandler(Node cfgNode) {\n    return false;\n  }",
+    "fixed_code": "  private boolean hasExceptionHandler(Node cfgNode) {\n    List<DiGraphEdge<Node, Branch>> branchEdges = getCfg().getOutEdges(cfgNode);\n    for (DiGraphEdge<Node, Branch> edge : branchEdges) {\n      if (edge.getValue() == Branch.ON_EX) {\n        return true;\n      }\n    }\n    return false;\n  }",
+    "fixed_lines": "    List<DiGraphEdge<Node, Branch>> branchEdges = getCfg().getOutEdges(cfgNode);\n    for (DiGraphEdge<Node, Branch> edge : branchEdges) {\n      if (edge.getValue() == Branch.ON_EX) {\n        return true;\n      }\n    }",
+    "masked_code": "  private boolean hasExceptionHandler(Node cfgNode) {\n>>> [ INFILL ] <<<\n    return false;\n  }",
+    "project": "Closure",
+    "test_error_message": "junit.framework.AssertionFailedError:",
+    "test_framework": "defects4j",
+    "test_line": "    test(EXTERN_FUNCTIONS, \"function _func() {\" + input + \"}\",",
+    "test_name": "testIssue794b",
+    "test_suite": "com.google.javascript.jscomp.FlowSensitiveInlineVariablesTest",
+    "time_buggy": "2012-08-10 17:37:02 +0000",
+    "time_fixed": "2012-08-10 19:39:40 +0000",
+    "bug_description": "Bug ID: 12\n\nBug Title: Missing Exception Handling Functionality in Method\n\nProject: Closure\n\nBug Type: Semantic/Syntactic bug (SH SF)\n\nExisting Code:\n```\nprivate boolean hasExceptionHandler(Node cfgNode) {\n  return false;\n}\n```\n\nFixed Code:\n```\nprivate boolean hasExceptionHandler(Node cfgNode) {\n  List<DiGraphEdge<Node, Branch>> branchEdges = getCfg().getOutEdges(cfgNode);\n  for (DiGraphEdge<Node, Branch> edge : branchEdges) {\n    if (edge.getValue() == Branch.ON_EX) {\n      return true;\n    }\n  }\n  return false;\n}\n```\n\nDetailed Bug Description:\n\n1. The bug that is present in the code is of Semantic/Syntactic type (SH SF). This type of bug implies that the issue lies in the logic of the code. In this case, it specifically stands for a missing code that handles exceptions.\n\n2. The initial state of the function `hasExceptionHandler(Node cfgNode)` always returns `false`, implying that it does not carry out any required processes or checks to ascertain if there is an exception handler for the Node `cfgNode`. This is a major functional issue as it neglects exception handling which is necessary for writing robust and fault-tolerant programs.\n\n3. This negligence of exception handling could risk the execution of the software and may lead to a system crash or halt when encountering an actual exception.\n\n4. The modified code fixes this bug by implementing logic that checks if a Node `cfgNode` has an exception handler. The method `getOutEdges(cfgNode)` returns a list of directed branches from the specific node. For each branch in this list, if the value equals `Branch.ON_EX` which represents an exception edge, then return `true`. If no exception edge exists return `false`.\n\n5. This implementation makes the prepared software more robust handling and prevent potential failures if an exception occurs during the execution of the program.\n\n6. The bug was resolved by adding the necessary logic and making the method functional rather than it being a placeholder that returns `false`.\n\n7. To generate similar artificial bugs in java, developers can follow the steps where they provide dummy or placeholder functions, instead of the ones with actual logic, which is missing its main functionality."
+}

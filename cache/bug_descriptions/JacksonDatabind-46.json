@@ -1,0 +1,18 @@
+{
+    "bug_id": 46,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        sb.append(';');",
+    "code": "    public StringBuilder getGenericSignature(StringBuilder sb)\n    {\n        _classSignature(_class, sb, false);\n        sb.append('<');\n        sb = _referencedType.getGenericSignature(sb);\n        sb.append(';');\n        return sb;\n    }",
+    "fixed_code": "    public StringBuilder getGenericSignature(StringBuilder sb)\n    {\n        _classSignature(_class, sb, false);\n        sb.append('<');\n        sb = _referencedType.getGenericSignature(sb);\n        sb.append(\">;\");\n        return sb;\n    }",
+    "fixed_lines": "        sb.append(\">;\");",
+    "masked_code": "    public StringBuilder getGenericSignature(StringBuilder sb)\n    {\n        _classSignature(_class, sb, false);\n        sb.append('<');\n        sb = _referencedType.getGenericSignature(sb);\n>>> [ INFILL ] <<<\n        return sb;\n    }",
+    "project": "JacksonDatabind",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:<...e<Ljava/lang/String;[>];> but was:<...e<Ljava/lang/String;[];>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"Ljava/util/concurrent/atomic/AtomicReference<Ljava/lang/String;>;\", t.getGenericSignature());",
+    "test_name": "testGenericSignature1195",
+    "test_suite": "com.fasterxml.jackson.databind.type.TestJavaType",
+    "time_buggy": "2016-04-04 18:22:32 -0700",
+    "time_fixed": "2016-04-11 21:01:14 -0700",
+    "bug_description": "Bug Description:\n\nIn the context of the JacksonDatabind project, bug ID #46 relates to a failure in string comparison within a specific portion of the code, identified as 'SL SH SF' Bug Type. \n\nThe error was found during a unit testing phase, with a message indicating that the output differed from the expected result. The testing error message detailed the discrepancy: 'junit.framework.ComparisonFailure: expected:<...e<Ljava/lang/String;[>];> but was:<...e<Ljava/lang/String;[];>'. It is evident from this message that the expected output was a string ending with '>;', but the actual outcome was a string ending with ';'.\n\nThis error occurs within the 'getGenericSignature' method of an unidentified class. The respective method's main task is to generate a string through the StringBuilder object 'sb', using different append operations. The error initiated from the line 'sb.append(';');', where it was expected to append '>;' to the StringBuilder object but only appended ';'. \n\nTo reproduce this error, we need to follow some steps. First, the '_classSignature' method is called using '_class' object, the StringBuilder object 'sb,' and a boolean value set to false. Then a '<' string is appended to the StringBuilder object. Afterward, referring to '_referencedType', the 'getGenericSignature' method is called with the StringBuilder object as an argument. The mistake occurs in the next step, where a ';' is appended to the StringBuilder 'sb'. This line should append '>;' instead of just ';'. The fixed version of the code replaces the faulty line with 'sb.append(\">;\");' to ensure the produced string fits the expected output.\n\nOverall, this bug signifies an incorrect string formation, which leads to a unit test failure. With the above-mentioned fix, the bug should be resolved, and the test case is expected to pass successfully."
+}

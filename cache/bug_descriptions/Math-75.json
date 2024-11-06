@@ -1,0 +1,18 @@
+{
+    "bug_id": 75,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return getCumPct((Comparable<?>) v);",
+    "code": "    public double getPct(Object v) {\n        return getCumPct((Comparable<?>) v);\n    }",
+    "fixed_code": "    public double getPct(Object v) {\n        return getPct((Comparable<?>) v);\n    }",
+    "fixed_lines": "        return getPct((Comparable<?>) v);",
+    "masked_code": "    public double getPct(Object v) {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError: three (Object) pct expected:<0.5> but was:<1.0>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"three (Object) pct\",0.5,f.getPct((Object) (Integer.valueOf(3))),tolerance);",
+    "test_name": "testPcts",
+    "test_suite": "org.apache.commons.math.stat.FrequencyTest",
+    "time_buggy": "2009-12-31 17:52:16 +0000",
+    "time_fixed": "2010-01-16 20:01:17 +0000",
+    "bug_description": "Bug ID: 75\nProject: Math\nBug Type: SL SH SF\n\nDetails:\nThe bug is found in the getPct function that is supposed to return the cumulated percentage of the object. However, the unit test reports that the function is not performing as expected. The function is expected to return 0.5, but it instead returns 1.0, leading to a junit.framework.AssertionFailedError. \n\nSteps to Reproduce Bug:\n1. Call the problematic `getPct(Object v)` method with an instance object.\n2. The method will then call `getCumPct((Comparable<?>) v)`.\n3. If the expected return value is not met (for instance, it should return 0.5), the method will erroneously return 1.0\n\nSuspected Problem:\nFrom the error message, it seems that the issue lies in the fact that the method is using `getCumPct` instead of `getPct`, which is causing erroneous output. The `getCumPct` method might not be suitable to get the required percentage value and causing the mismatch between the expected and actual output.\n\nRectified Code:\nThe bug seems to have been rectified in the fixed code by using `getPct` in place of `getCumPct`. Here is the fixed code for reference:\n\n    public double getPct(Object v) {\n        return getPct((Comparable<?>) v);\n    }\n\nIn the corrected code, the method now properly calls the `getPct` method which should properly return the correct percentage of the passed object. The 'getPct' method casts the passed object to 'Comparable' type and finds the relevant percentage.\n\nRecommendation for Developers:\nBy generating artificial Java bugs similar to this one, developers can improve their understanding of correct Java syntax, object-oriented principles, as well as robust error/exception handling. Through creating and debugging such errors, developers can work on finding potential code issues or honing their debugging skills."
+}

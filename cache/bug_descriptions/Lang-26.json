@@ -1,0 +1,18 @@
+{
+    "bug_id": 26,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        Calendar c = new GregorianCalendar(mTimeZone);",
+    "code": "    public String format(Date date) {\n        Calendar c = new GregorianCalendar(mTimeZone);\n        c.setTime(date);\n        return applyRules(c, new StringBuffer(mMaxLengthEstimate)).toString();\n    }",
+    "fixed_code": "    public String format(Date date) {\n        Calendar c = new GregorianCalendar(mTimeZone, mLocale);\n        c.setTime(date);\n        return applyRules(c, new StringBuffer(mMaxLengthEstimate)).toString();\n    }",
+    "fixed_lines": "        Calendar c = new GregorianCalendar(mTimeZone, mLocale);",
+    "masked_code": "    public String format(Date date) {\n>>> [ INFILL ] <<<\n        c.setTime(date);\n        return applyRules(c, new StringBuffer(mMaxLengthEstimate)).toString();\n    }",
+    "project": "Lang",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:<fredag, week [53]> but was:<fredag, week [01]>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"fredag, week 53\", fdf.format(d));",
+    "test_name": "testLang645",
+    "test_suite": "org.apache.commons.lang3.time.FastDateFormatTest",
+    "time_buggy": "2010-08-29 22:53:42 +0000",
+    "time_fixed": "2010-09-08 06:09:57 +0000",
+    "bug_description": "Bug ID: 26\nProject: Lang\nBug Type: Sync Lock (SL), Shared Field (SH), and Single-Threaded Field (SF)\n\nTest Error Message: junit.framework.ComparisonFailure: expected:<fredag, week [53]> but was:<fredag, week [01]>\n\nBug Description:\n\nThe bug was found in a Java program in the Lang project. It was identified as a combination of Sync Lock, Shared Field, and Single Threaded Field bugs.\n\nThe issue is present in the format() method of some class. The method sets a calendar instance to a given date and then applies some formatting rules. It starts by creating a new GregorianCalendar object 'c' being set to the timezone 'mTimeZone'. It then sets the calendar\u2019s time to the date passed into the format() method. Finally, a formatted string relative to the rules applied is returned.\n\nHowever, the test error message indicates that there was a date mismatch. It expected the week to be 53 (fredag, week [53]) but got the week as 01 (fredag, week [01]). This suggests the formatting operation on the calendar object 'c' above did not coincide with what was expected due to wrong settings.\n\nBug Fix:\n\nThe fix was to modify the instantiation of GregorianCalendar in the format() method to include the locale 'mLocale', not just the timezone 'mTimeZone'. This is crucial because calendars can be sensitive to locale settings, especially when it comes to edge cases like week numbering which may differ based on the system settings.\n\nFixed Code:\n    public String format(Date date) {\n        Calendar c = new GregorianCalendar(mTimeZone, mLocale);\n        c.setTime(date);\n        return applyRules(c, new StringBuffer(mMaxLengthEstimate)).toString();\n    }\n\nSteps for Developers to Generate the Bug:\n\n1. Create a class with a method that formats dates using java.util.Date and java.util.Calendar.\n2. The class should have fields for timeZone and locale, and at least one method that sets the date on a calendar instance using the timezone but not the locale.\n3. Write test cases to verify the correct formatting of dates with weeks that can vary between locales.\n4. Run the test cases. If the bug is present, the tests are expected to fail when the week returned does not match what's expected."
+}

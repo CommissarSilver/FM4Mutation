@@ -1,0 +1,18 @@
+{
+    "bug_id": 111,
+    "bug_type": "SH SF",
+    "buggy_lines": "          return topType;",
+    "code": "        protected JSType caseTopType(JSType topType) {\n          return topType;\n        }",
+    "fixed_code": "        protected JSType caseTopType(JSType topType) {\n          return topType.isAllType() ?\n              getNativeType(ARRAY_TYPE) : topType;\n        }",
+    "fixed_lines": "          return topType.isAllType() ?\n              getNativeType(ARRAY_TYPE) : topType;",
+    "masked_code": "        protected JSType caseTopType(JSType topType) {\n>>> [ INFILL ] <<<\n        }",
+    "project": "Closure",
+    "test_error_message": "junit.framework.AssertionFailedError: Expected: Array",
+    "test_framework": "defects4j",
+    "test_line": "    Asserts.assertTypeEquals(",
+    "test_name": "testGoogIsArray2",
+    "test_suite": "com.google.javascript.jscomp.ClosureReverseAbstractInterpreterTest",
+    "time_buggy": "2013-10-20 20:09:42 -0400",
+    "time_fixed": "2013-10-23 00:47:12 -0400",
+    "bug_description": "Bug ID: 111\nProject: Closure\nBug Type: Syntax/Hierarchy Flaw (SH SF)\nTest Error Message: junit.framework.AssertionFailedError: Expected: Array\n\nBug Description:\n\nThis bug is occurring in the \"caseTopType\" method. It specifically resides in the line \"return topType;\".\n\nThe \"caseTopType\" method is expected to return an array type object. This expectation is the root cause of this JUnit test failure that was noted through the error message: \"junit.framework.AssertionFailedError: Expected: Array\". However, it seems that the return statement is only returning the \"topType\" object.\n\nThe buggy line (\"return topType;\") does not check whether the \"topType\" is an Array type or not, it just returns the topType object as it is, which causes the assertion error.\n\nFix Description:\n\nThe fix involves adjusting the method \"caseTopType\" to accommodate the return type conditionally. In the updated code, there is a conditional ternary operator that checks whether the \"topType\" is all type or not.\n\nIt goes something like:\n\"return topType.isAllType() ? getNativeType(ARRAY_TYPE) : topType;\"\n\nThis checks if the instance \"topType\" is of All Type. If it is, then it changes it to Native Type array. If it's not, then it simply returns \"topType\".\n\nStep-by-step bug generation guidance for artificial java bugs based on this example:\n\n1. Start by writing a simple method in Java that executes a specific task.\n2. Make the function return a certain type of object.\n3. In the test case for this method, add assertions that expect a different object type.\n4. Note the junit.framework.AssertionFailedError that occurs when the function does not meet the expected result due to the exact object type expected.\n5. Thereafter, you can fix the bug by adding a conditional operator in the method to check the type of the return object to meet the expected result.\n6. Lastly, run the test case again to check if the bug is resolved."
+}

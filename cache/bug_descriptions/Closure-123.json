@@ -1,0 +1,18 @@
+{
+    "bug_id": 123,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        Context rhsContext = Context.OTHER;",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "        Context rhsContext = getContextForNoInOperator(context);",
+    "masked_code": "",
+    "project": "Closure",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:<for(a=c?0:[(0 in d)];;)foo()> but was:<for(a=c?0:[0 in d];;)foo()>",
+    "test_framework": "defects4j",
+    "test_line": "    assertEquals(expected,",
+    "test_name": "testPrintInOperatorInForLoop",
+    "test_suite": "com.google.javascript.jscomp.CodePrinterTest",
+    "time_buggy": "2013-06-28 16:09:35 -0700",
+    "time_fixed": "2013-06-28 16:09:36 -0700",
+    "bug_description": "Bug Description:\n\nBug ID: 123\nProject: Closure\nBug Type: SL SH SF (Statement List, Statement Handling, Statement Formatting)\nTest Error Message: junit.framework.ComparisonFailure: expected:<for(a=c?0:[(0 in d)];;)foo()> but was:<for(a=c?0:[0 in d];;)foo()>\n\nIssue:\n\nIn the project Closure, we have a bug which is of type 'SL SH SF'. The bug is causing a testing error in the condition of a loop. The error is occurring during the comparison of the expected output and the actual output in the Junit test framework.\n\nThe detailed line where the issue is identified was expected to be 'for(a=c?0:[(0 in d)];;)foo()>' but the error received was 'for(a=c?0:[0 in d];;)foo()>'. The main difference between the two lines is the presence of ([]), which raises the exception as it differs from the expected code.\n\nThe context described as 'rhsContext' in the line 'Context rhsContext = Context.OTHER;' is possibly involved in the issue as it was highlighted as a part of the bug data.\n\nResolution:\n\nUnfortunately, the solution or fixed code was not provided so we can't specifically address how it was fixed.\n\nSteps to reproduce:\n\nTo reproduce the error, developers would likely need to navigate to the section of code where the bug occurred:\n\n1. Open the Closure project in your preferred IDE.\n2. Navigate to the file containing the line 'Context rhsContext = Context.OTHER;'.\n3. Run the Junit test that includes the loop 'for(a=c?0:[(0 in d)];;)foo();'.\n4. Observe the ComparisonFailure error message.\n\nDo note that the specific steps may vary slightly based on the project organization, file, and actual location of the code-line in the question. However, the above steps provide a generalized approach."
+}

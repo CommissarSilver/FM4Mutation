@@ -1,0 +1,18 @@
+{
+    "bug_id": 27,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return multiply(100).doubleValue();",
+    "code": "    public double percentageValue() {\n        return multiply(100).doubleValue();\n    }",
+    "fixed_code": "    public double percentageValue() {\n        return 100 * doubleValue();\n    }",
+    "fixed_lines": "        return 100 * doubleValue();",
+    "masked_code": "    public double percentageValue() {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<2.1691754E9> but was:<-2.125791896E9>",
+    "test_framework": "defects4j",
+    "test_line": "        Assert.assertEquals(percentage, frac.percentageValue(), Math.ulp(percentage));",
+    "test_name": "testMath835",
+    "test_suite": "org.apache.commons.math3.fraction.FractionTest",
+    "time_buggy": "2012-07-30 19:37:48 +0000",
+    "time_fixed": "2012-07-31 14:58:01 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: #27 \n\nProject: Math \n\nBug Type: Semantic Bug (SL SH SF) \n\nError Message: The error message thrown is a junit.framework.AssertionFailedError which indicates that the expected output from a unit test differs from the actual output. The expected output was 2.1691754E9, but the received output is -2.125791896E9.\n\nCode Description: The erroneous piece of code is within a method named 'percentageValue' that is supposed to return the percentage value of a number. However, the method is incorrectly using the 'multiply' method to multiply the number by 100 and then converting the result to a double value.\n\nBuggy Line:\n```\nreturn multiply(100).doubleValue();\n```\n\nFixed Code: The correct snippet of code uses a direct multiplication operation of the number with 100 and casts it into a double data type. \n\nCorrect code: \n```\nreturn 100 * doubleValue();\n```\n\nSteps To Replicate The Bug: \n\n1. Define the number for which you want to calculate the percentage value.\n2. Call the 'percentageValue' method.\n3. This should theoretically multiply the number by 100 and return the result as a double. However, due to the 'multiply' operation being incorrect in this context, it is returning an incorrect value.\n4. This then prompts the error to be thrown as the expected output does not match the received output.\n\nTo fix this bug, the 'multiply' operation should be replaced with a direct multiplication operation as demonstrated in the fixed code."
+}

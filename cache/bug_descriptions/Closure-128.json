@@ -1,0 +1,18 @@
+{
+    "bug_id": 128,
+    "bug_type": "SF",
+    "buggy_lines": "    return len > 0 && s.charAt(0) != '0';",
+    "code": "  static boolean isSimpleNumber(String s) {\n    int len = s.length();\n    for (int index = 0; index < len; index++) {\n      char c = s.charAt(index);\n      if (c < '0' || c > '9') {\n        return false;\n      }\n    }\n    return len > 0 && s.charAt(0) != '0';\n  }",
+    "fixed_code": "  static boolean isSimpleNumber(String s) {\n    int len = s.length();\n    if (len == 0) {\n      return false;\n    }\n    for (int index = 0; index < len; index++) {\n      char c = s.charAt(index);\n      if (c < '0' || c > '9') {\n        return false;\n      }\n    }\n    return len == 1 || s.charAt(0) != '0';\n  }",
+    "fixed_lines": "    if (len == 0) {\n      return false;\n    }\n    return len == 1 || s.charAt(0) != '0';",
+    "masked_code": "  static boolean isSimpleNumber(String s) {\n    int len = s.length();\n    for (int index = 0; index < len; index++) {\n      char c = s.charAt(index);\n      if (c < '0' || c > '9') {\n        return false;\n      }\n    }\n>>> [ INFILL ] <<<\n  }",
+    "project": "Closure",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:<var x={[0]:1}> but was:<var x={[\"0\"]:1}>",
+    "test_framework": "defects4j",
+    "test_line": "    assertEquals(expected,",
+    "test_name": "testIssue942",
+    "test_suite": "com.google.javascript.jscomp.CodePrinterTest",
+    "time_buggy": "2013-03-20 09:48:25 -0700",
+    "time_fixed": "2013-03-20 09:48:28 -0700",
+    "bug_description": "Bug ID: 128\nProject: Closure\nBug Type: Semantic Fault (SF)\n\nBug Description:\n\nIn the original code, the function `isSimpleNumber(String s)` checks if a string `s` is a simple number. It first calculates the length of the string. If the length is zero or the first character of the string is '0', the function returns false. Otherwise, it iterates through each character in the string `s` to check if each character is a number from '0' to '9'. If any character is not in this range, the function returns false.\n\nTest Error Message : \n\njunit.framework.ComparisonFailure: expected:<var x={[0]:1}> but was:<var x={[\"0\"]:1}>\n\nBuggy Code:\n\n```\nstatic boolean isSimpleNumber(String s) {\nint len = s.length();\nfor (int index = 0; index < len; index++) {\n  char c = s.charAt(index);\n  if (c < '0' || c > '9') {\n    return false;\n  }\n}\nreturn len > 0 && s.charAt(0) != '0';\n}\n\n```\n\nBuggy Line: return len > 0 && s.charAt(0) != '0'\n\nIn the check condition of the above code, `(len > 0 && s.charAt(0) != '0')` the length of the string is checked to be greater than 0 and also the first character of the string is checked not to be '0'. However, a string '0' should be a valid simple number, so a string starting with '0' is considered as an invalid number which is wrong.\n\nFixed Code:\n\n```\nstatic boolean isSimpleNumber(String s) {\nint len = s.length();\nif (len == 0) {\n  return false;\n}\nfor (int index = 0; index < len; index++) {\n  char c = s.charAt(index);\n  if (c < '0' || c > '9') {\n    return false;\n  }\n}\nreturn len == 1 || s.charAt(0) != '0';\n}\n\n```\n\nThe above code fixes the issue in the condition by checking whether the length of the string is equal to one or the first character of the string is not '0'. This way, '0' becomes a valid number. \n\nThe bug surfaced because the function seemed to be treating '0' as a non-simple number, causing any number starting with '0' to be invalid. The fix made sure that the length of a simple number had to be 1 or more, allowing '0' as a valid number."
+}

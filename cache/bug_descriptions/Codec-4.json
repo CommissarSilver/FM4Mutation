@@ -1,0 +1,18 @@
+{
+    "bug_id": 4,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        this(false);",
+    "code": "    public Base64() {\n        this(false);\n    }",
+    "fixed_code": "    public Base64() {\n        this(0);\n    }",
+    "fixed_lines": "        this(0);",
+    "masked_code": "    public Base64() {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Codec",
+    "test_error_message": "junit.framework.AssertionFailedError: Encoder test-1",
+    "test_framework": "defects4j",
+    "test_line": "                assertTrue(\"Encoder test-\" + i, b);",
+    "test_name": "testEncoder",
+    "test_suite": "org.apache.commons.codec.binary.Base64Codec13Test",
+    "time_buggy": "2010-03-26 23:52:46 +0000",
+    "time_fixed": "2010-03-27 00:02:22 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 4\nProject: Codec\nBug Type: Syntax Error, Semantic Error, and Statement Fault(SL SH SF)\n\nStep by step details of the bug:\n\n1. The class Base64 is been initialized and a false Boolean value is passed to the constructor.\n\n2. The statement \u201cthis(false);\u201d in the constructor of the Base64 class is supposed to initialize the parent class or the other constructor in the same class which takes a boolean parameter. This is causing an error because evidently there's no such constructor that fits this statement, which is a Syntax error.\n\n3. The error received indicates that the bug is leading to failure in the JUnit test related to the Encoder - test-1. The Junit assertion failed because the method or operation performed by the method is not returning the expected output during the test thus throwing `junit.framework.AssertionFailedError`. The method that is supposed to assign false to a variable or to a state might not be working correctly leading to Semantic Error.\n\n4. From the given detail, it becomes clear that there is some issue with the statement \"this(false)\" as there is no valid constructor which accepts a single Boolean parameter (false/true). Hence, this incorrect initialization leads to a statement fault.\n\nSolution:\n\nLooking at the fixed code, it seems the constructor of the class Base64 requires an integer as parameter. Instead of boolean `false`, integer `0` should be passed to the this() function inside the constructor of Base64 class, i.e., the correct constructor call should be \"this(0)\". After modification, the bug has been fixed and the Junit test Encoder - test-1 is passed without any errors."
+}

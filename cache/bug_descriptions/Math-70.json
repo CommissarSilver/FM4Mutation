@@ -1,0 +1,18 @@
+{
+    "bug_id": 70,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return solve(min, max);",
+    "code": "    public double solve(final UnivariateRealFunction f, double min, double max, double initial)\n        throws MaxIterationsExceededException, FunctionEvaluationException {\n        return solve(min, max);\n    }",
+    "fixed_code": "    public double solve(final UnivariateRealFunction f, double min, double max, double initial)\n        throws MaxIterationsExceededException, FunctionEvaluationException {\n        return solve(f, min, max);\n    }",
+    "fixed_lines": "        return solve(f, min, max);",
+    "masked_code": "    public double solve(final UnivariateRealFunction f, double min, double max, double initial)\n        throws MaxIterationsExceededException, FunctionEvaluationException {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Math",
+    "test_error_message": "java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(Math.PI, solver.solve(f, 3.0, 3.2, 3.1), solver.getAbsoluteAccuracy());",
+    "test_name": "testMath369",
+    "test_suite": "org.apache.commons.math.analysis.solvers.BisectionSolverTest",
+    "time_buggy": "2010-04-25 21:42:47 +0000",
+    "time_fixed": "2010-05-03 18:42:27 +0000",
+    "bug_description": "Bug ID: 70\nProject: Math\nBug Type: Semantic, Syntactic, and Systematic (SL SH SF)\nTest Error Message: java.lang.NullPointerException\n\nBug Description:\n\nIn this bug scenario, a NullPointerException is occurring. This type of exception is thrown when an application attempts to use an object reference, such as calling an instance method, that has no value (null). Looking at the code snippet, it can be observed that in the `solve` method, two variables `min` and `max` are passed as arguments to a method also called `solve`, but another parameter `f` of type `UnivariateRealFunction` is forgotten which would be required by the method.\n\nSteps:\n\n1. The implementation of `solve` method accepts four parameters (`UnivariateRealFunction f`, `double min`, `double max` and `double initial`).\n\n2. However, when calling this method within the body of `solve`, only two arguments `min` and `max` are passed into the `solve` method.\n\n3. The input parameter `f` is not passed into the `solve` method; therefore, the system doesn't recognize what object to use when solving the equation, which results in a NullPointerException - because the `UnivariateRealFunction f` argument still contains a null reference.\n\n4. The NullPointerException would, in turn, disrupt the flow of the code and lead to an unsuccessful outcome of the `solve` method and whichever function may be calling it.\n\nThe bug was fixed by feeding the omitted `UnivariateRealFunction f` as a parameter to the `solve` method call inside the body of the method along with `min` and `max`. After correction, all necessary objects are well defined and no null reference can be found in the method, thus, the NullPointerException would no longer occur.\n\nFixed Code Description:\n\nThe fixed code now correctly uses all three parameters (`f`, `min` and `max`) in the method call to `solve`. That means it utilizes an instance of the `UnivariateRealFunction` through `f` to do the solving, within the provided range params `min` and `max`, thus preventing the NullPointerException from happening again.\n"
+}

@@ -1,0 +1,18 @@
+{
+    "bug_id": 10,
+    "bug_type": "SH SF",
+    "buggy_lines": "        TypeAdapter t =\n          new TypeAdapterRuntimeTypeWrapper(context, typeAdapter, fieldType.getType());",
+    "code": "      @Override void write(JsonWriter writer, Object value)\n          throws IOException, IllegalAccessException {\n        Object fieldValue = field.get(value);\n        TypeAdapter t =\n          new TypeAdapterRuntimeTypeWrapper(context, typeAdapter, fieldType.getType());\n        t.write(writer, fieldValue);\n      }",
+    "fixed_code": "      @Override void write(JsonWriter writer, Object value)\n          throws IOException, IllegalAccessException {\n        Object fieldValue = field.get(value);\n        TypeAdapter t = jsonAdapterPresent ? typeAdapter\n            : new TypeAdapterRuntimeTypeWrapper(context, typeAdapter, fieldType.getType());\n        t.write(writer, fieldValue);\n      }",
+    "fixed_lines": "        TypeAdapter t = jsonAdapterPresent ? typeAdapter\n            : new TypeAdapterRuntimeTypeWrapper(context, typeAdapter, fieldType.getType());",
+    "masked_code": "      @Override void write(JsonWriter writer, Object value)\n          throws IOException, IllegalAccessException {\n        Object fieldValue = field.get(value);\n>>> [ INFILL ] <<<\n        t.write(writer, fieldValue);\n      }",
+    "project": "Gson",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:<{\"part\":[\"42\"]}> but was:<{\"part\":[42]}>",
+    "test_framework": "defects4j",
+    "test_line": "    assertEquals(\"{\\\"part\\\":\\\"42\\\"}\", json);",
+    "test_name": "testPrimitiveFieldAnnotationTakesPrecedenceOverDefault",
+    "test_suite": "com.google.gson.functional.JsonAdapterAnnotationOnFieldsTest",
+    "time_buggy": "2016-05-17 07:38:50 -0400",
+    "time_fixed": "2016-05-17 17:26:52 -0400",
+    "bug_description": "Bug Description:\n\nBug ID: 10\nProject: Gson\nBug Type: Semantic Heterogeneity (SH SF)\n\nDescription:\n\nThe bug is found in the write method of a class in Gson project. The test error message indicates that the expected output of a JSON string {\"part\":[\"42\"]} does not match the actual output {\"part\":[42]}. The string \"42\" is expected, but instead, number 42 is returned.\n\nStep-by-step Bug Explanation:\n\n1. When the 'write' method is called, it attempts to get the value of a field from an object.\n2. It then creates a new TypeAdapterRuntimeTypeWrapper object by passing context, typeAdapter, and the type of the field as parameters. This object is assigned to 't'. \n3. The 't' object is then used to write into the JsonWriter.\n4. The actual error arises in the way the TypeAdapter is being created. It should consider whether the jsonAdapter is present when creating the TypeAdapter object. When it creates the TypeAdapter, it does not make use of the jsonAdapter, resulting in the bug.\n5. Due to this, when the value is written into the JsonWriter, the expected and actual values are not the same, causing the junit.framework.ComparisonFailure.\n       \nIn the fixed code:\n\n1. Before the TypeAdapter t is created, it checks if the jsonAdapter is present.\n2. If it is present, it creates a new TypeAdapterRuntimeTypeWrapper object by passing context, typeAdapter, and the type of the field as parameters. Otherwise, it assigns the present typeAdapter to 't'.\n3. Then it performs the write operation. In this case, as the TypeAdapter is correctly instantiated, the value gets correctly written into the JsonWriter, and the test passes. \n\nThe developer has to ensure that before creating the TypeAdapter object, it is necessary to check whether the jsonAdapter is present or not to avoid this type of error."
+}

@@ -1,0 +1,18 @@
+{
+    "bug_id": 19,
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "        if (rawClass == Properties.class) {\n            return MapType.construct(rawClass, CORE_TYPE_STRING, CORE_TYPE_STRING);\n        }",
+    "masked_code": "",
+    "project": "JacksonDatabind",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:<129> but was:<null>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"129\", props.getProperty(\"A\"));",
+    "test_name": "testMapToProperties",
+    "test_suite": "com.fasterxml.jackson.databind.convert.TestMapConversions",
+    "time_buggy": "2015-05-27 22:44:45 -0700",
+    "time_fixed": "2015-05-28 14:27:57 -0700",
+    "bug_description": "\nBug ID: 19\nProject: JacksonDatabind\nBug Type: SH SF (Serialization/Deserialization Failure)\n\nDescription:\nThe bug is seen in the Jackson Databind project. The corresponding bug type categorizes it under Serialization or Deserialization failure. The issue here seems to be with object deserialization where an expected value of '129' turns out as 'null'. This possibly means that during the serialization or deserialization process, the value isn't getting mapped as expected or gets lost.\n\nTest Error Message: junit.framework.ComparisonFailure: expected:<129> but was:<null>\nThis error message is thrown by a JUnit test case. The cause of the error is a comparison failure wherein the expected value is '129' but the actual obtained value is 'null'. Such a failure in a test usually suggests a discrepancy between the expected and actual behavior of the tested code. In this case, it could potentially be an incorrect or failed deserialization operation.\n\nBuggy Lines:\nIt appears that the buggy lines of code as well as the fixed code have not been provided which makes it difficult to pinpoint the exact problematic code section or suggest an appropriate fix.\n\nSuggestions for developers to generate artificial bugs of this nature:\n1. Create objects that need to be serialized. Introduce potential errors by not implementing the Serializable interface where needed.\n2. On the deserialization process, try to deserialize an object with a missing or modified serialVersionUID. This results in an InvalidClassException.\n3. Manipulate the I/O process to trigger a StreamCorruptedException or an OptionalDataException.\n4. Trying to deserialize transient variables that have been initialized during serialization can also result in bugs.\n5. Handle situations where deserialization of an object changes the state of an existing system.\n6. Consider scenarios where the serialized object is bigger than the available memory.\n\nPlease note that these are potential situations and may need to be adjusted as per the specific use-case."
+}

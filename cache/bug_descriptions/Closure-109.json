@@ -1,0 +1,18 @@
+{
+    "bug_id": 109,
+    "bug_type": "SH SF",
+    "buggy_lines": "          return parseTypeName(token);",
+    "code": "  private Node parseContextTypeExpression(JsDocToken token) {\n          return parseTypeName(token);\n  }",
+    "fixed_code": "  private Node parseContextTypeExpression(JsDocToken token) {\n    if (token == JsDocToken.QMARK) {\n      return newNode(Token.QMARK);\n    } else {\n      return parseBasicTypeExpression(token);\n    }\n  }",
+    "fixed_lines": "    if (token == JsDocToken.QMARK) {\n      return newNode(Token.QMARK);\n    } else {\n      return parseBasicTypeExpression(token);\n    }",
+    "masked_code": "  private Node parseContextTypeExpression(JsDocToken token) {\n>>> [ INFILL ] <<<\n  }",
+    "project": "Closure",
+    "test_error_message": "junit.framework.AssertionFailedError: extra warning: Bad type annotation. type not recognized due to syntax error",
+    "test_framework": "defects4j",
+    "test_line": "    jsdocParser.parse();",
+    "test_name": "testStructuralConstructor2",
+    "test_suite": "com.google.javascript.jscomp.parsing.JsDocInfoParserTest",
+    "time_buggy": "2013-11-08 00:05:54 -0500",
+    "time_fixed": "2013-11-08 00:06:42 -0500",
+    "bug_description": "Bug Description:\n\nTitle: Syntax error in type annotation leading to AssertionFailedError \n\nBackground:\nDuring a junit test, an AssertionFailedError occurred, indicating that there was an extra warning for a 'Bad type annotation', where a type was not recognized due to a syntax error. The affected project is 'Closure' and the error is classified under the Bug Type 'SH SF'. The buggy line of code corresponds to 'return parseTypeName(token);' in the 'parseContextTypeExpression' function.\n\nProblematic Code:\nIn the 'parseContextTypeExpression' function, a token is passed as a parameter and parsed as a TypeName. However, a TypeName is expected to be a certain structure or format, following certain syntactical rules. If the token does not adhere to these rules, exceptions occur, leading to the AssertionFailedError.\n\n'''\nprivate Node parseContextTypeExpression(JsDocToken token) {\n    return parseTypeName(token);\n}\n'''\n\nBug Fix:\nThe issue was fixed by adding a conditional statement to check the type of the token before attempting to parse it. If the token is a 'QMARK', a new node is formed and the QMARK token is returned. If the token is not a 'QMARK', it undergoes the 'parseBasicTypeExpression' function for evaluation. This takes into consideration the various token types that can be passed, preventing unnecessary errors from inappropriate parsing of tokens.\n\nFixed Code:\n'''\nprivate Node parseContextTypeExpression(JsDocToken token) {\n  if (token == JsDocToken.QMARK) {\n    return newNode(Token.QMARK);\n  } else {\n    return parseBasicTypeExpression(token);\n  }\n}\n'''\n\nSteps to Reproduce:\n1. Initiate the 'parseContextTypeExpression' function with a token argument that does not adhere to the expected syntax rules of a TypeName.\n2. Observe the occurrence of a junit.framework.AssertionFailedError, indicating an unrecognized type due to a syntax error.\n\nRecommendation:\nTo generate artificial java bugs similar to this, one can pass data, which does not adhere to expected syntax rules, to functions performing parsing tasks, especially for those without proper data validation and exception handling."
+}

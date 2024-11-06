@@ -1,0 +1,18 @@
+{
+    "bug_id": 13,
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "    protected void setName(String name) {\n        this.name = name;\n    }",
+    "fixed_code": "    protected void setName(String name) {\n        if (name != null && getPlatform() == PLATFORM_FAT\n            && name.indexOf(\"/\") == -1) {\n            name = name.replace('\\\\', '/');\n        }\n        this.name = name;\n    }",
+    "fixed_lines": "        if (name != null && getPlatform() == PLATFORM_FAT\n            && name.indexOf(\"/\") == -1) {\n            name = name.replace('\\\\', '/');\n        }",
+    "masked_code": "    protected void setName(String name) {\n>>> [ INFILL ] <<<\n        this.name = name;\n    }",
+    "project": "Compress",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<\u00e4[/]> but was:<\u00e4[\\]>",
+    "test_framework": "defects4j",
+    "test_line": "            assertEquals(\"\\u00e4/\", zae.getName());",
+    "test_name": "winzipBackSlashWorkaround",
+    "test_suite": "org.apache.commons.compress.archivers.zip.ZipArchiveInputStreamTest",
+    "time_buggy": "2012-02-23 10:45:36 +0000",
+    "time_fixed": "2012-02-28 05:00:26 +0000",
+    "bug_description": "Bug Description:\n\nBug Id: 13\nProject: Compress\nBug Type: String Handling String Formatting (SH SF)\n\nError Message: junit.framework.AssertionFailedError: expected:<\u00e4[/]> but was:<\u00e4[\\]>\nIn this message, it's clear that the unit test was expecting the string \"<\u00e4[/]>\" while the output of the corresponding method in tests gave the string \"<\u00e4[\\]>\". It seems the bug is linked to a wrong interpretation of the file path separator.\n\nBuggy Lines and Code:\nThe buggy code is located in the setName method. It appears that file paths are not being treated properly. The system is not interpreting slashes correctly, causing a failure in the unit tests. More specifically, the name variable does not convert the backslashes in the file path to slashes correctly. \n\n    protected void setName(String name) {\n        this.name = name;\n    }\n\nFixed Code:\nTo fix this problem, a new condition is added to the setName method. The code now checks whether the input string is not null and lies in the PLATFORM_FAT. If yes, it checks for the absence of a \"/\" character in the name. If the \"/\" character is not present, the code will replace all instances of \"\\\" with \"/\". This change makes sure that the file path is treated correctly regardless of the original format of the file path.\n\n    protected void setName(String name) {\n        if (name != null && getPlatform() == PLATFORM_FAT\n            && name.indexOf(\"/\") == -1) {\n            name = name.replace('\\\\', '/');\n        }\n        this.name = name;\n    }\n\nStep-by-step Description:\n1. A String containing a file name or file path is passed to the setName method.\n2. The setName method in the buggy version directly assigns the passed name/path to the instance variable \"this.name\".\n3. The bug surfaces when the file name or the file path contains a backslash, and the unit test expects to see a forward slash.\n4. The developer adds a conditional statement in the setName method to tackle the issue.\n5. When a new name is passed to the setName method, it first checks if the string is not null and if the current platform is PLATFORM_FAT.\n6. If the platform check passes, it then checks for the absence of the \"/\" character in the name. If it is not present, it will convert all \"\\\" characters to \"/\".\n7. The modified name is then assigned to the variable \"this.name\".\n\nNote: The PLATFORM_FAT is a variable indicating the platform being used, certain platforms use a different default separator for file paths."
+}

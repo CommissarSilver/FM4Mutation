@@ -1,0 +1,18 @@
+{
+    "bug_id": 91,
+    "bug_type": "SH SF",
+    "buggy_lines": "        double nOd = doubleValue();\n        double dOn = object.doubleValue();",
+    "code": "    public int compareTo(Fraction object) {\n        double nOd = doubleValue();\n        double dOn = object.doubleValue();\n        return (nOd < dOn) ? -1 : ((nOd > dOn) ? +1 : 0);\n    }",
+    "fixed_code": "    public int compareTo(Fraction object) {\n        long nOd = ((long) numerator) * object.denominator;\n        long dOn = ((long) denominator) * object.numerator;\n        return (nOd < dOn) ? -1 : ((nOd > dOn) ? +1 : 0);\n    }",
+    "fixed_lines": "        long nOd = ((long) numerator) * object.denominator;\n        long dOn = ((long) denominator) * object.numerator;",
+    "masked_code": "    public int compareTo(Fraction object) {\n>>> [ INFILL ] <<<\n        return (nOd < dOn) ? -1 : ((nOd > dOn) ? +1 : 0);\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<-1> but was:<0>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(-1, pi1.compareTo(pi2));",
+    "test_name": "testCompareTo",
+    "test_suite": "org.apache.commons.math.fraction.FractionTest",
+    "time_buggy": "2009-03-29 16:33:53 +0000",
+    "time_fixed": "2009-03-29 16:51:48 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 91\nProject Name: Math\nBug Type: SH SF (Software Hardware System Failure)\n\nDetailed Description:\n\nWhen applying a 'compareTo' method in the given code to compare two fractions, 'junit.framework.AssertionFailedError' was observed. This error indicated that the expected output should be '-1,' but the actual output was '0.' \n\nBuggy Code and Issue Description:\n\nThe issue lies in these lines of the problematic code:\n\n    double nOd = doubleValue();\n    double dOn = object.doubleValue();\n\nHere the 'doubleValue()' function is used to convert the fractions to double and later compared using:\n\n    return (nOd < dOn) ? -1 : ((nOd > dOn) ? +1 : 0);\n\nThis implementation might have resulted in an erroneous comparison, possibly due to precision loss from the doubleValue function, which ultimately led to the wrong comparison result.\n\nFixed code and Solution Description:    \n\nThe bug is fixed in the following lines of code:\n\n    long nOd = ((long) numerator) * object.denominator;\n    long dOn = ((long) denominator) * object.numerator;\n\nIn this corrected code, the fractions are compared by cross-product without invoking the 'doubleValue()' function. This method prevents rounding errors that occur during the conversion of fractions to double values. The revised comparison is:\n\n    return (nOd < dOn) ? -1 : ((nOd > dOn) ? +1 : 0);\n\nThis corrected comparison will yield the correct result whether the first fraction is less than, greater than, or equal to the second fraction."
+}

@@ -1,0 +1,18 @@
+{
+    "bug_id": 2,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return (double) (getSampleSize() * getNumberOfSuccesses()) / (double) getPopulationSize();",
+    "code": "    public double getNumericalMean() {\n        return (double) (getSampleSize() * getNumberOfSuccesses()) / (double) getPopulationSize();\n    }",
+    "fixed_code": "    public double getNumericalMean() {\n        return getSampleSize() * (getNumberOfSuccesses() / (double) getPopulationSize());\n    }",
+    "fixed_lines": "        return getSampleSize() * (getNumberOfSuccesses() / (double) getPopulationSize());",
+    "masked_code": "    public double getNumericalMean() {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError: sample=-50",
+    "test_framework": "defects4j",
+    "test_line": "            Assert.assertTrue(\"sample=\" + sample, 0 <= sample);",
+    "test_name": "testMath1021",
+    "test_suite": "org.apache.commons.math3.distribution.HypergeometricDistributionTest",
+    "time_buggy": "2013-08-10 00:29:31 +0000",
+    "time_fixed": "2013-08-10 00:57:48 +0000",
+    "bug_description": "Bug Title: Incorrect calculation of Numerical Mean in Project Math leading to AssertionFailedError\n\nBug ID: 2\n\nProject: Math\n\nBug Type: SL SH SF - Severe Logic Bug, Severe Harm Bug, Severe Fail Bug\n\nComponent: Calculating Numerical Mean\n\nDescription:\nThe bug resides in the 'getNumericalMean()' method of a certain class in the Project: Math. The existing method implements a wrong formula causing tests to fail and return an \"AssertionFailedError\".\n\nFrom the given test error message, it is clear that the test is failing due to an unexpected value being returned by the method when it attempts to calculate the numerical mean. The error message states: \"junit.framework.AssertionFailedError: sample=-50\", indicating an incorrect calculation operation within the method leading to a negative result, which in turn fails the assertion.\n\nBuggy Lines Details:\n\n        public double getNumericalMean() {\n        return (double) (getSampleSize() * getNumberOfSuccesses()) / (double) getPopulationSize();\n        }\n\nIn this code, the issue lies in the calculation line. It first tries to calculate the multiplication result of getSampleSize() and getNumberOfSuccesses(). It then attempts to divide this value by getPopulationSize(). However, this results in incorrect and negative values which is not expected in a numerical mean operation.\n\nFix Detail:\n\nThe problem has been fixed by changing the order of the operations in the calculation line of getNumericalMean() method. The corrected or fixed code now calculates the division operation between getNumberOfSuccesses() and getPopulationSize() before multiplication with the getSampleSize(). This prevents the generation of negative numerical mean.\n\nCorrected Code:\n\n    public double getNumericalMean() {\n        return getSampleSize() * (getNumberOfSuccesses() / (double) getPopulationSize());\n    }\n\nImpact of the Bug: \n\nThe bug could have severe implications as it affects the fundamental arithmetic calculation of the numerical mean, which could be a vital functionality in a math-oriented project. This bug might propagate and lead to broader data inaccuracies if not corrected immediately. \n\nSteps to Replicate:\n\n1. Use the getNumericalMean() method in its buggy state.\n2. Input values into getSampleSize(), getNumberOfSuccesses(), and getPopulationSize().\n3. The output from the method would result in an unexpected negative value.\n4. The test for the method will then fail with junit.framework.AssertionFailedError."
+}

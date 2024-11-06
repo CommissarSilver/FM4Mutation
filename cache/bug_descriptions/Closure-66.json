@@ -1,0 +1,18 @@
+{
+    "bug_id": 66,
+    "bug_type": "SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "        } else {\n          typeable = false;",
+    "masked_code": "",
+    "project": "Closure",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<100.0> but was:<62.5>",
+    "test_framework": "defects4j",
+    "test_line": "    assertEquals(100.0, getTypedPercent(js), 0.1);",
+    "test_name": "testGetTypedPercent5",
+    "test_suite": "com.google.javascript.jscomp.TypeCheckTest",
+    "time_buggy": "2011-06-07 20:45:18 +0000",
+    "time_fixed": "2011-06-08 20:18:15 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 66 \n\nIn the Closure project, a bug of type SF (Syntax/Fatal Error) has been identified. The test error message received was 'junit.framework.AssertionFailedError', which suggests that a value expected by a JUnit test assertion wasn't matching the actual return value from the program.\n\nTest Error Message: \nThe error message indicates that the test was expecting a value of <100.0> but the actual return value was <62.5>. \n\nBuggy Lines: \nThe specific lines in the code where this error originates from have not been provided. However, presumably, the issue originates from an area within the code which results in an output of 62.5 instead of the expected 100.0 in the JUnit tests.\n\nCode: \nThe buggy code which has been triggering this error has unfortunately not been provided. The specifics about the error would vary depending upon the context of the code causing the error, primarily where and why the value of 62.5 is being returned instead of the expected 100.0.\n\nFixed Code: \nNo fixed version of the code was given. However, it's reasonable to surmise that the corrected code would include modifications ensuring that the output when testing should be 100.0 to align with the JUnit test expectations.\n\nPlease provide the missing sections such as 'Buggy Lines', 'Code', and 'Fixed Code' to assist developers in generating these types of artificial Java bugs for their testing measures. This detailed information specifically helps in understanding what exactly caused this issue and how it was resolved, providing valuable learning opportunities."
+}

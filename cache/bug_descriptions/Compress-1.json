@@ -1,0 +1,18 @@
+{
+    "bug_id": 1,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "    public void close() throws IOException {\n        if (!this.closed) {\n            super.close();\n            this.closed = true;\n        }\n    }",
+    "fixed_code": "    public void close() throws IOException {\n        if (!this.closed) {\n            this.finish();\n            super.close();\n            this.closed = true;\n        }\n    }",
+    "fixed_lines": "            this.finish();",
+    "masked_code": "    public void close() throws IOException {\n        if (!this.closed) {\n>>> [ INFILL ] <<<\n            super.close();\n            this.closed = true;\n        }\n    }",
+    "project": "Compress",
+    "test_error_message": "java.io.EOFException",
+    "test_framework": "defects4j",
+    "test_line": "        while ((entry = in.getNextEntry()) != null) {",
+    "test_name": "testCpioUnarchive",
+    "test_suite": "org.apache.commons.compress.archivers.CpioTestCase",
+    "time_buggy": "2009-03-25 14:43:44 +0000",
+    "time_fixed": "2009-03-26 10:36:45 +0000",
+    "bug_description": "\nBug ID: 1\n\nProject: Compress\n\nBug Type: SL SH SF (Single Line, Single Hunk, Single File)\n\nTest Error Message: java.io.EOFException\n\nDescription:\n\nThe bug exists in the 'close' method of a class in the 'Compress' project. The problematic code can result in a java.io.EOFException under certain circumstances.\n\nAffected Code:\n\n    public void close() throws IOException {\n      if (!this.closed) {\n          super.close();\n          this.closed = true;\n      }\n    }\n\nSteps to Reproduce:\n\n1. Identify the class with the 'close' method in the 'Compress' project. \n2. Execute or develop a test that invokes the 'close' method when 'this.closed' evaluates as false and its super method 'close' throws an EOFException due to the end of file (EOF) being reached before expected.\n3. Observe that the program throws a java.io.EOFException.\n\nProblem Explanation:\n\nDuring the 'close' method execution, if the 'super.close()' method encounters an EOF before expected - it throws an EOFException. This bug is caused by the 'super.close()' method being called before any cleanup or final processes, which could cause an unexpected EOF. \n\nFixed code:\n\n    public void close() throws IOException {\n        if (!this.closed) {\n            this.finish();\n            super.close();\n            this.closed = true;\n        }\n    }\n   \nBug Fix Explanation:\n\nThe above problem gets resolved by introducing the 'this.finish()'; it is called before 'super.close()'. This modification allows us to finish up any necessary cleanup or processes before closing. \n\nIn the case where the 'finish' method flushes any buffered output or performs any necessary cleanup tasks, it would prevent an unexpected EOFException from being thrown when closing the file stream, hence, fixing the bug. \n\nValidation:\n\nTo validate the bug fix,\n1. Locate the class with the fixed 'close' method in the 'Compress' project.\n2. Re-run the tests, especially the one that invoked the 'close' method when 'this.closed' evaluates as false.\n3. Verify that no EOFException is thrown during the tests."
+}

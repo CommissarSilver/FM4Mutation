@@ -1,0 +1,18 @@
+{
+    "bug_id": 26,
+    "bug_type": "SF",
+    "buggy_lines": "    implements BeanProperty",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "    implements BeanProperty,\n        java.io.Serializable // since 2.6.2\n    private static final long serialVersionUID = 4603296144163950020L;",
+    "masked_code": "",
+    "project": "JacksonDatabind",
+    "test_error_message": "java.io.NotSerializableException: com.fasterxml.jackson.databind.ser.BeanPropertyWriter",
+    "test_framework": "defects4j",
+    "test_line": "        obOut.writeObject(o);",
+    "test_name": "testEnumHandlers",
+    "test_suite": "com.fasterxml.jackson.databind.TestJDKSerialization",
+    "time_buggy": "2015-08-14 14:47:04 -0700",
+    "time_fixed": "2015-08-14 15:44:02 -0700",
+    "bug_description": "Bug Description:\n\nBug ID: 26\nProject: JacksonDatabind\nBug Type: Serialization Failure (SF)\nTest Error Message: java.io.NotSerializableException: com.fasterxml.jackson.databind.ser.BeanPropertyWriter\n\nDescription:\n\nIn the JacksonDatabind project, a Serialization Failure (bug type SF) has been detected. The issue has been identified in the code section where the 'BeanProperty' is being implemented. \n\nThe implementation is causing a 'java.io.NotSerializableException' exception. This type of runtime exception typically occurs when an instance is required to be serialized but the class does not implement the 'Serializable' interface. In this specific case, the 'com.fasterxml.jackson.databind.ser.BeanPropertyWriter' class is mentioned in our error message, indicating that this class is likely at the center of the problem.\n\nThe core issue here is that the Java object 'BeanPropertyWriter' (which is part of the Jackson library, used for converting Java objects to JSON and vice versa) is not serializable - its class or one of its properties does not implement the 'Serializable' interface. \n\nGiven that the exception message specifically mentions 'BeanPropertyWriter', it could be necessary to make sure that any classes associated with 'BeanPropertyWriter', or 'BeanPropertyWriter' itself, are declared as implementing 'Serializable'.\n\nPlease note: It would have been easier to also identify the exact line number the problem occurs on if the buggy lines were explicitly mentioned. From the data provided it's not completely clear other than the general implementation of 'BeanProperty' seems to be problematic. \n\nFixed Code: Not provided.\n\nStep-by-step Bug Production for Artificial Java Bugs (with reference to this case):\n\n1. Develop a Java class and within it, create an object for a class from a library that does not implement 'Serializable'. In this case, a 'BeanPropertyWriter' object from the Jackson library was attempted to be serialized.\n2. Proceed to write code that attempts to serialize the previously defined object. Likely this would involve outputting the object to a file or over a network connection.\n3. Upon running the code, Java would encounter the object that needs to be serialized but is unable. It would then throw a 'java.io.NotSerializableException', noting the class that failed to be serialized.\n4. This would lead to program failure at runtime, and thus producing the bug.\n\nUnable to provide a fix code; there may be different ways to solve the problem depending on the initial code's context, including but not limited to: \n- Making the 'BeanPropertyWriter' class or the classes related to 'BeanPropertyWriter' implement 'Serializable'\n- Avoiding non-serializable classes in contexts where serialization is necessary\n- Using transient keywords. \nA deeper look into the actual code, its structure, and its utilization would be necessary to develop a proper solution."
+}

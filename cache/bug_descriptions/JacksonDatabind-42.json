@@ -1,0 +1,18 @@
+{
+    "bug_id": 42,
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "        protected Object _deserializeFromEmptyString() throws IOException {\n            // As per [databind#398], URI requires special handling\n            if (_kind == STD_URI) {\n                return URI.create(\"\");\n            }\n            // As per [databind#1123], Locale too\n            return super._deserializeFromEmptyString();\n        }",
+    "fixed_code": "        protected Object _deserializeFromEmptyString() throws IOException {\n            // As per [databind#398], URI requires special handling\n            if (_kind == STD_URI) {\n                return URI.create(\"\");\n            }\n            // As per [databind#1123], Locale too\n            if (_kind == STD_LOCALE) {\n                return Locale.ROOT;\n            }\n            return super._deserializeFromEmptyString();\n        }",
+    "fixed_lines": "            if (_kind == STD_LOCALE) {\n                return Locale.ROOT;\n            }",
+    "masked_code": "        protected Object _deserializeFromEmptyString() throws IOException {\n            // As per [databind#398], URI requires special handling\n            if (_kind == STD_URI) {\n                return URI.create(\"\");\n            }\n            // As per [databind#1123], Locale too\n>>> [ INFILL ] <<<\n            return super._deserializeFromEmptyString();\n        }",
+    "project": "JacksonDatabind",
+    "test_error_message": "junit.framework.AssertionFailedError: expected same:<> was not:<null>",
+    "test_framework": "defects4j",
+    "test_line": "        // then use templating; note that these are not exactly valid UUIDs",
+    "test_name": "testLocale",
+    "test_suite": "com.fasterxml.jackson.databind.deser.TestJdkTypes",
+    "time_buggy": "2016-02-01 21:57:16 -0800",
+    "time_fixed": "2016-02-09 16:43:49 -0800",
+    "bug_description": "Bug Description:\n\nIn the JacksonDatabind project, a bug (ID: 42) of type SH SF is detected. \n\nHow to reproduce the bug?\n- Here in the given project, the bug is introduced in the method `_deserializeFromEmptyString()`.\n- This method is responsible for handling the deserialization from an empty string.\n- The bug resides where the method is expected to handle a Locale object (indicated by the flag `_kind == STD_LOCALE`).\n- In the buggy implementation, this specific case is not treated differently i.e., it does not return `Locale.ROOT`, which is expected. \n- In contrast, URI objects (indicated by `_kind == STD_URI`) are being handled specially by returning `URI.create(\"\")` when an empty string is encountered.\n- Due to the absence of this special condition for Locale objects, the method can return null instead of `Locale.ROOT` which leads to a test error specified as `junit.framework.AssertionFailedError: expected same:< > was not:<null>`.\n\nHow to fix the bug?\n- To remove this bug, include a similar special condition for Locale objects (`_kind == STD_LOCALE`) like we have for URIs.\n- When such conditions are met, return a root object, `Locale.ROOT` rather than an empty string.\n- The final code will have an additional condition, `if (_kind == STD_LOCALE) { return Locale.ROOT; }`, ahead of the `return super._deserializeFromEmptyString();` statement. This condition checks if the `_kind == STD_LOCALE` and returns `Locale.ROOT`, thus, providing proper handling for Locale objects and thereby fixing the bug. \n\nThis bug can be artificially introduced for testing and increase the robustness of the code by deliberately removing the implemented fix, observing its behavior, and analyzing the test failure. This will help in better understanding how the application behaves when encountering such deserialization bugs."
+}

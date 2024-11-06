@@ -1,0 +1,18 @@
+{
+    "bug_id": 55,
+    "bug_type": "SH SF",
+    "buggy_lines": "    return NodeUtil.isFunctionExpression(n);",
+    "code": "  private static boolean isReduceableFunctionExpression(Node n) {\n    return NodeUtil.isFunctionExpression(n);\n  }",
+    "fixed_code": "  private static boolean isReduceableFunctionExpression(Node n) {\n    return NodeUtil.isFunctionExpression(n)\n        && !NodeUtil.isGetOrSetKey(n.getParent());\n  }",
+    "fixed_lines": "    return NodeUtil.isFunctionExpression(n)\n        && !NodeUtil.isGetOrSetKey(n.getParent());",
+    "masked_code": "  private static boolean isReduceableFunctionExpression(Node n) {\n>>> [ INFILL ] <<<\n  }",
+    "project": "Closure",
+    "test_error_message": "java.lang.IllegalStateException: Expected function but was call Reference node CALL 4 [free_call: 1] [source_file: testcode]",
+    "test_framework": "defects4j",
+    "test_line": "    test(srcBuffer.toString(), expectedBuffer.toString());",
+    "test_name": "testIssue538",
+    "test_suite": "com.google.javascript.jscomp.FunctionRewriterTest",
+    "time_buggy": "2011-08-23 21:26:21 +0000",
+    "time_fixed": "2011-08-23 22:13:29 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 55\nProject: Closure\nBug Type: Semantic / Syntax Fault(SH SF)\n\nDescription:\n\nThis bug pertains to the way function expressions get identified and validated in the project 'Closure'. \n\nThe test error message found was:\n\njava.lang.IllegalStateException: Expected function but was call Reference node CALL 4 [free_call: 1] [source_file: testcode]\n\nThe error message hints that the algorithm was expecting a function declaration or expression, but it encountered a call reference instead. \n\nBuggy Code:\n\nprivate static boolean isReduceableFunctionExpression(Node n) {\n    return NodeUtil.isFunctionExpression(n);\n}\n\nThe function 'isReduceableFunctionExpression' calls 'isFunctionExpression' from the 'NodeUtil' class without checking if the Node 'n' is either a 'get' or 'set' key. \n\nFixed Code:\n\nprivate static boolean isReduceableFunctionExpression(Node n) {\n    return NodeUtil.isFunctionExpression(n)\n        && !NodeUtil.isGetOrSetKey(n.getParent());\n}\n\nIn the corrected code, the program checks if the node 'n' is a function expression and also verifies that it's not a 'get' or 'set' key. This was done by adding a conditional statement that checks if 'n' is not a get or set key. \n\nSteps to generate artificial bug:\n\n1. Start with working code snippet in Java.\n2. Remove the condition that checks whether the function 'n' is of 'get' or 'set' key in the 'isFunctionExpression' function inside the 'NodeUtil' class.\n3. This will cause an issue when 'isReduceableFunctionExpression' is called because it expects a function but might return a call reference instead, causing an IllegalStateException.\n4. The test case that includes a check for 'get' or 'set' key would fail, thus demonstrating the bug."
+}

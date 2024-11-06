@@ -1,0 +1,18 @@
+{
+    "bug_id": 15,
+    "bug_type": "SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "    \tif(!_allowMultipleMatches && _currToken != null && _exposedContext == null){\n    \t\tif((_currToken.isStructEnd()  && _headContext.isStartHandled()) ){\n    \t\t\treturn (_currToken = null);\n    \t\t}\n    \t\telse if(_currToken.isScalarValue() && !_headContext.isStartHandled() && !_includePath \n    \t\t\t\t&& _itemFilter == TokenFilter.INCLUDE_ALL) {\n    \t\t\treturn (_currToken = null);\n    \t\t}\n    \t}",
+    "masked_code": "",
+    "project": "JacksonCore",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:<3[]> but was:<3[ 4]>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(aposToQuotes(\"3\"), result);",
+    "test_name": "testNotAllowMultipleMatches",
+    "test_suite": "com.fasterxml.jackson.core.filter.BasicParserFilteringTest",
+    "time_buggy": "2016-03-15 18:20:10 -0700",
+    "time_fixed": "2016-03-21 21:27:04 -0700",
+    "bug_description": "Bug ID: 15\nProject Name: JacksonCore\nBug Type: Semantic Fault (SF)\nTest Error Message: junit.framework.ComparisonFailure: expected:<3[]> but was:<3[ 4]>\n\nDescription:\n\nIn the Java project 'JacksonCore', there is a Semantic bug (Bug Type: SF), having the identification number of 15. This bug is related to the logical or semantic incorrectness of the code.\n\nThe error was found during a unit test, where a comparison validation has failed. Specifically, the test expected a value of '3', but the actual returned value was '3 4', indicating an unexpected extra value '4' was added in the return.\n\nUnfortunately, without the specific code snippet or the fixed code provided, it's not possible to point out exactly where and why this bug has occurred. Normally, in a detailed bug report, the buggy lines of code would be provided so as to demonstrate where the bug originated, and the corresponding fixed code would be supposed to illustrate the correction.\n\nAs it stands, it is likely that an operation in the code is erroneously generating or appending additional data (in this case, '4') to the output. It's recommended that the developers check any methods or operations in the project that could affect this output, especially look out for any operations that could add or concatenate values, or could cause an index out of the boundary error. \n\nTo generate a similar error for debugging purposes or unit tests, the developers could intentionally introduce a semantic error by changing the logical operations in the code or by returning an incorrect hard-coded value from a function or a method."
+}

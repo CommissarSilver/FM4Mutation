@@ -1,0 +1,18 @@
+{
+    "bug_id": 10,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return compute(args[0].computeValue(context), args[1].computeValue(context)) ",
+    "code": "    public final Object computeValue(EvalContext context) {\n        return compute(args[0].computeValue(context), args[1].computeValue(context)) \n                ? Boolean.TRUE : Boolean.FALSE;\n    }",
+    "fixed_code": "    public final Object computeValue(EvalContext context) {\n        return compute(args[0].compute(context), args[1].compute(context))\n                ? Boolean.TRUE : Boolean.FALSE;\n    }",
+    "fixed_lines": "        return compute(args[0].compute(context), args[1].compute(context))",
+    "masked_code": "    public final Object computeValue(EvalContext context) {\n>>> [ INFILL ] <<<\n                ? Boolean.TRUE : Boolean.FALSE;\n    }",
+    "project": "JxPath",
+    "test_error_message": "junit.framework.AssertionFailedError: Evaluating </idonotexist >= 0> expected:<false> but was:<true>",
+    "test_framework": "defects4j",
+    "test_line": "        assertXPathValue(context, \"/idonotexist >= 0\", Boolean.FALSE, Boolean.class);",
+    "test_name": "testEmptyNodeSetOperations",
+    "test_suite": "org.apache.commons.jxpath.ri.compiler.CoreOperationTest",
+    "time_buggy": "2007-07-13 19:41:41 +0000",
+    "time_fixed": "2007-07-13 19:43:38 +0000",
+    "bug_description": "Bug ID: 10\nTitle: Incorrect Evaluation Expression in JxPath Project\n\nDescription:\nThe bug is located in the JxPath project which is related to the evaluation of the expression, \"/idonotexist >= 0\". The type of the bug is SL SH SF, indicating a semantic type of bug related to the logic in the code handling the operands and operations. \n\nSteps to Reproduce:\nThe problem is occurring when an expression is being evaluated where an entity does not exist. Specifically, the bug is triggered when the following condition is computed:\n\"/idonotexist >= 0\"\n\nExpected Outcome:\nThe evaluation of \"/idonotexist >= 0\" should return a boolean value of false, indicating the entity cannot meet this condition as it does not exist.\n\nActual Outcome:\nHowever, the evaluation is returning a boolean value of true, indicating the condition is met, when it should not be possible. This is causing a junit.framework.AssertionFailedError.\n\nProblem in Code:\nUpon analysis of the buggy lines of code, it was found that the problem arises when computing the value of the arguments:\n\"compute(args[0].computeValue(context), args[1].computeValue(context))\"\n\nThe function computeValue() should be returning a boolean value dictated by the comparison, but as the entity does not exist, the comparison is unable to evaluate correctly and erroneously returns true. \n\nSolution:\nIn the fixed version of the code, computeValue(context) has been replaced with compute(context), ensuring the correct method is called when calculating the arguments. The correction is as follows:\n\"compute(args[0].compute(context), args[1].compute(context))\"\n\nThis change ensures the correct method is used when evaluating the condition, leading to the correct boolean value being returned.\n\nRecommendations for Artificial Bug Generation:\nFor creating similar artificial bugs in Java Code, one could consider changing the methods being called when calculating arguments, or introducing incorrect logic into condition evaluations, such as inverting the expected outcome. If the bug scenarios are related to boolean condition evaluations, inversion of expectation might create a meaningful realistic bug. It's important to verify through testing that such introduced bugs do disrupt the normal flow or results of the application."
+}

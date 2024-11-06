@@ -1,0 +1,18 @@
+{
+    "bug_id": 82,
+    "bug_type": "SH SF",
+    "buggy_lines": "    return isNoType() || isNoObjectType() || isNoResolvedType();",
+    "code": "  public final boolean isEmptyType() {\n    return isNoType() || isNoObjectType() || isNoResolvedType();\n  }",
+    "fixed_code": "  public final boolean isEmptyType() {\n    return isNoType() || isNoObjectType() || isNoResolvedType() ||\n        (registry.getNativeFunctionType(\n             JSTypeNative.LEAST_FUNCTION_TYPE) == this);\n  }",
+    "fixed_lines": "    return isNoType() || isNoObjectType() || isNoResolvedType() ||\n        (registry.getNativeFunctionType(\n             JSTypeNative.LEAST_FUNCTION_TYPE) == this);",
+    "masked_code": "  public final boolean isEmptyType() {\n>>> [ INFILL ] <<<\n  }",
+    "project": "Closure",
+    "test_error_message": "junit.framework.AssertionFailedError: expected a warning",
+    "test_framework": "defects4j",
+    "test_line": "      assertTrue(\"expected a warning\", warnings.length > 0);",
+    "test_name": "testIssue301",
+    "test_suite": "com.google.javascript.jscomp.TypeCheckTest",
+    "time_buggy": "2011-02-07 22:59:16 +0000",
+    "time_fixed": "2011-02-08 17:40:11 +0000",
+    "bug_description": "Bug ID: 82\nProject Name: Closure\nBug Type: Semantic / Syntax error (SH SF)\n\nBug Description:\nThe bug in this project is of type Semantic Syntax error, wherein the logical construct of the software doesn't perform as expected. In the initial version of the method isEmptyType() found in the Closure project, an error notification was generated while running the unit test.\n\nThe error message displayed by JUnit test framework was \"junit.framework.AssertionFailedError: expected a warning\". This means that the specific test case expected a warning to be issued by the method isNOType(), isNoObjectType(), or isNoResolvedType(). However, the method failed to meet the test assertion, thus throwing an AssertionFailedError. \n\nBuggy Lines of Code: \n\n```java\npublic final boolean isEmptyType() {\n    return isNoType() || isNoObjectType() || isNoResolvedType();\n}\n```\nIn the original code, the method isEmptyType() only checks if the type is NO type, NO object type, or NO resolved type. This logical condition seemed for the error generated.\n\nFixed Lines of Code:\n\n```java\npublic final boolean isEmptyType() {\n  return isNoType() || isNoObjectType() || isNoResolvedType() ||\n    (registry.getNativeFunctionType(\n         JSTypeNative.LEAST_FUNCTION_TYPE) == this);\n}\n```\nIn the fixed version of the code, there is an additional condition. The method now also checks if the method getNativeFunctionType() in registry is equal to the current instance of the object. This additional check made sure all possible cases that would render a type to be considered empty, are considered, thereby addressing the identified bug. \n\nDebugging such errors can be challenging due to the complexity of the logic in the code. The process requires an in-depth understanding of the code syntax and semantics. It also involves thinking exhaustively about different possible scenarios that the code should consider. The developers need to be diligent in writing the test cases making sure all edge cases are tested. Unit tests should be thorough and robust in order to catch any possible bugs before they arise in real-world usage."
+}

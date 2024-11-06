@@ -1,0 +1,18 @@
+{
+    "bug_id": 44,
+    "bug_type": "SF",
+    "buggy_lines": "",
+    "code": "    public ChecksumCalculatingInputStream(final Checksum checksum, final InputStream in) {\n\n\n\n        this.checksum = checksum;\n        this.in = in;\n    }",
+    "fixed_code": "    public ChecksumCalculatingInputStream(final Checksum checksum, final InputStream in) {\n\n        if ( checksum == null ){\n            throw new NullPointerException(\"Parameter checksum must not be null\");\n        }\n\n        if ( in == null ){\n            throw new NullPointerException(\"Parameter in must not be null\");\n        }\n\n        this.checksum = checksum;\n        this.in = in;\n    }",
+    "fixed_lines": "        if ( checksum == null ){\n            throw new NullPointerException(\"Parameter checksum must not be null\");\n        }\n        if ( in == null ){\n            throw new NullPointerException(\"Parameter in must not be null\");\n        }",
+    "masked_code": "    public ChecksumCalculatingInputStream(final Checksum checksum, final InputStream in) {\n\n\n>>> [ INFILL ] <<<\n\n        this.checksum = checksum;\n        this.in = in;\n    }",
+    "project": "Compress",
+    "test_error_message": "junit.framework.AssertionFailedError: Expected exception: java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "",
+    "test_name": "testClassInstantiationWithParameterBeingNullThrowsNullPointerExceptionOne",
+    "test_suite": "org.apache.commons.compress.utils.ChecksumCalculatingInputStreamTest",
+    "time_buggy": "2017-06-17 19:59:34 +0200",
+    "time_fixed": "2017-06-17 20:29:37 +0200",
+    "bug_description": "\nBug ID: 44\nProject: Compress\nBug Type: Software Fault (SF)\n\nDescription:\n\nIn the Compress project, a software bug was discovered in the ChecksumCalculatingInputStream method's parameter handling. This method takes two parameters, 'checksum' and 'in', however it doesn't ensure that these parameters are not null. This leads to a Null Pointer Exception when a null value is passed to the method. Such exceptions are detrimental to program execution and should be addressed promptly. \n\nSteps:\n\n1. In the ChecksumCalculatingInputStream method, parameters 'checksum' and 'in' are passed.\n\n2. There is no null-check for the given parameters within the method. Thus if a null value is passed as a parameter, it is assigned as such to the class variables 'this.checksum' and 'this.in' respectively.\n\n3. No exception handling is provided for this case. Consequently, when other methods or operations try to use these values assuming they are not null, a java.lang.NullPointerException is thrown.\n\n4. The error message indicates that the code is expecting a java.lang.NullPointerException. This signifies the failure of a test assertion checking for the occurrence of this exception. In other words, the test intentionally passed a null argument, expecting a java.lang.NullPointerException to be thrown. The occurrence of this exception was a pre-condition for the test to pass, and the test failed indicating that the exception was not thrown in this scenario.\n\nFixed Code:\n\nIn the bug-fixed code, two if conditions have been added that check if the parameters 'checksum' and 'in' are null. In case, either or both parameters are null, a new java.lang.NullPointerException is created and thrown with a corresponding error message. This ensures that a NullPointerException is thrown when null arguments are passed, thereby ensuring fail-safe code operation and avoiding unexpected program interruption. This fix will also make the test assertion pass and make the test case pass."
+}

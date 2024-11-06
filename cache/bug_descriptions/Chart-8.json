@@ -1,0 +1,18 @@
+{
+    "bug_id": 8,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        this(time, RegularTimePeriod.DEFAULT_TIME_ZONE, Locale.getDefault());",
+    "code": "    public Week(Date time, TimeZone zone) {\n        // defer argument checking...\n        this(time, RegularTimePeriod.DEFAULT_TIME_ZONE, Locale.getDefault());\n    }",
+    "fixed_code": "    public Week(Date time, TimeZone zone) {\n        // defer argument checking...\n        this(time, zone, Locale.getDefault());\n    }",
+    "fixed_lines": "        this(time, zone, Locale.getDefault());",
+    "masked_code": "    public Week(Date time, TimeZone zone) {\n        // defer argument checking...\n>>> [ INFILL ] <<<\n    }",
+    "project": "Chart",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<35> but was:<34>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(35, w.getWeek());",
+    "test_name": "testConstructor",
+    "test_suite": "org.jfree.data.time.junit.WeekTests",
+    "time_buggy": "2008-06-10 02:12:17 -0700 ",
+    "time_fixed": "2008-06-10 02:19:11 -0700 ",
+    "bug_description": "Bug ID : 8\nProject Name: Chart\n\nDescription: \n\nThe bug is of type \"SL SH SF\" relating to a code snippet found in the 'Chart' project. The \"SL SH SF\" bug type represents an error where developer pass irrelevant or incorrect arguments into methods or constructors. Such type of bugs occur when there is a shift in the variables or constants in a code snippet.\n\nOccurrence: \n\nThe occurrence of the bug is traced to the constructor of the Week class in the Chart project. The argument for the time zone is not being utilized effectively as it should be, rather default time zone value from RegularTimePeriod class is being used every time, irrespective of the argument passed.\n\nError Message : \n\nThe error message, shown above as the test error message, reads \"junit.framework.AssertionFailedError: expected:<35> but was:<34>\". This message indicates that the program expected a different value than what it received due to the aforementioned bug.\n\nCode Snippet Explanation : \n\nBelow is the provided code snippet which contains the bug:\n```\npublic Week(Date time, TimeZone zone) {\n    // defer argument checking...\n    this(time, RegularTimePeriod.DEFAULT_TIME_ZONE, Locale.getDefault());\n}\n```\nIt is noticed that the constructor intended to take two parameters - a Date object and a TimeZone object. However, when using the this() function to generate the object, it ignored the given TimeZone parameter (zone) and defaulted to using RegularTimePeriod.DEFAULT_TIME_ZONE instead.\n\nSolution: \n\nTo rectify this bug, the correct TimeZone argument that was initially passed should be used when constructing the object. \n\nHere is the corrected version of the constructor:\n```\npublic Week(Date time, TimeZone zone) {\n    // defer argument checking...\n    this(time, zone, Locale.getDefault());\n}\n```\nThis constructor now correctly uses the passed TimeZone argument (zone) instead of defaulting to the RegularTimePeriod.default_zone. Consequently, this corrected code will eliminate any issues resulting from the incorrect handling and use of the TimeZone argument. \n\nThe expectation is that, after this fix, the error message \"junit.framework.AssertionFailedError: expected:<35> but was:<34>\" will no longer be thrown for the corresponding test case(s)."
+}

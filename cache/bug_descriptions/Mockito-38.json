@@ -1,0 +1,18 @@
+{
+    "bug_id": 38,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return StringDescription.toString(m).equals(arg.toString());",
+    "code": "    private boolean toStringEquals(Matcher m, Object arg) {\n        return StringDescription.toString(m).equals(arg.toString());\n    }",
+    "fixed_code": "    private boolean toStringEquals(Matcher m, Object arg) {\n        return StringDescription.toString(m).equals(arg == null? \"null\" : arg.toString());\n    }",
+    "fixed_lines": "        return StringDescription.toString(m).equals(arg == null? \"null\" : arg.toString());",
+    "masked_code": "    private boolean toStringEquals(Matcher m, Object arg) {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Mockito",
+    "test_error_message": "java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "        Integer[] suspicious = tool.getSuspiciouslyNotMatchingArgsIndexes((List) Arrays.asList(new Equals(20)), new Object[] {null});",
+    "test_name": "shouldWorkFineWhenGivenArgIsNull",
+    "test_suite": "org.mockito.internal.verification.argumentmatching.ArgumentMatchingToolTest",
+    "time_buggy": "2009-06-20 16:30:35 +0000",
+    "time_fixed": "2009-07-09 11:23:58 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 38 \nProject: Mockito \nBug Type: SL SH SF \n\nThe bug arises in the Mockito project. Specifically, it is related to the function named `toStringEquals(Matcher m, Object arg)`. This function aims to provide a boolean value depending on whether the string description of the parameters `m` and `arg` are equivalent. \n\nThe section of the code causing the bug is the following single line of code: \n`return StringDescription.toString(m).equals(arg.toString());`\n\nThe bug ID associated with this issue is 38 and falls under the bug types SL (Single Line), SH (Single Hunk), and SF (single file).\n\nThe detailed error generated is the very commonly encountered 'java.lang.NullPointerException'. This error typically triggers when one calls for a method or property of a null object. In the Java programming language, calling a null value raises the NullPointerException. \n\nIn this instance, it is happening at the above-stated line because the 'arg' in `arg.toString()` is not checked for 'null' before calling `toString()`. When 'arg' is null, `arg.toString()` attempts to call the `toString()` method on a null object, which results in throwing the NullPointerException.\n\nTo fix this bug, you need to add a null check before calling `toString()`. Here is the corrected version of the code:\n```\nprivate boolean toStringEquals(Matcher m, Object arg) {\n    return StringDescription.toString(m).equals(arg == null? \"null\" : arg.toString());\n}\n```\nIn the fixed code, we use a ternary operator to check if 'arg' is null before calling the `toString()`. If 'arg' is null, it assigns \"null\" as a string, else it invokes the `toString()` method to avoid NullPointerException. This successfully prevents the NullPointerException and fixes the bug."
+}

@@ -1,0 +1,18 @@
+{
+    "bug_id": 57,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return cAvailableLocaleSet.contains(locale);",
+    "code": "    public static boolean isAvailableLocale(Locale locale) {\n        return cAvailableLocaleSet.contains(locale);\n    }",
+    "fixed_code": "    public static boolean isAvailableLocale(Locale locale) {\n        return availableLocaleList().contains(locale);\n    }",
+    "fixed_lines": "        return availableLocaleList().contains(locale);",
+    "masked_code": "    public static boolean isAvailableLocale(Locale locale) {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Lang",
+    "test_error_message": "java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "        LocaleUtils.isAvailableLocale(Locale.getDefault());",
+    "test_name": "testAvailableLocaleSet",
+    "test_suite": "org.apache.commons.lang.LocaleUtilsTest",
+    "time_buggy": "2006-12-22 19:51:19 +0000",
+    "time_fixed": "2006-12-22 20:34:37 +0000",
+    "bug_description": "Bug Title: NullPointerException in isAvailableLocale function when checking if a Locale exists in cAvailableLocaleSet\n\nBug ID: 57\nProject: Lang\nBug Type: Software Logic(SL), Software Hardware Integration(SH), and Software Failure(SF)\n\nDescription: \nThe bug resides in the method 'isAvailableLocale(Locale locale)' of the Lang project, specifically in the line 'return cAvailableLocaleSet.contains(locale);'. The application throws a NullPointerException when this method is called with a locale object to check if a given locale is available. The line tries to access the object 'cAvailableLocaleSet' but this object seems to be null at runtime which leads to a Null Pointer Exception.\n\nError Message: java.lang.NullPointerException\n\nBuggy Code:\n```java\npublic static boolean isAvailableLocale(Locale locale) {\n    return cAvailableLocaleSet.contains(locale);\n}\n```\n\nExpected Result: The 'isAvailableLocale' function should properly check if a given Locale is available in the application and return a boolean value without throwing any exception\n\nSteps To Reproduce: \n1. Instantiate a Locale object in the Lang project: `Locale locale = new Locale(\"en\",\"US\");`\n2. Call the 'isAvailableLocale' function with the object created: `boolean isLocaleAvailable = Lang.isAvailableLocale(locale);`\n3. The function call will trigger a NullPointerException due to the 'cAvailableLocaleSet' being null\n\nFixed Code:\n```java\npublic static boolean isAvailableLocale(Locale locale) {\n    return availableLocaleList().contains(locale);\n}\n```\nThe fix seems to involve replacing a direct object access ('cAvailableLocaleSet') with a method call that probably handles the null case (availableLocaleList()). This revised code doesn't throw a NullPointerException and behaves as expected, thereby fixing the bug.\n\nNote: The 'availableLocaleList()' method should be defined in your code and should return a list of available locales. Without the implementation details of this method, we cannot guarantee the correctness of the fixed code. Therefore, make sure you have implemented 'availableLocaleList()' properly in your code with proper error and null checking. Professional SIEM solutions are available to help track and monitor these code implementations. \n\nThis description should help developers understand the bug in a more detailed manner and guide them to generate artificial Java bugs for their learning and testing endeavours."
+}

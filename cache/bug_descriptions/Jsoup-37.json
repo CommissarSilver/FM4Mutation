@@ -1,0 +1,18 @@
+{
+    "bug_id": 37,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return accum.toString().trim();",
+    "code": "    public String html() {\n        StringBuilder accum = new StringBuilder();\n        html(accum);\n        return accum.toString().trim();\n    }",
+    "fixed_code": "    public String html() {\n        StringBuilder accum = new StringBuilder();\n        html(accum);\n        return getOutputSettings().prettyPrint() ? accum.toString().trim() : accum.toString();\n    }",
+    "fixed_lines": "        return getOutputSettings().prettyPrint() ? accum.toString().trim() : accum.toString();",
+    "masked_code": "    public String html() {\n        StringBuilder accum = new StringBuilder();\n        html(accum);\n>>> [ INFILL ] <<<\n    }",
+    "project": "Jsoup",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<[",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"   \\n<p>Hello\\n there\\n</p>\", div.html());",
+    "test_name": "testNotPretty",
+    "test_suite": "org.jsoup.nodes.ElementTest",
+    "time_buggy": "2013-11-16 14:56:47 -0800",
+    "time_fixed": "2013-11-16 16:48:43 -0800",
+    "bug_description": "Bug ID: 37\nProject: Jsoup\nBug Type: SL SH SF (Single Line single/hole statement fix)\n\nBug Description:\nThe bug in question is situated within the \"html()\" method of a certain enclosing class in the Jsoup project. In the existing structure, this method creates a new StringBuilder instance, passes it to an undefined \"html\" method, and then returns the resulting string after trimming any leading or trailing whitespace. \n\nThis code is erroneous as it is incapable of catering for situations where we need the generated HTML output to be pretty-printed for better human readability. \n\nIn such situations, the original string, without the exclusion of any leading or trailing whitespace, should be returned rather than the trimmed string. The existing code fails to achieve this function, resulting in the bug identified.\n\nThe bug is identified by the error message \"junit.framework.AssertionFailedError: expected:<[\". This message indicates that the expected output (either the pretty-printed or trimmed output) does not match the result given by the current method.\n\nTo fix the bug, the return statement has been modified. In the corrected code, the \"html()\" method performs the same operation, however, the returned string is contingent on whether prettyPrint() of getOutputSettings() is set to true or not, as defined within the Jsoup library's OutputSettings class, encapsulating the document's output settings for pretty-print.\n\nIf it is set to 'true', the string is returned after trimming any leading or trailing whitespace (pretty-printed). If it's not set to true, the original string, inclusive of any leading or trailing whitespace, is returned.\n\nPlease refer to the fixed code below:\n\nFixed Code:\n```java\n    public String html() {\n        StringBuilder accum = new StringBuilder();\n        html(accum);\n        return getOutputSettings().prettyPrint() ? accum.toString().trim() : accum.toString();\n    }\n```\nRemember, the bug fix contains single line code changes that perform hole fixing in an existing statement, hence the bug type: 'Single Line single/hole statement fix' (SL SH SF)."
+}

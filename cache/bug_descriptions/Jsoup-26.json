@@ -1,0 +1,18 @@
+{
+    "bug_id": 26,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "    public Document clean(Document dirtyDocument) {\n        Validate.notNull(dirtyDocument);\n\n        Document clean = Document.createShell(dirtyDocument.baseUri());\n            copySafeNodes(dirtyDocument.body(), clean.body());\n\n        return clean;\n    }",
+    "fixed_code": "    public Document clean(Document dirtyDocument) {\n        Validate.notNull(dirtyDocument);\n\n        Document clean = Document.createShell(dirtyDocument.baseUri());\n        if (dirtyDocument.body() != null) // frameset documents won't have a body. the clean doc will have empty body.\n            copySafeNodes(dirtyDocument.body(), clean.body());\n\n        return clean;\n    }",
+    "fixed_lines": "        if (dirtyDocument.body() != null) // frameset documents won't have a body. the clean doc will have empty body.",
+    "masked_code": "    public Document clean(Document dirtyDocument) {\n        Validate.notNull(dirtyDocument);\n\n        Document clean = Document.createShell(dirtyDocument.baseUri());\n>>> [ INFILL ] <<<\n            copySafeNodes(dirtyDocument.body(), clean.body());\n\n        return clean;\n    }",
+    "project": "Jsoup",
+    "test_error_message": "java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "        Document cleanDoc = new Cleaner(Whitelist.basic()).clean(dirtyDoc);",
+    "test_name": "handlesFramesets",
+    "test_suite": "org.jsoup.safety.CleanerTest",
+    "time_buggy": "2012-06-03 20:13:22 -0700",
+    "time_fixed": "2012-06-03 20:40:32 -0700",
+    "bug_description": "Bug Description:\n\nProject Name: Jsoup\nBug ID: 26\nBug Type: SL SH SF (Sequential Logic, Structured Hierarchy, Structured Flat)\n\nDescription of the Bug:\n\nThe bug manifests as a `java.lang.NullPointerException`. This is triggered when the method `clean(Document dirtyDocument)` in the Jsoup application is called to clean a Document object. The issue arises when `dirtyDocument.body()` returns null, which is then passed to the method `copySafeNodes(Element src, Element dest)`.\n\nThis particular bug falls into the categories of Sequential Logic (SL - the correctness of the program depends on the order of execution of instructions, variable assignments and function calls), Structured Hierarchy (SH - program code structure that should match the hierarchy of objects) and Structured Flat (SF - program code structure that should match steps undertaken by the program).\n\nIn the buggy version of the code, there was no check in place to ensure that the `dirtyDocument` object had a body before it was being passed to the `copySafeNodes` method. This lack of validation led to an unexpected null being passed to `copySafeNodes`, which caused the NullPointerException.\n\nHow to Reproduce the Bug:\n\nThe bug will manifest when a Document object that doesn't have a body is passed to the `clean()` method. In Jsoup, documents retrieved from certain URLs might not have a body (like frameset documents). In such cases, `dirtyDocument.body()` will return null, and invoking `clean(dirtyDocument)` will trigger the NullPointerException.\n\nFixed Version of Code:\n\nDevelopers fixed this bug by adding a null check for `dirtyDocument.body()`. If `dirtyDocument.body()` is null, `copySafeNodes` is not called. This prevents NullPointerExceptions allowing the method to execute smoothly without crashes for Documents without a body. \n\nSteps to follow to replicate a similar type of bug could involve creating a method which passes a class object which is not thoroughly instantiated or validated."
+}

@@ -1,0 +1,18 @@
+{
+    "bug_id": 15,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "                    } else if (StringUtil.in(name, \"base\", \"basefont\", \"bgsound\", \"command\", \"link\", \"meta\", \"noframes\", \"style\", \"title\")) {",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "                    } else if (StringUtil.in(name, \"base\", \"basefont\", \"bgsound\", \"command\", \"link\", \"meta\", \"noframes\", \"script\", \"style\", \"title\")) {",
+    "masked_code": "",
+    "project": "Jsoup",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<Hello []There> but was:<Hello ['); i++; ]There>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"Hello There\", doc.text());",
+    "test_name": "handlesDataOnlyTags",
+    "test_suite": "org.jsoup.parser.ParserTest",
+    "time_buggy": "2011-07-02 21:12:10 +1000",
+    "time_fixed": "2011-07-02 21:12:10 +1000",
+    "bug_description": "\nBug Title: Mismatch String Assertion Failure on Certain HTML Elements \n\nBug ID: 15\n\nProject: Jsoup\n\nBug Type: Syntax, Lexical, Syntactic Fault (SL SH SF)\n\nDescription:\n\nA junit.framework.AssertionFailedError with an unexpected string comparison is being thrown while running unit tests on the Jsoup project. The error is triggered when the program encounters certain HTML elements as defined in the conditional statement in the buggy lines segment.\n\nThe expected output string was \"Hello There\", but the delivered output string was \"Hello '); i++; There\". A literal character sequence \"'); i++;\" was misprinted, which may suggest that there is a bug in the code block containing the stated conditional expression.\n\nIn the listed buggy lines, the \"StringUtil.in(name, \"base\", \"basefont\", \"bgsound\", \"command\", \"link\", \"meta\", \"noframes\", \"style\", \"title\")\" expression checks if the input string (\"name\") matches any of the predefined HTML element names. We can hypothesize that, if the input string matches any of these strings, the program should print \"Hello There\". However, it instead prints \"Hello '); i++; There\".\n\nSteps to Reproduce:\n\nWithout available input values or specific repro steps, it's hard to conclusively reproduce the bug at this point. However, it's probable that the test scenario includes:\n\n1. Input a string that matches one of the element names present in the list.\n2. Trigger the conditional block containing the above expression.\n3. Monitor the output.\n\nThis would most likely result in the assertion error as mentioned.\n\nFix:\n\nThe actual fixed code is not provided, hence, a specific solution can't be stated here. However, this bug may potentially be resolved by accurately printing the correct string (\"Hello There\") when the \"name\" string includes any of the enumerated HTML elements. \n\nAdditional data, such as the complete test case, surrounding code blocks, or the exact fixed code, would provide helpful clues to resolve this bug."
+}

@@ -1,0 +1,18 @@
+{
+    "bug_id": 18,
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "        } else if (type == Iterable.class) {\n            return new ArrayList<Object>(0);",
+    "masked_code": "",
+    "project": "Mockito",
+    "test_error_message": "java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "        assertFalse(((Iterable) values.returnValueFor(Iterable.class)).iterator().hasNext());",
+    "test_name": "should_return_empty_iterable",
+    "test_suite": "org.mockito.internal.stubbing.defaultanswers.ReturnsEmptyValuesTest",
+    "time_buggy": "2015-06-03 15:23:22 +0200",
+    "time_fixed": "2015-06-03 17:16:21 +0200",
+    "bug_description": "Bug ID: 18\n\nProject: Mockito\n\nBug Type: Static Helper with Static Fields (SH SF)\n\nTest Error Message: java.lang.NullPointerException\n\nDescription:\n\nThe bug identified in the Mockito project has a rather common type \u2013 Null Pointer Exception (java.lang.NullPointerException). This type of exception usually occurs when calling methods on an object that is not initialized (null). \n\nWithout any specific lines of the Buggy Code: and Fixed Code:, it's impossible to detail the precise error source but given the \"Static Helper with Static Fields\" bug type, we can surmise that the error possibly lies in the usage of static methods or static fields in a helper class in the code.\n\nThe bug might be easily reproduced with the following steps:\n\n1. Have an uninitialized variable (usually within a helper class) that is being used within a static method.\n2. Call the static method which tries to access or manipulate this uninitialized variable. There will not be an instance of this object as it is currently null and thus cause a java.lang.NullPointerException to be thrown.\n\nFix:\n\nAgain, the lack of given Buggy Code: and Fixed Code: bounds the possible fix explanation to assumptions. A general way to fix this issue would be:\n\n1. Check all the objects being used within your static methods, especially in helper classes.\n2. Ensure all mandatory data fields are initialized before the methods are invoked.\n3. Use null checks or \"Optional\" class to handle situations where the variables could be null.\n4. It would also be advisable to use informative log messages within the code to identify where exactly the NullPointerException is being thrown.\n\nRemember, even if a variable is declared but not initialized, it still holds a null value. Swing components and other objects need to be initialized (created using the 'new' keyword) before they can be accessed or manipulated."
+}

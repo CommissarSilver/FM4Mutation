@@ -1,0 +1,18 @@
+{
+    "bug_id": 7,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "        private void readTypeVariables() {\n            for (Type type : typeVariable.getBounds()) {\n                registerTypeVariablesOn(type);\n            }\n            registerTypeVariablesOn(getActualTypeArgumentFor(typeVariable));\n        }",
+    "fixed_code": "        private void readTypeVariables() {\n            for (Type type : typeVariable.getBounds()) {\n                registerTypeVariablesOn(type);\n            }\n            registerTypeParametersOn(new TypeVariable[] { typeVariable });\n            registerTypeVariablesOn(getActualTypeArgumentFor(typeVariable));\n        }",
+    "fixed_lines": "            registerTypeParametersOn(new TypeVariable[] { typeVariable });",
+    "masked_code": "        private void readTypeVariables() {\n            for (Type type : typeVariable.getBounds()) {\n                registerTypeVariablesOn(type);\n            }\n>>> [ INFILL ] <<<\n            registerTypeVariablesOn(getActualTypeArgumentFor(typeVariable));\n        }",
+    "project": "Mockito",
+    "test_error_message": "org.mockito.exceptions.base.MockitoException: Raw extraction not supported for : 'null'",
+    "test_framework": "defects4j",
+    "test_line": "",
+    "test_name": "discoverDeepMockingOfGenerics",
+    "test_suite": "org.mockitousage.bugs.deepstubs.DeepStubFailingWhenGenricNestedAsRawTypeTest",
+    "time_buggy": "2014-12-30 14:30:09 +0100",
+    "time_fixed": "2014-12-31 17:39:04 +0100",
+    "bug_description": "Bug Description:\n\nID: 7\nProject: Mockito\nBug Type: SL SH SF\n\nIn the class being tested in the Mockito project, we have identified a severe bug classified as SL SH SF. The error message returned by the test was: \"org.mockito.exceptions.base.MockitoException: Raw extraction not supported for : 'null'\". This issue indicates that some operations are trying to be performed on 'null' value, which is resulting in the MockitoException. This exception is probably thrown when there's an attempt to extract raw data from an object, or a type that is null.\n\nFound in the Block of Code:\n\n```\nprivate void readTypeVariables() {\n    for (Type type : typeVariable.getBounds()) {\n        registerTypeVariablesOn(type);\n    }\n    registerTypeVariablesOn(getActualTypeArgumentFor(typeVariable));\n}\n```\n\nThe potential source of the null value could be the 'typeVariable'. It appears that this variable is either uninitialized or simply doesn't have the correct value assigned to it when calling the method 'getActualTypeArgumentFor'. Consequently, the 'registerTypeVariablesOn' method is being invoked with a null argument, which is invalid.\n\nThe error was corrected by adding the additional line:\n\n```\nregisterTypeParametersOn(new TypeVariable[] { typeVariable });\n```\n\nHere's the Fixed Code:\n\n```\nprivate void readTypeVariables() {\n    for (Type type : typeVariable.getBounds()) {\n        registerTypeVariablesOn(type);\n    }\n    registerTypeParametersOn(new TypeVariable[] { typeVariable });\n    registerTypeVariablesOn(getActualTypeArgumentFor(typeVariable));\n}\n```\n\nIn this fixed code, the 'typeVariable' is being registered as a type parameter before it is used for registering type variables. The new line of code ensures that 'typeVariable' won't be null and so prevents the \"org.mockito.exceptions.base.MockitoException\" from being thrown. \n\nThis bug demonstrates the importance of validating object states before performing operations on them that could potentially throw a null exception. As a lesson, developers should always add both error-checking and exception-handling code to deal with such situations effectively."
+}

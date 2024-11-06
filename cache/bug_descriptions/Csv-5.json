@@ -1,0 +1,18 @@
+{
+    "bug_id": 5,
+    "bug_type": "SF",
+    "buggy_lines": "",
+    "code": "    public void println() throws IOException {\n        final String recordSeparator = format.getRecordSeparator();\n            out.append(recordSeparator);\n        newRecord = true;\n    }",
+    "fixed_code": "    public void println() throws IOException {\n        final String recordSeparator = format.getRecordSeparator();\n        if (recordSeparator != null) {\n            out.append(recordSeparator);\n        }\n        newRecord = true;\n    }",
+    "fixed_lines": "        if (recordSeparator != null) {\n        }",
+    "masked_code": "    public void println() throws IOException {\n        final String recordSeparator = format.getRecordSeparator();\n            out.append(recordSeparator);\n>>> [ INFILL ] <<<\n        newRecord = true;\n    }",
+    "project": "Csv",
+    "test_error_message": "junit.framework.AssertionFailedError",
+    "test_framework": "defects4j",
+    "test_line": "        assertFalse(formatStr.endsWith(\"null\"));",
+    "test_name": "testNullRecordSeparatorCsv106",
+    "test_suite": "org.apache.commons.csv.CSVFormatTest",
+    "time_buggy": "2014-03-12 14:29:33 +0000",
+    "time_fixed": "2014-03-13 00:16:57 +0000",
+    "bug_description": "\n    Bug ID: 5\n    Project: Csv\n    Bug Type: SF (Software Failure)\n\n    Error Message: junit.framework.AssertionFailedError\n\n    Description:\n\n    The issue seems to be related to invoking an action on a potential null object which can lead to a NullPointerException. Specifically, the problem lies in the following lines of code:\n\n    Code:\n\n    public void println() throws IOException {\n        final String recordSeparator = format.getRecordSeparator();\n        out.append(recordSeparator);\n        newRecord = true;\n    }\n\n    In the original code, there is no null check on the variable \"recordSeparator\". This method retrieves the record separator, presumably a String, from the 'format' object and immediately attempts to append it to 'out'. If the method 'getRecordSeparator' returns null (which seems possible), appending it to 'out' will throw a NullPointerException.\n   \n    Steps to reproduce:\n    Unfortunately, without more context, the specific conditions on the input that would reproduce this error is not clear. However, one can reasonably guess that it will happen whenever 'format.getRecordSeparator()' returns null.\n\n    The proposed fix is to add a null check before appending the value to the 'out'. This would prevent a NullPointerException from being thrown.\n\n    Fixed Code:\n\n    public void println() throws IOException {\n        final String recordSeparator = format.getRecordSeparator();\n        if (recordSeparator != null) {\n            out.append(recordSeparator);\n        }\n        newRecord = true;\n    }\n\n    This way, we only append the recordSeparator to 'out' if it's not null, ensuring that a NullPointerException can't occur in this situation."
+}

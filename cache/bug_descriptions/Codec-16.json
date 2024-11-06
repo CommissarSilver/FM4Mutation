@@ -1,0 +1,18 @@
+{
+    "bug_id": 16,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "            25, 26, 27, 28, 29, 30, 31, 32,",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "            25, 26, 27, 28, 29, 30, 31,                                     // 50-57 P-V",
+    "masked_code": "",
+    "project": "Codec",
+    "test_error_message": "java.lang.IllegalArgumentException: pad must not be in alphabet or whitespace",
+    "test_framework": "defects4j",
+    "test_line": "        final Base32 codec = new Base32(true, (byte)'W'); // should be allowed",
+    "test_name": "testCodec200",
+    "test_suite": "org.apache.commons.codec.binary.Base32Test",
+    "time_buggy": "2015-06-04 13:29:28 +0000",
+    "time_fixed": "2015-06-04 14:01:15 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 16\nProject: Codec\nBug Type: SL SH SF (Syntax, Lexical, Semantic, Formatting Error)\n\nTest Error Message: \nThe system throws a java.lang.IllegalArgumentException with the message \u201cpad must not be in alphabet or whitespace.\u201d The error seems to be emanating from improper or invalid input passed to a method or function in the code. It is often thrown to indicate that a method has been passed an illegal or inappropriate argument.\n\nBuggy Lines: \nThe issue in the code seems to originate from line numbers 25 to 32. The bug in these lines could be a formatting error or potentially a typo or semantic mistake in these specific lines of code. \n\nCode: \nUnfortunately, the problematic code is not provided. But, based on the error message, these lines likely include a method that is throwing the IllegalArgumentException due to an argument that includes alphabet characters or whitespace when it is designed not to accept them. \n\nFixed Code: \nThe fixed code is also not provided. But, in a generalized context, to fix this bug, there should be error handling or data validation to ensure that the appropriate type of data is being passed into the method. If the method is coded to reject alphabet characters or whitespace in its argument, then a mechanism to prevent such characters from being passed in should be implemented.\n\nDetailed Bug Description/Replicate steps:\n\n1. The bug occurs in the Codec project.\n2. The error seems to be happening when passing an invalid argument to a function or method.\n3. To replicate the bug, you would probably have to pass an argument to this function or method that contains either alphabet characters or whitespace. This seems to be triggering a java.lang.IllegalArgumentException, as the method or function has been coded to reject these characters.\n4. The bug seems to be in the code on line numbers 25 through 32.\n5. To fix the bug, ensure that only valid characters are passed to the method or function. Add error handling or data validation to ensure that the correct type of data is passed into the method. If this is not possible due to the nature of the method or function, a rewrite of the method or function might be required to accommodate for this type of data. \n6. Test thoroughly to verify that the fix has resolved the issue and no longer throwing the java.lang.IllegalArgumentException."
+}

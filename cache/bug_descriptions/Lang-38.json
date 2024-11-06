@@ -1,0 +1,18 @@
+{
+    "bug_id": 38,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "    public StringBuffer format(Calendar calendar, StringBuffer buf) {\n        if (mTimeZoneForced) {\n            calendar = (Calendar) calendar.clone();\n            calendar.setTimeZone(mTimeZone);\n        }\n        return applyRules(calendar, buf);\n    }",
+    "fixed_code": "    public StringBuffer format(Calendar calendar, StringBuffer buf) {\n        if (mTimeZoneForced) {\n            calendar.getTime(); /// LANG-538\n            calendar = (Calendar) calendar.clone();\n            calendar.setTimeZone(mTimeZone);\n        }\n        return applyRules(calendar, buf);\n    }",
+    "fixed_lines": "            calendar.getTime(); /// LANG-538",
+    "masked_code": "    public StringBuffer format(Calendar calendar, StringBuffer buf) {\n        if (mTimeZoneForced) {\n>>> [ INFILL ] <<<\n            calendar = (Calendar) calendar.clone();\n            calendar.setTimeZone(mTimeZone);\n        }\n        return applyRules(calendar, buf);\n    }",
+    "project": "Lang",
+    "test_error_message": "junit.framework.ComparisonFailure: dateTime expected:<2009-10-16T[16]:42:16.000Z> but was:<2009-10-16T[08]:42:16.000Z>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"dateTime\", dateTime, format.format(cal));",
+    "test_name": "testLang538",
+    "test_suite": "org.apache.commons.lang3.time.FastDateFormatTest",
+    "time_buggy": "2009-12-17 03:35:39 +0000",
+    "time_fixed": "2009-12-17 06:04:28 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 38\n\nProject: Lang\n\nBug Type: Syntax, Logical, Semantic (SL SH SF)\n\nTest Error Message: A ComparisonFailure error occurred in Junit testing. The expected output was a dateTime string of '2009-10-16T16:42:16.000Z' but the actual output was '2009-10-16T08:42:16.000Z'. This indicates an error in the date-time formatting.\n\nThe problem is due to a timezone inconsistency during Calendar object formatting in the  `public StringBuffer format(Calendar calendar, StringBuffer buf)` function.\n\nThe buggy block of the method is:\n```\npublic StringBuffer format(Calendar calendar, StringBuffer buf) {\n    if (mTimeZoneForced) {\n        calendar = (Calendar) calendar.clone();\n        calendar.setTimeZone(mTimeZone);\n    }\n    return applyRules(calendar, buf);\n}\n```\nHere are detailed steps to understand and reproduce this bug:\n\nStep 1: If 'mTimeZoneForced' is true, 'calendar' is cloned and timezone set to 'mTimeZone'. \nStep 2: Then, 'applyRules' method is called on the cloned 'calendar' object.\n\nHowever, the bug exists as the function fails to account for timezone changes.\n\nTo rectify the bug, use the getTime() method of the Calendar class before cloning the 'calendar' object. The 'getTime()' method in the Calendar class returns a Date object representing the time value. This will ensure the calendar object to reflect the correct time before cloning and setting the timezone. Here's how to do it:\n\nFixed Code:\n\n```java\npublic StringBuffer format(Calendar calendar, StringBuffer buf) {\n    if (mTimeZoneForced) {\n        calendar.getTime(); // LANG-538\n        calendar = (Calendar) calendar.clone();\n        calendar.setTimeZone(mTimeZone);\n    }\n    return applyRules(calendar, buf);\n}\n```\nThis fix ensures that the 'calendar' object properly reflects the current time in its original timezone before it is cloned and the timezone is changed with method 'setTimeZone()'. This should resolve the inconsistency in the date-time formatting as per the test error."
+}

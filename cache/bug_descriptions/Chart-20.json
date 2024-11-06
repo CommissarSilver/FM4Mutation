@@ -1,0 +1,18 @@
+{
+    "bug_id": 20,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        super(paint, stroke, paint, stroke, alpha);",
+    "code": "    public ValueMarker(double value, Paint paint, Stroke stroke, \n                       Paint outlinePaint, Stroke outlineStroke, float alpha) {\n        super(paint, stroke, paint, stroke, alpha);\n        this.value = value;\n    }",
+    "fixed_code": "    public ValueMarker(double value, Paint paint, Stroke stroke, \n                       Paint outlinePaint, Stroke outlineStroke, float alpha) {\n        super(paint, stroke, outlinePaint, outlineStroke, alpha);\n        this.value = value;\n    }",
+    "fixed_lines": "        super(paint, stroke, outlinePaint, outlineStroke, alpha);",
+    "masked_code": "    public ValueMarker(double value, Paint paint, Stroke stroke, \n                       Paint outlinePaint, Stroke outlineStroke, float alpha) {\n>>> [ INFILL ] <<<\n        this.value = value;\n    }",
+    "project": "Chart",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<java.awt.Color[r=0,g=0,b=255]> but was:<java.awt.Color[r=255,g=0,b=0]>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(Color.blue, m.getOutlinePaint());",
+    "test_name": "test1808376",
+    "test_suite": "org.jfree.chart.plot.junit.ValueMarkerTests",
+    "time_buggy": "2007-10-08 02:16:30 -0700 ",
+    "time_fixed": "2007-10-08 02:39:54 -0700 ",
+    "bug_description": "Bug Description:\n\nBug ID: 20\nProject Name: Chart\nBug Type: Single Line, Single hunk, Single File (SL SH SF)\n\nStep 1 - Identifying the Bug:\nA Junit framework AssertionFailedError was encountered while running the test suite. The error message indicates that the expected output was java.awt.Color[r=0,g=0,b=255] but the output received was java.awt.Color[r=255,g=0,b=0].\n\nStep 2 - Locating the Bug:\nThe bug was found in the following line of code which is located in the ValueMarker constructor:\n\nCode: super(paint, stroke, paint, stroke, alpha);\n\nIn this line of code, the super constructor has been called with erroneous parameters, in particular, with wrong values for the outlinePaint and outlineStroke parameters.\n\nStep 3 - Understanding the Implication:\nThe issue was with the super() call in the ValueMarker class constructor. The super() call is passing duplicate parameters which seems incorrect as per the needed color configuration mentioned in the error message. Instead of passing the distinct 'outlinePaint', and 'outlineStroke' to the super's constructor, the code mistakenly passed 'paint' and 'stroke', twice.\n\nStep 4 - Fixing the Bug:\nThe bug was fixed by calling the super class constructor with the correct parameters:\n\nFixed Code: super(paint, stroke, outlinePaint, outlineStroke, alpha);\n\nThis fixed the bug as the super constructor was called with the correct parameters, providing the required color configuration and thus the test suite passed without any assertion errors. \n\nWe can also note here, the fix only requires changes in a single line, in a single code hunk, and a single file, hence its bug type is Single Line, Single Hunk, Single File (SL SH SF)."
+}

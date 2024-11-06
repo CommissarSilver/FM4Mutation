@@ -1,0 +1,18 @@
+{
+    "bug_id": 34,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "                visitFloatFormat(visitor, typeHint, JsonParser.NumberType.BIG_INTEGER);",
+    "code": "            if (h == BigDecimal.class) {\n                visitFloatFormat(visitor, typeHint, JsonParser.NumberType.BIG_INTEGER);\n            } else {",
+    "fixed_code": "            if (h == BigDecimal.class) {\n                visitFloatFormat(visitor, typeHint, JsonParser.NumberType.BIG_DECIMAL);\n            } else {",
+    "fixed_lines": "                visitFloatFormat(visitor, typeHint, JsonParser.NumberType.BIG_DECIMAL);",
+    "masked_code": "            if (h == BigDecimal.class) {\n>>> [ INFILL ] <<<\n            } else {",
+    "project": "JacksonDatabind",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:<...dec([numberType=BIG_[DECIMAL]])][optProp bigInt([...> but was:<...dec([numberType=BIG_[INTEGER]])][optProp bigInt([...>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"[optProp dec([numberType=BIG_DECIMAL])][optProp bigInt([numberType=BIG_INTEGER])]\",",
+    "test_name": "testSimpleNumbers",
+    "test_suite": "com.fasterxml.jackson.databind.jsonschema.NewSchemaTest",
+    "time_buggy": "2015-12-11 18:05:06 -0800",
+    "time_fixed": "2015-12-12 11:29:04 -0800",
+    "bug_description": "Bug Description:\n\nBug ID: 34\nProject: JacksonDatabind\nBug Type: Semantic/Syntactic logic error (SL SH SF)\n\nSummary:\n\nThe bug is found in the JacksonDatabind project in a method where the incorrect enumeration type of the JsonParser.NumberType is being passed to the visitFloatFormat method, leading to unexpected outcomes.\n\nSteps to Reproduce:\n\n1. The error exists in the following condition within the source code:\n\n    Code:\n    ```\n    if (h == BigDecimal.class) {\n       visitFloatFormat(visitor, typeHint, JsonParser.NumberType.BIG_INTEGER);\n    } else {\n    ```\n2. When the variable 'h' is of the type BigDecimal.class, the 'visitFloatFormat' method is called with 'JsonParser.NumberType.BIG_INTEGER' as its last argument.\n\n3. This leads to the ComparisonFailure error detected by the unit test, which expects 'BIG_DECIMAL' as the number type but gets 'BIG_INTEGER' instead.\n\nError Message:\n\n   The error message provided by Junit is: \n```\n   junit.framework.ComparisonFailure: expected:<...dec([numberType=BIG_[DECIMAL]])][optProp bigInt([...> but was:<...dec([numberType=BIG_[INTEGER]])][optProp bigInt([...>\n```\nThis error message indicates that a comparison failure occurred because the expected 'BIG_DECIMAL' value did not match the actual 'BIG_INTEGER' value.\n\nFix:\n\nThe solution to this error is to replace JsonParser.NumberType.BIG_INTEGER with JsonParser.NumberType.BIG_DECIMAL in the visitFloatFormat method argument when 'h' is an instance of BigDecimal.class as shown in the fixed code:\n\n```\n    if (h == BigDecimal.class) {\n        visitFloatFormat(visitor, typeHint, JsonParser.NumberType.BIG_DECIMAL);\n    } else {\n```\nThis change corrects the type of number being passed to visitFloatFormat, and the condition now correctly handles instances of BigDecimal.class."
+}

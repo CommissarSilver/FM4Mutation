@@ -1,0 +1,18 @@
+{
+    "bug_id": 62,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "            String name = t.asEndTag().normalName();",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "            String name = t.asEndTag().name(); // matches with case sensitivity if enabled",
+    "masked_code": "",
+    "project": "Jsoup",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<<r> <X> A <[/X> <y> B </y]> </r>> but was:<<r> <X> A <[y> B </y> </X]> </r>>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"<r> <X> A </X> <y> B </y> </r>\", StringUtil.normaliseWhitespace(doc.body().html()));",
+    "test_name": "caseSensitiveParseTree",
+    "test_suite": "org.jsoup.parser.HtmlParserTest",
+    "time_buggy": "2017-06-10 14:30:10 -0700",
+    "time_fixed": "2017-06-10 15:51:45 -0700",
+    "bug_description": "Bug ID: 62\nProject: Jsoup\nBug Type: Syntax, Semantic, and Structural (SL SH SF)\n\nDESCRIPTION:\n\nThe test case for this bug is failing due to junit.framework.AssertionFailedError. The expected output of a string operation does not match with the obtained output. Specifically, the string being examined is part of a nested HTML tag structure.\n\nThe test case expects: <<r> <X> A <[/X> <y> B </y]> </r>>\nHowever, it generates: <<r> <X> A <[y> B </y> </X]> </r>>\n\nIn the expected result, we observe two tags inside tag <r>: \n- Tag <X> is correctly closed before Tag <y> starts. \n- Tag <y> is correctly closed before the main tag <r> is closed.\n\nHowever, in the actual result, there seems to be a mishap in the way tags are processed:\n- Tag <X> is not closing before Tag <y> starts. \n\nThis implies some issue with the logic of how the tag names are being processed in the code.\n\nBUGGY LINES:\n\nThe error is occurring in the following line of code:\n\nString name = t.asEndTag().normalName();\n\nThis code snippet is intended to extract the tag name in a normalized form as an end tag. However, it seems that the logic of ensuring the proper end tag is incorrectly conceived, leading to the issue.\n\nDETAILED STEPS TO RECREATE:\n\n1. Use the Jsoup Java library's method to parse and analyse HTML or XML document.\n2. Apply the asylum() method from this library to extract the end tag in a normalized manner.\n3. The error in the logic is causing a discrepancy in identifying and terminating tags accurately in a nested structure.\n4. Run the test case resulting in the junit.framework.AssertionFailedError. The expected result is not matching the actual result illustrating a failure in the test.\n\nFIXED CODE:\n\nWithout the required code base, it is difficult to provide the exact fixed code. However, a change in the logic of tag extraction and ensuring the proper start and end of tags in a nested structure is likely to fix the bug. Input/output checks, along with conditional checks for correct opening and closing of tags could be done to ensure the syntax is followed correctly in the HTML structure captured as a string. Ensure the asEndTag().normalName() method accurately identifies and processes end tags."
+}

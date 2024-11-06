@@ -1,0 +1,18 @@
+{
+    "bug_id": 9,
+    "bug_type": "SH SF",
+    "buggy_lines": "        final Line reverted = new Line(zero, zero.subtract(direction));",
+    "code": "    public Line revert() {\n        final Line reverted = new Line(zero, zero.subtract(direction));\n        return reverted;\n    }",
+    "fixed_code": "    public Line revert() {\n        final Line reverted = new Line(this);\n        reverted.direction = reverted.direction.negate();\n        return reverted;\n    }",
+    "fixed_lines": "        final Line reverted = new Line(this);\n        reverted.direction = reverted.direction.negate();",
+    "masked_code": "    public Line revert() {\n>>> [ INFILL ] <<<\n        return reverted;\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError: arrays first differed at element [0]; expected:<0.028581782127907646> but was:<0.028581782243293483>",
+    "test_framework": "defects4j",
+    "test_line": "",
+    "test_name": "testRevert",
+    "test_suite": "org.apache.commons.math3.geometry.euclidean.threed.LineTest",
+    "time_buggy": "2013-03-04 23:29:39 +0000",
+    "time_fixed": "2013-03-06 08:53:28 +0000",
+    "bug_description": "Bug Description:\n\nTitle: Assertion error during unit testing due to incorrect computation in Line class' revert method.\n\nBug ID: 9\nProject: Math \nBug Type: Semantic error (SH SF)\n\nEnvironment/Data: The bug becomes observable during the run of a unit test, specifically during comparison of floating point number arrays. \n\nSteps to reproduce: Run the test that checks the 'revert' function in the Line class.\n\nExpected Result: The test should pass without any error, meaning that the expected output should match the computed output correctly.\n\nActual Result: An assertion failure error ('junit.framework.AssertionFailedError') is thrown during running the unit test. The error message indicates that arrays compared first differed at element [0]; where it expected with value of <0.028581782127907646> but got the value <0.028581782243293483> in actual computation.\n\nFaulty Code Location:\nThe buggy line of code is in the 'revert()' method of 'Line' class:\n```java\npublic Line revert() {\n    final Line reverted = new Line(zero, zero.subtract(direction));\n    return reverted;\n}\n```\nProblem Description:\nThis failure originates from the 'revert()' method in the 'Line' class. The method seems to create a new Line, 'reverted' using 'zero' and the subtraction of 'direction' from 'zero', and returns it. The computation doesn't properly revert the direction of Line.\n\nFix Description:\nThe fix involves correctly calculating the reversion of the direction of the Line.\nHere is the proposed fixed code:\n```java\npublic Line revert() {\n    final Line reverted = new Line(this);\n    reverted.direction = reverted.direction.negate();\n    return reverted;\n}\n```\nThe corrected 'revert()' method now creates 'reverted' as a copy of the existing Line, then it reverts the Line's direction by using the 'negate()' method on 'direction'. This method then properly returns the Line with its direction reversed."
+}

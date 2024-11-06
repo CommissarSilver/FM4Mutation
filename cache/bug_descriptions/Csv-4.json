@@ -1,0 +1,18 @@
+{
+    "bug_id": 4,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return new LinkedHashMap<String, Integer>(this.headerMap);",
+    "code": "    public Map<String, Integer> getHeaderMap() {\n        return new LinkedHashMap<String, Integer>(this.headerMap);\n    }",
+    "fixed_code": "    public Map<String, Integer> getHeaderMap() {\n        return this.headerMap == null ? null : new LinkedHashMap<String, Integer>(this.headerMap);\n    }",
+    "fixed_lines": "        return this.headerMap == null ? null : new LinkedHashMap<String, Integer>(this.headerMap);",
+    "masked_code": "    public Map<String, Integer> getHeaderMap() {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Csv",
+    "test_error_message": "java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "        Assert.assertNull(parser.getHeaderMap());",
+    "test_name": "testNoHeaderMap",
+    "test_suite": "org.apache.commons.csv.CSVParserTest",
+    "time_buggy": "2013-09-14 11:13:22 +0000",
+    "time_fixed": "2013-09-18 14:57:57 +0000",
+    "bug_description": "Bug Description:\n\nId: 4\nTitle: NullPointerException on invoking 'getHeaderMap' method\nProject: CSV\nType: SL SH SF\nSeverity: High\nPriority: High\nEnvironment: Any environment where the application runs\n\nDescription: \n\nWhen 'getHeaderMap' method is invoked, it tries to return a new LinkedHashMap of \"this.headerMap\". However, this causes a NullPointerException when 'headerMap' is null, which is likely to be the case when the object has just been created and no headerMap has been set yet.\n\nError Message: \n\njava.lang.NullPointerException\n\nSteps to Reproduce:\n\n1. Create an instance of the object containing the 'getHeaderMap' method.\n2. Without setting any value for 'headerMap', invoke 'getHeaderMap' method.\n3. The error can be noticed when the method tries to return a new LinkedHashMap for the null 'headerMap'.\n\nBroken Code:\n\n    public Map<String, Integer> getHeaderMap() {\n        return new LinkedHashMap<String, Integer>(this.headerMap);\n    }\n\nFixed Code:\n\n    public Map<String, Integer> getHeaderMap() {\n        return this.headerMap == null ? null : new LinkedHashMap<String, Integer>(this.headerMap);\n    }\n\nSuggested Solution: \n\nAdd a null check before trying to return a new LinkedHashMap of 'headerMap'. If 'headerMap' is not null, then the method should proceed to return the new LinkedHashMap. If it is null, then the method should return null, or some default value.\n\nAttachments: None.\n\nNote: \n\nWithout the null check, NullPointerException can crash the program. Thus the severity of this bug is high and it needs to be fixed as a priority."
+}

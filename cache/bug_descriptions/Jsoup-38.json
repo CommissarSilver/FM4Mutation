@@ -1,0 +1,18 @@
+{
+    "bug_id": 38,
+    "bug_type": "SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "                        if (tb.getFromStack(\"svg\") == null)\n                        else\n                            tb.insert(startTag);",
+    "masked_code": "",
+    "project": "Jsoup",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<<img />",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"<img />\\n<svg>\\n <image />\\n</svg>\", doc.body().html());",
+    "test_name": "convertsImageToImg",
+    "test_suite": "org.jsoup.parser.HtmlParserTest",
+    "time_buggy": "2013-11-16 16:48:43 -0800",
+    "time_fixed": "2013-11-16 17:12:31 -0800",
+    "bug_description": "Bug Description:\n\nBug ID: 38\n\nProject Name: Jsoup (A Java library for working with real-world HTML)\n\nBug Type: SF (System Failure)\n\nError Message: \n\nThe test error message being displayed is \"junit.framework.AssertionFailedError: expected: <img />\". This error occurs when the Junit test case fails but was expected to pass. AssertionFailedError is thrown to indicate that an assertion failed, specifically expecting \"<img />\" tag.\n\nIn the context of unit testing, the Junit framework guides that expected output should match the actual output. \n\nBug Description:\n\nIn this case, the Jsoup library, used for parsing HTML in Java, is expecting <img /> somewhere in the given HTML input, but it's not found. As we see in the error message, an AssertionFailedError shows the expectation is to find an image tag \" <img />,\" but these matching tags were not found, causing the unit test failure.\n\nIt seems the test was looking for a particular image tag in its HTML parsing mechanism, which is not well-handled or missing in the given input or current method of the Jsoup library. It indicates that the test case is designed to check if the \"<img />\" tag is parsed or not, but it's failing as the system didn't find the expected tag, which resulted in the system failure (SF) in Jsoup.\n\nThe code for both buggy lines and fixed code has not been provided; however, a solution would likely involve checking the HTML parsing mechanism that looks for the \"<img />\" tag and figuring out why it's not identifying the respective tag. The fix may involve handling the system failure in case of missing \"<img />\" tags or appropriately updating the HTML parsing mechanism to correctly identify and parse the \"<img />\" tags.\n\nRecommendation Steps:\n\n1. Identify the test case which is throwing the AssertionFailedError.\n2. Examine the HTML input provided during this test case.\n3. Analyze the HTML parsing mechanism in Jsoup library that handles HTML tags, particularly \"<img />\".\n4. Identify why the image tag is not being found/identified during the parsing process.\n5. Amend the code as necessary to fix the parsing mechanism and handle missing instances without crashing.\n6. Rerun the test cases again to ensure there are no more AssertionFailedErrors regarding the \"<img />\" tag.\n7. Implement additional test cases, if necessary, to verify the fix."
+}

@@ -1,0 +1,18 @@
+{
+    "bug_id": 21,
+    "bug_type": "SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "                }",
+    "masked_code": "",
+    "project": "JacksonCore",
+    "test_error_message": "junit.framework.AssertionFailedError: Expected token END_OBJECT, current token null",
+    "test_framework": "defects4j",
+    "test_line": "        assertToken(JsonToken.END_OBJECT, p.nextToken());",
+    "test_name": "testTokensSingleMatchWithPath",
+    "test_suite": "com.fasterxml.jackson.core.filter.TokenVerifyingParserFiltering330Test",
+    "time_buggy": "2017-05-23 15:49:13 -0700",
+    "time_fixed": "2017-05-23 16:08:31 -0700",
+    "bug_description": "Bug Description:\n\nBug ID: 21\nProject: JacksonCore\nBug Type: Serialization Failure (SF)\nTitle: Unexpected null, expected END_OBJECT token in JacksonCore\nSeverity: High\nPriority: High\n\nDescription:\n\nThere is a bug in the JacksonCore project that is causing a junit.framework.AssertionFailedError in a unit test to be triggered. The error message indicates that the test was expecting to encounter an 'END_OBJECT' token but instead found 'null.'\n\nThis is usually a sign of an issue with the serialization process. Jackson's expected data stream terminated before closing an 'END_OBJECT' token, this often means that there is a null object that should not exist, or data is not serialized properly.\n\nSteps to reproduce:\n\nUnfortunately, without the actual source code and the steps to reproduce, exact steps cannot be provided. Typically, for this bug type, it usually involves the following:\n\n1. Serialization/Deserialization of an object where Jackson tries to parse the data.\n2. While parsing, it expects to find the 'END_OBJECT' token indicating the end of an object in the data stream.\n3. Instead, it finds a 'null' at that location, disrupting the parsing process.\n4. The unit test fails throwing the junit.framework.AssertionFailedError.\n\nExpected Result:\n\nThere should not be a null value where an 'END_OBJECT' token is expected.\n\nActual Result:\n\nThe token at the location is null.\n\nSuggested fix:\n\nWithout the buggy lines or the fixed code, an exact fix can't be provided. However, the usual fix for such issues in Jackson is to ensure that all objects are properly initialize and/or serialized before usage in such a scenario.\n\nAdditional Information:\n\nBased on the information available, the error seems to occur during a unit testing scenario, so it's recommended to start debugging from any recent changes or updates to the related test or the object being serialized. Without the actual code, we have to make these general debugging suggestions:\n\n1. Look for any objects that might not be serialized properly.\n2. Ensure, if your code is dependent on external services, that those requests are not returning a null unexpectedly.\n3. Look at the possibility of race conditions, that is, is something trying to access the object before it is completely populated/serialized?"
+}

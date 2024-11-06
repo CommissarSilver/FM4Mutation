@@ -1,0 +1,18 @@
+{
+    "bug_id": 55,
+    "bug_type": "SF",
+    "buggy_lines": "",
+    "code": "    public void stop() {\n        if(this.runningState != STATE_RUNNING && this.runningState != STATE_SUSPENDED) {\n            throw new IllegalStateException(\"Stopwatch is not running. \");\n        }\n            stopTime = System.currentTimeMillis();\n        this.runningState = STATE_STOPPED;\n    }",
+    "fixed_code": "    public void stop() {\n        if(this.runningState != STATE_RUNNING && this.runningState != STATE_SUSPENDED) {\n            throw new IllegalStateException(\"Stopwatch is not running. \");\n        }\n        if(this.runningState == STATE_RUNNING) {\n            stopTime = System.currentTimeMillis();\n        }\n        this.runningState = STATE_STOPPED;\n    }",
+    "fixed_lines": "        if(this.runningState == STATE_RUNNING) {\n        }",
+    "masked_code": "    public void stop() {\n        if(this.runningState != STATE_RUNNING && this.runningState != STATE_SUSPENDED) {\n            throw new IllegalStateException(\"Stopwatch is not running. \");\n        }\n            stopTime = System.currentTimeMillis();\n>>> [ INFILL ] <<<\n        this.runningState = STATE_STOPPED;\n    }",
+    "project": "Lang",
+    "test_error_message": "junit.framework.AssertionFailedError",
+    "test_framework": "defects4j",
+    "test_line": "        assertTrue( suspendTime == totalTime );",
+    "test_name": "testLang315",
+    "test_suite": "org.apache.commons.lang.time.StopWatchTest",
+    "time_buggy": "2007-02-06 22:44:33 +0000",
+    "time_fixed": "2007-02-06 22:49:50 +0000",
+    "bug_description": "Bug ID: 55\nProject: Lang\nBug Type: Sequential Flow (SF)\nTest Error Message: junit.framework.AssertionFailedError\n\nDescription:\n\nThe bug can be found in the `stop()` method of the 'Lang' project. The method is designed to stop a running or suspended stopwatch. However, it has a flow error causing a Junit failure.\n\nInitial Code:\n\n```java\npublic void stop() {\n    if(this.runningState != STATE_RUNNING && this.runningState != STATE_SUSPENDED) {\n        throw new IllegalStateException(\"Stopwatch is not running. \");\n    }\n    stopTime = System.currentTimeMillis();\n    this.runningState = STATE_STOPPED;\n}\n```\nHere, the provided method is trying to stop the stopwatch irrespective of the current state of the stopwatch. This code always updates the stop time by calling `System.currentTimeMillis()`, and then sets the running state to \"stopped\", regardless of the initial running state. This is an error in the program's sequential flow.\n\nThis code assumes that the stopwatch is either running or suspended. It sets the `stopTime` even when the stopwatch is not running, which leads to incorrect behaviour and causes the Junit failure error.\n\nFixed Code:\n\n```java\npublic void stop() {\n    if(this.runningState != STATE_RUNNING && this.runningState != STATE_SUSPENDED) {\n        throw new IllegalStateException(\"Stopwatch is not running. \");\n    }\n    if(this.runningState == STATE_RUNNING) {\n        stopTime = System.currentTimeMillis();\n    }\n    this.runningState = STATE_STOPPED;\n}\n```\nIn the fixed version of the code, the stop time is only updated if the stopwatch is in the running state, ensuring that the time calculations are correct. This fixed code still throws an IllegalStateException if the stopwatch is neither running nor suspended at the time of stop method call, which is the proper expected behaviour. \n\nBy doing this, the issue in the sequential flow is solved, and the code no longer triggers a junit.framework.AssertionFailedError during tests."
+}

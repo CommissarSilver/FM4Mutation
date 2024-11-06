@@ -1,0 +1,18 @@
+{
+    "bug_id": 133,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "  private String getRemainingJSDocLine() {\n    String result = stream.getRemainingJSDocLine();\n    return result;\n  }",
+    "fixed_code": "  private String getRemainingJSDocLine() {\n    String result = stream.getRemainingJSDocLine();\n    unreadToken = NO_UNREAD_TOKEN;\n    return result;\n  }",
+    "fixed_lines": "    unreadToken = NO_UNREAD_TOKEN;",
+    "masked_code": "  private String getRemainingJSDocLine() {\n    String result = stream.getRemainingJSDocLine();\n>>> [ INFILL ] <<<\n    return result;\n  }",
+    "project": "Closure",
+    "test_error_message": "java.lang.IllegalStateException: Recorded bad position information",
+    "test_framework": "defects4j",
+    "test_line": "    jsdocParser.parse();",
+    "test_name": "testTextExtents",
+    "test_suite": "com.google.javascript.jscomp.parsing.JsDocInfoParserTest",
+    "time_buggy": "2013-02-21 14:37:42 -0800",
+    "time_fixed": "2013-02-21 14:37:42 -0800",
+    "bug_description": "Bug Description:\n\nBug ID: 133\n\nProject: Closure\n\nBug Type: SL SH SF\n\nTest Error Message: java.lang.IllegalStateException: Recorded bad position information\n\nBug Details:\n\nThe bug is found in the Closure project. The specific type of this bug is SL SH SF. The error message that is generated during testing is \"java.lang.IllegalStateException: Recorded bad position information\".\n\nProblematic Code:\n\n    private String getRemainingJSDocLine() {\n        String result = stream.getRemainingJSDocLine();\n        return result;\n    }\n\nIn this part of the code, we can see a function getRemainingJSDocLine() that is meant to return the remaining JavaScript Documentation (JSDoc) line. The stream object is used to obtain the remaining JSDoc line and it's stored in the result variable. However, this function fails to properly handle the position of the stream that is being read next.\n\nIssue:\n\nDue to the lack of handling or resetting the position of the next stream read, an IllegalStateException is thrown during the execution. This typically indicates that a method has been invoked at an illegal or inappropriate time. In the case of this bug, it's indicating that the stream has recorded incorrect position information, making it unable to proceed correctly.\n\nSolution:\n\nThe provided solution introduces a new line of code to reset or clear the unread token. The corrected code now reads:\n\n    private String getRemainingJSDocLine() {\n        String result = stream.getRemainingJSDocLine();\n        unreadToken = NO_UNREAD_TOKEN;\n        return result;\n    }\n\nNow, after getting the remaining JSDoc line from the stream, the unread token is set to 'NO_UNREAD_TOKEN'. This probably acts as a way to clear or reset the stream, ensuring that no bad position information is recorded for the next stream to read. After this adjustment, the IllegalStateException is no longer encountered.\n\nSteps to Generate Similar Bug:\n\n1. Neglect to properly manage or reset the position for stream reads, or any similar data structures or objects.\n2. Create methods that get data from the stream without resetting or clearing the related information or token.\n3. Call these methods under conditions that could lead to incorrect position information being recorded.\n4. The above steps could generate an IllegalStateException, producing a similar bug."
+}

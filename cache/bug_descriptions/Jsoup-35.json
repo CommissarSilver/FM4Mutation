@@ -1,0 +1,18 @@
+{
+    "bug_id": 35,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "                            adopter.attributes().addAll(formatEl.attributes());",
+    "masked_code": "",
+    "project": "Jsoup",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<...com/\">Link</a>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(want, doc.body().html());",
+    "test_name": "handlesUnclosedAnchors",
+    "test_suite": "org.jsoup.parser.HtmlParserTest",
+    "time_buggy": "2013-10-06 15:36:25 -0700",
+    "time_fixed": "2013-10-06 16:20:52 -0700",
+    "bug_description": "Bug Description:\n\nBug ID: 35\nProject: Jsoup\nBug Type: Syntax, Semantic, Systematic Fault (SL SH SF)\nTest Error Message: junit.framework.AssertionFailedError: expected:<...com/\">Link</a>\n\n1. Overview:\nThe error message paints a situation where there was a failure in the test condition of the Jsoup project. An AssertionFailedError occurred which means the program did not function correctly leading to the failure of the anticipated result.\n\n2. Bug Impact & Reproducing the Bug:\nThe bug appears to be a systematic fault as it breaks the tests and it might have a significant impact on the overall running of the application. The developers could reproduce this bug by running the test cases that led to the AssertionFailedError. Since the specific details about the code and the condition that failed are not provided, we assume that the bug is part of the test.\n\n3. Diagnosis:\nThis sort of bug arises from a discrepancy between the expected and actual result during an assertion test. Syntax or semantic issues in the method or logic implementation might have been the root cause for the test conditions to fail.\n\n4. Resolution:\nIdentifying the root cause might entail cross-validating the test condition and the actual output. The bug of this nature might require modifying the logic or the method that was being tested to align with the expected result. However, without the provided detail on the buggy, fixed code or error leading up to the AssertionFailedError, pinpointing the solution is challenging.\n\nFinal Thoughts:\nThe bug description provided here implies at an isolated testing situation. Developers are thus advised to consider running the test cases often and inspect their tests, compare the failed assertions' expected and actual results, ensuring to handle all possible edge cases and exceptions. Test-case engineering is instrumental for bug evasion in future instances. More details would be required to dive deeper into understanding the source of this bug."
+}

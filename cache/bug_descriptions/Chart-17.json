@@ -1,0 +1,18 @@
+{
+    "bug_id": 17,
+    "bug_type": "SH SF",
+    "buggy_lines": "        Object clone = createCopy(0, getItemCount() - 1);",
+    "code": "    public Object clone() throws CloneNotSupportedException {\n        Object clone = createCopy(0, getItemCount() - 1);\n        return clone;\n    }",
+    "fixed_code": "    public Object clone() throws CloneNotSupportedException {\n        TimeSeries clone = (TimeSeries) super.clone();\n        clone.data = (List) ObjectUtilities.deepClone(this.data);\n        return clone;\n    }",
+    "fixed_lines": "        TimeSeries clone = (TimeSeries) super.clone();\n        clone.data = (List) ObjectUtilities.deepClone(this.data);",
+    "masked_code": "    public Object clone() throws CloneNotSupportedException {\n>>> [ INFILL ] <<<\n        return clone;\n    }",
+    "project": "Chart",
+    "test_error_message": "java.lang.IllegalArgumentException: Requires start <= end.",
+    "test_framework": "defects4j",
+    "test_line": "            s2 = (TimeSeries) s1.clone();",
+    "test_name": "testBug1832432",
+    "test_suite": "org.jfree.data.time.junit.TimeSeriesTests",
+    "time_buggy": "2007-11-22 01:46:16 -0800 ",
+    "time_fixed": "2007-11-22 01:50:16 -0800 ",
+    "bug_description": "Bug Description:\n\n- Bug ID: 17\n- Project: Chart\n- Bug Type: Type Mismatch and Illegal Argument in Method (SH SF)\n\nDescription:\n\nThis bug is found in the \"clone()\" method. The bug occurs when it creates a copy of some data. The function 'createCopy(0, getItemCount() - 1)' is used here to make a clone of the data. In the given buggy code, 'createCopy(0, getItemCount() - 1)' creates a clone with arguments specifying the start and end of the data. It throws a Java IllegalArgumentException with an error message \"Requires start <= end.\" \n\nThe arguments to 'createCopy(0, getItemCount() - 1)' are such that start is 0 and end is the last index of the itemCount. Therefore, \"start\" is always less than \"end\" as is required, but the bug still arises. This suggests a mismatch between the expected and actual type of the 'createCopy' function i.e., the output of 'createCopy(0, getItemCount() - 1)' may not be the required Object type.  \n\nSteps to Reproduce:\n\n1. Invoke the clone() method which in turn invokes 'createCopy(0, getItemCount() - 1)'.\n\nExpected:\n\nThe clone instance should be created seamlessly without any exceptions.\n\nActual:\n\nAn exception is thrown - java.lang.IllegalArgumentException: Requires start <= end.\n\nFix:\n\nIn the fixed code, rather than using 'createCopy' function, the method super.clone() is used to make a clone of the data. The cloned data is typecast to TimeSeries and the data elements are then deeply cloned using ObjectUtilities.deepClone(this.data). This fix eliminates the possibility of an IllegalArgumentException and correctly returns a clone of the object.\n\nSuggestions for Generating Similar Artificial Java Bugs:\n\n1. Misuse of similar or similarly named methods that could lead to various types of exceptions.\n2. Wrong sequence of method calls, leading to method parameter errors.\n3. Incorrect use of type-casting, leading to type mismatch issues.\n4. Not following deep or shallow copying principles while cloning objects."
+}

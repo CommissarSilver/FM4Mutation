@@ -1,0 +1,18 @@
+{
+    "bug_id": 11,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return FastMath.pow(2 * FastMath.PI, -dim / 2) *",
+    "code": "    public double density(final double[] vals) throws DimensionMismatchException {\n        final int dim = getDimension();\n        if (vals.length != dim) {\n            throw new DimensionMismatchException(vals.length, dim);\n        }\n\n        return FastMath.pow(2 * FastMath.PI, -dim / 2) *\n            FastMath.pow(covarianceMatrixDeterminant, -0.5) *\n            getExponentTerm(vals);\n    }",
+    "fixed_code": "    public double density(final double[] vals) throws DimensionMismatchException {\n        final int dim = getDimension();\n        if (vals.length != dim) {\n            throw new DimensionMismatchException(vals.length, dim);\n        }\n\n        return FastMath.pow(2 * FastMath.PI, -0.5 * dim) *\n            FastMath.pow(covarianceMatrixDeterminant, -0.5) *\n            getExponentTerm(vals);\n    }",
+    "fixed_lines": "        return FastMath.pow(2 * FastMath.PI, -0.5 * dim) *",
+    "masked_code": "    public double density(final double[] vals) throws DimensionMismatchException {\n        final int dim = getDimension();\n        if (vals.length != dim) {\n            throw new DimensionMismatchException(vals.length, dim);\n        }\n\n>>> [ INFILL ] <<<\n            FastMath.pow(covarianceMatrixDeterminant, -0.5) *\n            getExponentTerm(vals);\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<0.024113113264053368> but was:<0.06044261149705598>",
+    "test_framework": "defects4j",
+    "test_line": "            Assert.assertEquals(uni.density(v), multi.density(new double[] { v }), tol);",
+    "test_name": "testUnivariateDistribution",
+    "test_suite": "org.apache.commons.math3.distribution.MultivariateNormalDistributionTest",
+    "time_buggy": "2013-01-13 18:03:48 +0000",
+    "time_fixed": "2013-01-15 12:15:50 +0000",
+    "bug_description": "Bug ID: 11\nProject Name: Math\nBug Type: SL SH SF\n\nDescription:\n\nThe Java code Function 'density' in the project 'Math' has a bug related to the incorrect calculation of the power for PI. In the original buggy code, the FastMath.pow method is used with the arguments (2 * FastMath.PI, -dim / 2) which is trying to raise (2*PI) to the power of the negative half of the 'dim' variable's value. This gives a returning value which is not matching with the expected value as per the Assertion error message received: expected: <0.024113113264053368> but was: <0.06044261149705598>.\n\nHere is the detailed step-by-step bug description:\n\nStep 1: \nIn the 'density' function, a variable called 'dim' is initiated and assigned the value returned from the 'getDimension' method.\n\nStep 2:\nThe function then checks if the length of the 'vals' array passed, is not equal to 'dim', it throws the 'DimensionMismatchException'.\n\nStep 3:  \nNow comes the buggy part of the code. While calculating the return value, the statement \"FastMath.pow(2 * FastMath.PI, -dim / 2)\" incorrectly calculates the power for PI.\n\nStep 4:\nThe mathematically incorrect prioritization, through multiplication of \"2 * FastMath.PI\" before the division \"-dim / 2\", causes the discrepancy in the value as shown in the test error message.\n\nThe bug fix changes the power of the calculation of PI from \"-dim / 2\" to \"-0.5 * dim\" in the line of the code:\n\n\"return FastMath.pow(2 * FastMath.PI, -0.5 * dim) *\"\n\nAs a result of this modification, the returned value fixed the anomaly and provided the correct results as per the expected output."
+}

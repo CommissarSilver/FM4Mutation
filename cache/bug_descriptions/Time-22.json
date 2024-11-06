@@ -1,0 +1,18 @@
+{
+    "bug_id": 22,
+    "bug_type": "SF",
+    "buggy_lines": "        this(duration, null, null);",
+    "code": "    protected BasePeriod(long duration) {\n        this(duration, null, null);\n        // bug [3264409]\n    }",
+    "fixed_code": "    protected BasePeriod(long duration) {\n        super();\n        // bug [3264409]\n        iType = PeriodType.time();\n        int[] values = ISOChronology.getInstanceUTC().get(this, duration);\n        iType = PeriodType.standard();\n        iValues = new int[8];\n        System.arraycopy(values, 0, iValues, 4, 4);\n    }",
+    "fixed_lines": "        super();\n        iType = PeriodType.time();\n        int[] values = ISOChronology.getInstanceUTC().get(this, duration);\n        iType = PeriodType.standard();\n        iValues = new int[8];\n        System.arraycopy(values, 0, iValues, 4, 4);",
+    "masked_code": "    protected BasePeriod(long duration) {\n        // bug [3264409]\n>>> [ INFILL ] <<<\n    }",
+    "project": "Time",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<0> but was:<64>",
+    "test_framework": "defects4j",
+    "test_line": "            assertEquals(0, test.getWeeks());",
+    "test_name": "testToPeriod_fixedZone",
+    "test_suite": "org.joda.time.TestDuration_Basics",
+    "time_buggy": "2011-03-31 23:46:38 +0000",
+    "time_fixed": "2011-04-01 00:22:59 +0000",
+    "bug_description": "Bug ID: 22\nProject: Time\nBug Type: SF (Software Fault)\n\nBug description:\nThe identified bug can be described as a fault in the initialization of a period of time in the \"Time\" project. The error is in the \"BasePeriod\" function and it seems to be related to the way the variables are declared or assigned. The expected output was <0>, but the received output was <64>, indicating a deviation in the results due to the bug. \n\nStep-by-step bug behavior:\n\n1. The function BasePeriod is called with a 'duration' parameter but the initialization is misconfigured.\n2. This duration is then passed to the constructor of the same class. However, the two parameters following it - both null - are seemingly incorrect or insufficient for correct execution.\n3. Here, a discrepancy occurs in the expected and actual result for the duration. The target value of the 'duration' variable was '0', as per existing unit tests, but the actual output came as '64'.\n\nThe impacted piece of code: \n\n```java\nprotected BasePeriod(long duration) {\n  this(duration, null, null);\n  // bug [3264409]\n}\n```\n\nFixed code:\n\nThe bug was fixed upon adjusting the process of initialization of the 'duration' variable.\n\nIn the fixed version, the superclass constructor is first called using 'super()'. Then the period type is set to 'time'. The 'duration' variable is then broken down into all time-standard components such as years, months, weeks, days, hours, minutes, and seconds. The type is set to standard again and a new integer array of 8 elements is made for all these components. The values are then copied to the array.\n\nThe fixed code is:\n\n```java\nprotected BasePeriod(long duration) {\n  super();\n  // bug [3264409]\n  iType = PeriodType.time();\n  int[] values = ISOChronology.getInstanceUTC().get(this, duration);\n  iType = PeriodType.standard();\n  iValues = new int[8];\n  System.arraycopy(values, 0, iValues, 4, 4);\n}\n```\n\nFollowing this procedure, developers can identify and document bugs effectively."
+}

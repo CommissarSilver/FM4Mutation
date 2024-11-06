@@ -1,0 +1,18 @@
+{
+    "bug_id": 11,
+    "bug_type": "SH SF",
+    "buggy_lines": "    } else if (n.getJSType() != null && parent.isAssign()) {\n      return;",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "",
+    "masked_code": "",
+    "project": "Closure",
+    "test_error_message": "junit.framework.AssertionFailedError: expected a warning",
+    "test_framework": "defects4j",
+    "test_line": "      assertTrue(\"expected a warning\", warnings.length > 0);",
+    "test_name": "testGetprop4",
+    "test_suite": "com.google.javascript.jscomp.TypeCheckTest",
+    "time_buggy": "2012-09-11 23:17:52 +0000",
+    "time_fixed": "2012-09-12 22:16:03 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 11\n\nLocated In: Closure Project\n\nType Of Bug: Statement Insertion & Statement Deletion (SH SF)\n\nError Message: The test is asserting a failure and showing an error message \"junit.framework.AssertionFailedError: expected a warning\". It means that developer has written a test case where he/she is expecting an exception or a warning but the test case is getting passed without throwing any warning.\n\nCode Portion with Possible Bug:\n    \n    } else if (n.getJSType() != null && parent.isAssign()) {\n      return;\n    }  \n\nCurrently, in the given code snippet, there is a condition using an 'else if' block where it's checking if the JS Type of the object \"n\" is not null and simultaneously the parent is being assigned. If these conditions meet true, it simply returns void.\n\nStep by Step Description:\n\n1. An 'else if' condition checks whether the JavaScript Type of an object 'n' is not null and if the parent object is being assigned. If both these conditions are true it simply returns back or ends the execution there.\n\n2. The problem arises as the method is expected to throw a warning, which is confirmed from the error message received: \"expected a warning\".\n\n3. However, the provided 'else if' condition and it\u2019s corresponding method isn't performing the expected behavior, which should be to produce a warning. This could be due to incorrect handling or implementation of the methods and it not being able to correctly check these conditions. \n\n4. This leads to the test case where the system is expecting a warning to pass, resulting in the assertion failure error as mentioned above.\n\n5. The bug is a type SH SF (Statement Insertion & Statement Deletion) where possible rectification could involve inserting additional statements to provide the expected warning or deleting/editing misleading or incorrect ones.\n\nFixed Code: [Not provided] \n\nUnfortunately, this dataset does not provide the Fixed Code version. But given the details, a developer would need to revisit the logic on how this block is expected to trigger a warning and assert the same within the test case."
+}

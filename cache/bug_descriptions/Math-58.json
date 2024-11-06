@@ -1,0 +1,18 @@
+{
+    "bug_id": 58,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return fit(new Gaussian.Parametric(), guess);",
+    "code": "    public double[] fit() {\n        final double[] guess = (new ParameterGuesser(getObservations())).guess();\n        return fit(new Gaussian.Parametric(), guess);\n    }",
+    "fixed_code": "    public double[] fit() {\n        final double[] guess = (new ParameterGuesser(getObservations())).guess();\n        return fit(guess);\n    }",
+    "fixed_lines": "        return fit(guess);",
+    "masked_code": "    public double[] fit() {\n        final double[] guess = (new ParameterGuesser(getObservations())).guess();\n>>> [ INFILL ] <<<\n    }",
+    "project": "Math",
+    "test_error_message": "org.apache.commons.math.exception.NotStrictlyPositiveException: -1.277 is smaller than, or equal to, the minimum (0)",
+    "test_framework": "defects4j",
+    "test_line": "        final double[] p = fitter.fit();",
+    "test_name": "testMath519",
+    "test_suite": "org.apache.commons.math.optimization.fitting.GaussianFitterTest",
+    "time_buggy": "2011-02-22 23:08:00 +0000",
+    "time_fixed": "2011-02-22 23:50:46 +0000",
+    "bug_description": "\n    Bug ID: 58\n    Project: Math\n    Bug Type: Syntax Logical Standard (SL SH SF)\n    Error Category: NotStrictlyPositiveException error.\n\n    Description:\n\n    The error is a result of a logical mistake in the code where a negative value (-1.277) is passed, but the program is expected a strictly positive value as guess parameter. The error message is indicating that the input value to fit() method is less than or equal to the minimum positive value (0), which is not acceptable as per the implemented logic.\n\n    Step-by-step guide:\n\n    1. The bug can be traced to the implementation of the fit() function in the given code. The function is supposed to fit a Gaussian curve on a dataset. To do so, it needs initial parameter estimates, which are provided by the guess method of an instance of ParameterGuesser class.\n\n    2. Our bug comes into play when the ParameterGuesser\u2019s guess() method returns an array which includes a negative value -1.277. \n\n    3. This negative value is passed onto the next method in line which is the fit() method of a Gaussian.Parametric() object. This method however, only accepts strictly positive values. In our case, it is triggered to throw a NotStrictlyPositiveException error because a negative value is passed onto it. \n\n    4. The problem lies in how the guess value is generated or how it is handled before being used as an argument in the fit method. Specifically, the fit method seems to not handle cases where the guess values could be negative.\n\n    5. The solution involves removing the new Gaussian.Parametric() from the fit method. After repair, the guess array from the ParameterGuesser decides the parameters for the fit method directly. This seems to solve the issue as the fixed code doesn't throw any exceptions.\n\n    6. Therefore, the repair involves modifying the return statement in the fit method from \n        return fit(new Gaussian.Parametric(), guess);\n       to \n       return fit(guess);\n\n    The detailed report given above should aid developers in creating similar artificial bugs that result from passing negative values where strictly positive values are expected."
+}

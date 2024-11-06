@@ -1,0 +1,18 @@
+{
+    "bug_id": 24,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        int g = (int) ((value - this.lowerBound) / (this.upperBound ",
+    "code": "    public Paint getPaint(double value) {\n        double v = Math.max(value, this.lowerBound);\n        v = Math.min(v, this.upperBound);\n        int g = (int) ((value - this.lowerBound) / (this.upperBound \n                - this.lowerBound) * 255.0);\n        return new Color(g, g, g);\n    }",
+    "fixed_code": "    public Paint getPaint(double value) {\n        double v = Math.max(value, this.lowerBound);\n        v = Math.min(v, this.upperBound);\n        int g = (int) ((v - this.lowerBound) / (this.upperBound \n                - this.lowerBound) * 255.0);\n        return new Color(g, g, g);\n    }",
+    "fixed_lines": "        int g = (int) ((v - this.lowerBound) / (this.upperBound ",
+    "masked_code": "    public Paint getPaint(double value) {\n        double v = Math.max(value, this.lowerBound);\n        v = Math.min(v, this.upperBound);\n>>> [ INFILL ] <<<\n                - this.lowerBound) * 255.0);\n        return new Color(g, g, g);\n    }",
+    "project": "Chart",
+    "test_error_message": "java.lang.IllegalArgumentException: Color parameter outside of expected range: Red Green Blue",
+    "test_framework": "defects4j",
+    "test_line": "        c = (Color) gps.getPaint(-0.5);",
+    "test_name": "testGetPaint",
+    "test_suite": "org.jfree.chart.renderer.junit.GrayPaintScaleTests",
+    "time_buggy": "2007-09-26 06:34:39 -0700 ",
+    "time_fixed": "2007-09-26 07:00:52 -0700 ",
+    "bug_description": "Bug Description:\n\nBug ID: 24\nProject: Chart\nBug Type: Semantic error - SL SH SF (Functionality of a system is not as expected with expected inputs)\nTest Error: java.lang.IllegalArgumentException: Color parameter outside of expected range: Red Green Blue\n\nCode:\n\n    public Paint getPaint(double value) {\n    double v = Math.max(value, this.lowerBound);\n    v = Math.min(v, this.upperBound);\n    int g = (int) ((value - this.lowerBound) / (this.upperBound \n            - this.lowerBound) * 255.0);\n    return new Color(g, g, g);\n}\n\nProblem:\n\nIn the 'getPaint' function, we are trying to calculate the color value 'g' based on the difference between the input value and the lowerBound, normalized by the difference between the upperBound and the lowerBound, and then multiplied by 255. The value 'g' is then used to create a new Color object.\n\nHowever, if the value passed to 'getPaint' is either lower than 'lowerBound' or higher than 'upperBound', the function tries to calculate the color 'g' based on the original 'value', despite the fact that 'v' has been clamped between 'lowerBound' and 'upperBound'. This can result in 'g' being outside the expected 0-255 range for RGB colors, causing the IllegalArgumentException.\n\nFixed Code:\n\n    public Paint getPaint(double value) {\n    double v = Math.max(value, this.lowerBound);\n    v = Math.min(v, this.upperBound);\n    int g = (int) ((v - this.lowerBound) / (this.upperBound \n            - this.lowerBound) * 255.0);\n    return new Color(g, g, g);\n}\n\nCorrection:\n\nThe fixed code addresses this issue by calculating 'g' based on the clamped value 'v', which ensures that 'g' is within the expected range and prevents the IllegalArgumentException from being thrown. This fixed code ensures that the resulting Color object will always have valid RGB values. \n\nThis bug is a typical example of a semantic bug where all the lines of code are syntactically correct, but the logic of the program is incorrect based on the input parameters."
+}

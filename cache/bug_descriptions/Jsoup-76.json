@@ -1,0 +1,18 @@
+{
+    "bug_id": 76,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "                        tb.reader.matchConsume(\"\\n\"); // ignore LF if next token",
+    "masked_code": "",
+    "project": "Jsoup",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"\\nOne\\nTwo\\n\", pre.wholeText());",
+    "test_name": "preSkipsFirstNewline",
+    "test_suite": "org.jsoup.parser.HtmlParserTest",
+    "time_buggy": "2017-12-03 15:13:40 -0800",
+    "time_fixed": "2017-12-03 15:49:58 -0800",
+    "bug_description": "Bug Description:\n\nBug ID: 76\nProject: Jsoup\nBug Type: SL SH SF (Syntax/Logic/Semantic/Heuristic/Software Fail)\n\nTest Error Message: junit.framework.AssertionFailedError: expected:<\n\nBelow is the bug description in detail as per the given data:\n\nDescription:\n\nIn the project named 'Jsoup', a bug was discovered with the identifier '76'. The bug category is SL SH SF, which appears to be an acronym and could refer to various bug types, potentially Syntax, Logic, Semantic, Heuristic, and Software failure bugs. \n\nHowever, the specific bug type, along with the lines of code causing the error, of the expected code, and the corrected code have not been specified. The test error message is \"junit.framework.AssertionFailedError: expected:<\". It indicates that a particular assertion within the unit test did not pass as the expected output was not equivalent to the test result.\n\nUnfortunately, with the information provided, a step-by-step guide to reproduce the bug cannot be provided as essential details like code snippets, expected results, actual results, and the fixed code used to resolve the issue are missing in the provided data.\n\nThe developer will highly benefit from this data if it contains the steps to reproduce the problem, the actual bug's output, the expected output, and the conditions under which the bug occurs.\n\nFurthermore, any specific information about the environment where the bug was found, when the bug was introduced, and what potential infrastructure or system changes could have led to it would make it easier to diagnose and fix. It would be beneficial to include more data or specifics to enable the developers to generate artificial Java bugs or to fix the existing bugs. \n\nFor this bug report to be more helpful in reproducing and resolving the issue, additional information about the bug's specifics needs to be included."
+}

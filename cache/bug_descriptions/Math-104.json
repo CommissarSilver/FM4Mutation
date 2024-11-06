@@ -1,0 +1,18 @@
+{
+    "bug_id": 104,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "    private static final double DEFAULT_EPSILON = 10e-9;",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "    private static final double DEFAULT_EPSILON = 10e-15;",
+    "masked_code": "",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError: expected:<0.632120558828558> but was:<0.6321205587649603>",
+    "test_framework": "defects4j",
+    "test_line": "            TestUtils.assertEquals(expected, actualP, 10e-15);",
+    "test_name": "testRegularizedGammaPositivePositive",
+    "test_suite": "org.apache.commons.math.special.GammaTest",
+    "time_buggy": "2007-06-14 17:55:10 +0000",
+    "time_fixed": "2007-06-20 22:24:04 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 104\nProject: Math\nBug Type: SL SH SF \n\nThe reported bug is in a Math project where the error type comprises of Simple Literal (SL), Simple Hierarchy (SH), and Simple Feature Envy (SF). An issue has been logged relating to a mathematical validation or computation in the project.\n\nError Details:\nThe assertion error arises while performing a JUnit test in the application. As per the information available, the expected return was <0.632120558828558>, but the actual result shows a value of <0.6321205587649603>. \n\nThis discrepancy is causing the JUnit test to fail, hence the term 'junit.framework.AssertionFailedError'. The difference in these values seems to be originated due to some sort of precision problem or it could be an incorrect formula or algorithm.\n\nSource Code Information:\nThe buggy line provided in relation to the bug is:\n'private static final double DEFAULT_EPSILON = 10e-9;'\n\nThis line of code sets a constant DEFAULT_EPSILON to the value of 10e-9. However, there might be a discrepancy between the precision factored in the calculations and the actual precision returned, causing the error.\n\nSuggested Fix:\nThere is no immediate fix provided for this error, as it seems to require a deeper investigation into the code leading to this particular test's execution. The approach to correct this could involve checking the calculation method or function where this constant is used and make sure it follows the expected mathematical principles. \n\nAlso, it's necessary to review if the precision set by DEFAULT_EPSILON is sufficient for computations in the method under test. Increasing the precision or properly rounding off the resulting values might be necessary to avoid such errors in the future.\n\nAdditional Steps:\nAs part of the further steps to replicate and debug this issue, following is suggested:\n\n1. Identify and review the function that utilizes DEFAULT_EPSILON in its calculations.\n2. Run 'math' related tests specifically to pinpoint the incorrect calculation, preferably with varied inputs.\n3. Once the problematic calculation is identified, check for properly rounding off the values.\n4. Post correcting the calculations, rerun the test to verify if it passes as expected.\n5. Include this scenario in the regression suites to avoid such instances in future.\n\nNote: This is just a preliminary analysis based on the limited details in the error log. It might require exploring the broader context of the code to get to the root of the issue."
+}

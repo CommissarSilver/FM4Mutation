@@ -1,0 +1,18 @@
+{
+    "bug_id": 46,
+    "bug_type": "SH SF",
+    "buggy_lines": "        final long TWO_TO_32 = 0x100000000L;\n        if (l >= TWO_TO_32) {",
+    "code": "    private static ZipLong unixTimeToZipLong(long l) {\n        final long TWO_TO_32 = 0x100000000L;\n        if (l >= TWO_TO_32) {\n            throw new IllegalArgumentException(\"X5455 timestamps must fit in a signed 32 bit integer: \" + l);\n        }\n        return new ZipLong(l);\n    }",
+    "fixed_code": "    private static ZipLong unixTimeToZipLong(long l) {\n        if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {\n            throw new IllegalArgumentException(\"X5455 timestamps must fit in a signed 32 bit integer: \" + l);\n        }\n        return new ZipLong(l);\n    }",
+    "fixed_lines": "        if (l < Integer.MIN_VALUE || l > Integer.MAX_VALUE) {",
+    "masked_code": "    private static ZipLong unixTimeToZipLong(long l) {\n>>> [ INFILL ] <<<\n            throw new IllegalArgumentException(\"X5455 timestamps must fit in a signed 32 bit integer: \" + l);\n        }\n        return new ZipLong(l);\n    }",
+    "project": "Compress",
+    "test_error_message": "junit.framework.AssertionFailedError: Time too big for 32 bits!",
+    "test_framework": "defects4j",
+    "test_line": "            fail(\"Time too big for 32 bits!\");",
+    "test_name": "testGettersSetters",
+    "test_suite": "org.apache.commons.compress.archivers.zip.X5455_ExtendedTimestampTest",
+    "time_buggy": "2017-07-04 08:51:32 +0200",
+    "time_fixed": "2017-07-04 08:51:32 +0200",
+    "bug_description": "Bug ID: 46\n\nProject: Compress\n\nBug Type: Semantic and Syntactic Fault (SH SF)\n\nStep-by-step Bug Description:\n\n1. The bug was found in the project 'Compress' which majorly deals with compression and decompression of data.\n\n2. The bug is a semantic and syntactic fault, a type of bug where the code syntax is correct but the logic or methodology used is incorrect or inappropriate. It is a quite common error and generally happens due to misunderstandings of the problem or system being coded.\n\n3. In this case, the bug was found in a function named 'unixTimeToZipLong'. This function is used to convert a Unix timestamp into a file compression friendly ZipLong format.\n\n4. The error message in the original code mentions that \"Time too big for 32 bits\". That is because the initial code was using a long constant named 'TWO_TO_32' which holds the value of \"0x100000000L\". The function was checking if the given timestamp 'l' is less or not. If 'l' is not less, then the code throws an IllegalArgumentException saying \"X5455 timestamps must fit in a signed 32 bit integer\". As there was no limit for the lower boundary, the function will fail for negative integer values.\n\n5. The problem lies in the statement where a comparison is made to check if 'l' fits in 32 bits. The long constant 'TWO_TO_32' was used for this comparison, which was indeed causing the AssertionError mentioned in the test error message, as this is a 33 bit number. \n\n6. The code was then fixed by changing the 'TWO_TO_32' comparison to a valid range for a 32 bit signed integer, using 'Integer.MIN_VALUE' and 'Integer.MAX_VALUE'. These respective constants represent the maximum and minimum values of 32 bits.\n\nIn conclusion, this bug caused an issue with the timestamp conversion because of the incorrect logic for checking the value's size. It was fixed by updating the conditional statement. To avoid such cases, developers should understand the requirements and constraints of their system (like size of data types) and ensure that their implementation accurately conforms to these conditions."
+}

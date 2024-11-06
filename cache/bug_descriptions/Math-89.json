@@ -1,0 +1,18 @@
+{
+    "bug_id": 89,
+    "bug_type": "SF",
+    "buggy_lines": "",
+    "code": "    public void addValue(Object v) {\n            addValue((Comparable<?>) v);            \n    }",
+    "fixed_code": "    public void addValue(Object v) {\n        if (v instanceof Comparable<?>){\n            addValue((Comparable<?>) v);            \n        } else {\n            throw new IllegalArgumentException(\"Object must implement Comparable\");\n        }\n    }",
+    "fixed_lines": "        if (v instanceof Comparable<?>){\n        } else {\n            throw new IllegalArgumentException(\"Object must implement Comparable\");\n        }",
+    "masked_code": "    public void addValue(Object v) {\n            addValue((Comparable<?>) v);            \n>>> [ INFILL ] <<<\n    }",
+    "project": "Math",
+    "test_error_message": "java.lang.ClassCastException: java.lang.Object cannot be cast to java.lang.Comparable",
+    "test_framework": "defects4j",
+    "test_line": "            f.addValue(new Object()); // This was previously OK",
+    "test_name": "testAddNonComparable",
+    "test_suite": "org.apache.commons.math.stat.FrequencyTest",
+    "time_buggy": "2009-04-17 13:34:59 +0000",
+    "time_fixed": "2009-04-17 13:44:46 +0000",
+    "bug_description": "Bug Description:\n\nTitle: java.lang.ClassCastException error when casting Object to Comparable\n\nBug ID: 89\nProject: Math\nBug Type: SF\nEnvironment: The respective java environment in which the project is compiled.\n\nDescription:\n\nIn the Math project, there is a java.lang.ClassCastException that occurs when we try to cast an Object to a Comparable in the \"addValue\" method. The method was designed under an assumption that every Object passed to it would be of a Comparable type. However, when an Object that does not implement the Comparable interface is passed to the method, a ClassCastException is thrown as that Object cannot be cast to Comparable.\n\nSteps to Reproduce:\n\n1. Create an instance of the class containing the \"addValue\" method.\n2. Call the \"addValue\" method with an Object type that does not implement the Comparable interface as argument.\n\nExpected Result:\n\nThe expected behavior was that the Object should be added as a value even if it does not implement Comparable interface, or a proper message indicating the type incompatibility should be displayed without a ClassCastException.\n\nActual Result:\n\nThe actual behavior is that the system crashes with java.lang.ClassCastException when an Object that does not implement Comparable is provided to the \"addValue\" method.\n\nFixed Code:\n\nThe code was fixed by adding a condition to check if the provided object is an instance of Comparable before casting it. If it's not an instance of Comparable, then the method throws an IllegalArgumentException.\nHere is the fixed code:\n\n        public void addValue(Object v) {\n           if (v instanceof Comparable<?>){\n              addValue((Comparable<?>) v);            \n           } else {\n              throw new IllegalArgumentException(\"Object must implement Comparable\");\n           }\n        }\n\nThis bug can be resolved by proper use of instanceof keyword before performing type casting in Java to ensure type safety and avoid ClassCastException. Thus, it verifies whether Object v passed to addValue method is of type Comparable or not. If it is, it adds the value; otherwise, it throws appropriate IllegalArgumentException."
+}

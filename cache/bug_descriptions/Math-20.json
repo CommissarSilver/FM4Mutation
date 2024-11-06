@@ -1,0 +1,18 @@
+{
+    "bug_id": 20,
+    "bug_type": "SH SF",
+    "buggy_lines": "            return",
+    "code": "        public double[] repairAndDecode(final double[] x) {\n            return\n                decode(x);\n        }",
+    "fixed_code": "        public double[] repairAndDecode(final double[] x) {\n            return boundaries != null && isRepairMode ?\n                decode(repair(x)) :\n                decode(x);\n        }",
+    "fixed_lines": "            return boundaries != null && isRepairMode ?\n                decode(repair(x)) :",
+    "masked_code": "        public double[] repairAndDecode(final double[] x) {\n>>> [ INFILL ] <<<\n                decode(x);\n        }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError: Out of bounds (0.6991991722024977 > 0.5)",
+    "test_framework": "defects4j",
+    "test_line": "        Assert.assertTrue(\"Out of bounds (\" + result[0] + \" > \" + upper[0] + \")\",",
+    "test_name": "testMath864",
+    "test_suite": "org.apache.commons.math3.optimization.direct.CMAESOptimizerTest",
+    "time_buggy": "2012-09-21 10:42:30 +0000",
+    "time_fixed": "2012-09-21 14:17:37 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 20\nProject: Math\nBug Type: Semantic (SH), Syntactic Fault (SF)\nError Message: junit.framework.AssertionFailedError: Out of bounds (0.6991991722024977 > 0.5)\n\nSteps to reproduce:\n\n1. In the project named 'Math', there is a method called 'repairAndDecode' that takes a double array as an argument. Its purpose is to decode the values of the provided array.\n\n2. Buggy lines have been identified where the method simply returns a decoded version of the array. The error is triggered when the decoding process generates a result that has values outside of the expected boundaries.\n\n3. Test Error Message shows that the issue pertains to a value being out of bounds: \n   \"junit.framework.AssertionFailedError: Out of bounds (0.6991991722024977 > 0.5)\". \n   This implies that one or more values in the decoded array are greater than the maximum boundary of 0.5, leading to assertion failure during testing.\n\n4. Code Snippet: \n\nOriginal Code:\n```java\n        public double[] repairAndDecode(final double[] x) {\n        return\n            decode(x);\n        }\n```\nThis code shows that the 'repairAndDecode' method simply decodes the input array without checking for any potential out-of-bounds values leading to the exception.\n\n5. A correction has been proposed to the faulty code where 'decode(repair(x))' is returned if the object has defined 'boundaries' and it is in 'repairMode'. If not, it simply decodes the array as before. This repair step is presumably responsible for fixing out-of-bounds values.\n\nFixed Code:\n```java\n        public double[] repairAndDecode(final double[] x) {\n        return boundaries != null && isRepairMode ?\n            decode(repair(x)) :\n            decode(x);\n        }\n```\n\nTo generate similar artificial bugs, a developer could intentionally return unprocessed arrays (or other data structures) without considering required error checking or repair logic leading to assertion errors during testing."
+}

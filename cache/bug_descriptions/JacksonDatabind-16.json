@@ -1,0 +1,18 @@
+{
+    "bug_id": 16,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return (previous != null) && previous.equals(ann);",
+    "code": "    protected final boolean _add(Annotation ann) {\n        if (_annotations == null) {\n            _annotations = new HashMap<Class<? extends Annotation>,Annotation>();\n        }\n        Annotation previous = _annotations.put(ann.annotationType(), ann);\n        return (previous != null) && previous.equals(ann);\n    }",
+    "fixed_code": "    protected final boolean _add(Annotation ann) {\n        if (_annotations == null) {\n            _annotations = new HashMap<Class<? extends Annotation>,Annotation>();\n        }\n        Annotation previous = _annotations.put(ann.annotationType(), ann);\n        return (previous == null) || !previous.equals(ann);\n    }",
+    "fixed_lines": "        return (previous == null) || !previous.equals(ann);",
+    "masked_code": "    protected final boolean _add(Annotation ann) {\n        if (_annotations == null) {\n            _annotations = new HashMap<Class<? extends Annotation>,Annotation>();\n        }\n        Annotation previous = _annotations.put(ann.annotationType(), ann);\n>>> [ INFILL ] <<<\n    }",
+    "project": "JacksonDatabind",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:<{\"[bar]\":\"result\"}> but was:<{\"[stuff]\":\"result\"}>",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"{\\\"bar\\\":\\\"result\\\"}\", result);",
+    "test_name": "testMixinWithBundles",
+    "test_suite": "com.fasterxml.jackson.databind.mixins.MixinsWithBundlesTest",
+    "time_buggy": "2015-04-26 22:24:57 -0700",
+    "time_fixed": "2015-04-26 22:42:17 -0700",
+    "bug_description": "Bug Description:\n\nBug ID: 16\nProject: JacksonDatabind\nBug Type: Slight Literal, Slight String Similarity, Slight Format issues\n\nThe error arose in the JacksonDatabind project, specifically in a method named \"_add\". \"_add\" is a method that accepts an annotation object and adds it to the \"_annotations\" HashMap. If the \"_annotations\" HashMap is null, a new HashMap will be created. The method returns a boolean based on whether a previously added annotation is the same as the one currently being added.\n\nThe previous version of the method checked and returned true if the \"_annotations\" HashMap previously contained an annotation object that was equal to the currently added annotation. The code in question is: \n\"return (previous != null) && previous.equals(ann);\"\n\nHowever, the method was returning false positives in cases where the expected output was \"<{\"[bar]\":\"result\"}>\", but it was returning \"<{\"[stuff]\":\"result\"}>\". This discrepancy causes the API to compare unexpected results, which lead to the junit.framework.ComparisonFailure test error.\n\nTo fix the error, the boolean expression was modified. The fixed code checks if the previously added annotation is null or different from the annotation currently being added.\n\"return (previous == null) || !previous.equals(ann);\"\n\nBy doing this, the return value will be correct, and the comparison failure that occurred when running the test should also be resolved. \n\nAs a result, the boolean logic bug was successfully manipulated to improve the precision of the algorithm."
+}

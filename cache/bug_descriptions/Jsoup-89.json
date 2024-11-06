@@ -1,0 +1,18 @@
+{
+    "bug_id": 89,
+    "bug_type": "SF",
+    "buggy_lines": "        String oldVal = parent.get(this.key);",
+    "code": "    public String setValue(String val) {\n        String oldVal = parent.get(this.key);\n        if (parent != null) {\n            int i = parent.indexOfKey(this.key);\n            if (i != Attributes.NotFound)\n                parent.vals[i] = val;\n        }\n        this.val = val;\n        return Attributes.checkNotNull(oldVal);\n    }",
+    "fixed_code": "    public String setValue(String val) {\n        String oldVal = this.val;\n        if (parent != null) {\n            oldVal = parent.get(this.key); // trust the container more\n            int i = parent.indexOfKey(this.key);\n            if (i != Attributes.NotFound)\n                parent.vals[i] = val;\n        }\n        this.val = val;\n        return Attributes.checkNotNull(oldVal);\n    }",
+    "fixed_lines": "        String oldVal = this.val;\n            oldVal = parent.get(this.key); // trust the container more",
+    "masked_code": "    public String setValue(String val) {\n        if (parent != null) {\n>>> [ INFILL ] <<<\n            int i = parent.indexOfKey(this.key);\n            if (i != Attributes.NotFound)\n                parent.vals[i] = val;\n        }\n        this.val = val;\n        return Attributes.checkNotNull(oldVal);\n    }",
+    "project": "Jsoup",
+    "test_error_message": "java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "        String oldVal = attr.setValue(\"four\");",
+    "test_name": "settersOnOrphanAttribute",
+    "test_suite": "org.jsoup.nodes.AttributeTest",
+    "time_buggy": "2018-12-23 22:02:59 -0800",
+    "time_fixed": "2018-12-23 22:27:31 -0800",
+    "bug_description": "Bug ID: 89\nProject: Jsoup\nBug Type: SF (Software Fault)\n\nStep 1: Initial Context\nThe bug resides in the Jsoup project, specifically, the method `setValue()` in the `Attributes` class that tries to set a new value to an attribute with a specific key. \n\nStep 2: Pre-Modification Code Execution\nWhen the `setValue()` method is invoked, it attempts to retrieve the old value of the attribute with the given key from the parent object. However, as the code tries to get this old value immediately, it might attempt to call the `get()` method on a null object, if the parent object is null. This causes a `java.lang.NullPointerException`.\n\nStep 2.1: Buggy Lines\nThe buggy line in this scenario is:\n   `String oldVal = parent.get(this.key);`\n\nStep 3: Problem in the Code\nThe problem is that the code does not initially check whether the \"parent\" object is null before trying to access its method. Therefore, if \"parent\" is indeed null, this leads to a NullPointerException being thrown when the `get()` operation is attempted.\n\nStep 4: Error Message\nThe result of this issue is a NullPointerException, as indicated by the test error message: `java.lang.NullPointerException`. \n\nStep 5: Code Fix\nThe corrected code delays getting the old value from the parent until it checks that the parent is not null. \n\nThis involved modifying the aforementioned buggy line to:\n    `oldVal = parent.get(this.key); // trust the container more`\n    \nAlso, before that, the old value is being set to `this.val` just in case if parent is null, old value isn't null:\n    `String oldVal = this.val;`\n\nSo, the fixed code first checks if \"parent\" is null and only then does it attempt to call the `get()` method on it.\n\nStep 6: After Bug Fix\nAfter the bug fix, the NullPointerException issue is no longer present. The application is now more robust, guarding against potential null pointers by checking the parent object for nullity before invoking any methods on it."
+}

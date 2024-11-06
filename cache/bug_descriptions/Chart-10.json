@@ -1,0 +1,18 @@
+{
+    "bug_id": 10,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return \" title=\\\"\" + toolTipText",
+    "code": "    public String generateToolTipFragment(String toolTipText) {\n        return \" title=\\\"\" + toolTipText\n            + \"\\\" alt=\\\"\\\"\";\n    }",
+    "fixed_code": "    public String generateToolTipFragment(String toolTipText) {\n        return \" title=\\\"\" + ImageMapUtilities.htmlEscape(toolTipText) \n            + \"\\\" alt=\\\"\\\"\";\n    }",
+    "fixed_lines": "        return \" title=\\\"\" + ImageMapUtilities.htmlEscape(toolTipText) ",
+    "masked_code": "    public String generateToolTipFragment(String toolTipText) {\n>>> [ INFILL ] <<<\n            + \"\\\" alt=\\\"\\\"\";\n    }",
+    "project": "Chart",
+    "test_error_message": "junit.framework.ComparisonFailure: expected:< title=\"Series [&quot;A&quot;], 100.0\" alt=\"\"> but was:< title=\"Series [\"A\"], 100.0\" alt=\"\">",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\" title=\\\"Series &quot;A&quot;, 100.0\\\" alt=\\\"\\\"\",",
+    "test_name": "testGenerateURLFragment",
+    "test_suite": "org.jfree.chart.imagemap.junit.StandardToolTipTagFragmentGeneratorTests",
+    "time_buggy": "2008-06-10 00:28:02 -0700 ",
+    "time_fixed": "2008-06-10 00:32:29 -0700 ",
+    "bug_description": "Bug ID: 10\nProject: Chart\nBug Type: Semantic (SL-Statement & loop, SH- Statement & Handling, SF- Statement & Function)\n\nBug Description:\n\nThe bug is related to the dynamic generation of a tooltip fragment in the chart project. In the buggy code, the 'generateToolTipFragment' function is creating a tooltip fragment by concatenating the incoming toolTipText as it is with the 'title' attribute. The convention for HTML attributes is to put any information in double quotes. However, if there is an instance of double quotes within the toolTipText itself, the HTML tag gets broken and does not function as expected.\n\nFor instance,\nThe test failure message indicates a comparison failure where the expected result was < title=\"Series [&quot;A&quot;], 100.0\" alt=\"\"> but the actual outcome was < title=\"Series [\"A\"], 100.0\" alt=\"\">.\n\nThis happens because if the toolTipText contains double quotes themselves, they end up unescaped in the final HTML and distort the expected structure.\n\nTo reproduce this bug:\n\nStep 1: Call the function 'generateToolTipFragment' with a string 'Series [\"A\"], 100.0' as parameter.\nStep 2: The function returns a string '< title=\"Series [\"A\"], 100.0\" alt=\"\"> which is a malformed HTML segment.\nStep 3: Observe the returned HTML tooltip fragment is not as expected and any further processing or displaying this HTML will result in an error or incorrect result.\n\nFixed Code:\n\nThe bug has been fixed in the code by making use of the 'ImageMapUtilities.htmlEscape' function to escape possible HTML special characters that might be present in the tooltip text. Now, regardless of the content of toolTipText, the output of this function is a valid HTML segment.\n\nAfter the fix:\n\nStep 1: Call the function 'generateToolTipFragment' with a string 'Series [\"A\"], 100.0' as parameter.\nStep 2: The function now returns a string '< title=\" Series [&quot;A&quot;], 100.0\" alt=\"\">', which is a correctly formatted HTML segment.\nStep 3: Now, the returned HTML segment can be rightly processed or displayed without causing any error or unexpected outcome.\n\nThis bug demonstrates the important need for data sanitization and proper handling of special characters in any form of string manipulations and conversions. Error messages can be used to diagnose the cause of the issue and fix the problem accordingly."
+}

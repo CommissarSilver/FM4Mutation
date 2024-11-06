@@ -1,0 +1,18 @@
+{
+    "bug_id": 63,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return (Double.isNaN(x) && Double.isNaN(y)) || x == y;",
+    "code": "    public static boolean equals(double x, double y) {\n        return (Double.isNaN(x) && Double.isNaN(y)) || x == y;\n    }",
+    "fixed_code": "    public static boolean equals(double x, double y) {\n        return equals(x, y, 1);\n    }",
+    "fixed_lines": "        return equals(x, y, 1);",
+    "masked_code": "    public static boolean equals(double x, double y) {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError",
+    "test_framework": "defects4j",
+    "test_line": "        assertFalse(MathUtils.equals(new double[] { Double.NaN },",
+    "test_name": "testArrayEquals",
+    "test_suite": "org.apache.commons.math.util.MathUtilsTest",
+    "time_buggy": "2010-08-31 12:05:00 +0000",
+    "time_fixed": "2010-09-01 13:45:55 +0000",
+    "bug_description": "\nBug Title: Incorrect Handling of NaN Values in Math.equals Method\n\nDetailed Description: \n\nThe bug is situated in the Math project and is identified with the Bug ID number 63, classified under the Severity Level (SL), Severity High (SH), and Severity Failure (SF) categories.\n\nThe error mainly revolves around the equals() method of the Math project. The method has been implemented incorrectly to compare two double values, x and y. The error message produced by the JUnit test was junit.framework.AssertionFailedError, indicating that the method's output did not match the expected outcome.\n\nIn the buggy code snippet:\n```\npublic static boolean equals(double x, double y) {\n    return (Double.isNaN(x) && Double.isNaN(y)) || x == y;\n}\n```\nthe equals() method checks for two conditions in its return statement. Firstly, it checks if both x and y are \"Not-a-Number\" (NaN) values. Secondly, it checks if x is equal to y. The problem here lies in the use of NaN values. In Java, two NaN values are considered unequal, which contradicts the logic of the equals() method. The condition `Double.isNaN(x) && Double.isNaN(y)` will return true when both x and y are NaN, treating them as equal.\n\nDue to this conflict between Java standards and the equals() method, an assert failure - junit.framework.AssertionFailedError - is thrown when the test case includes NaN values.\n\nThe developer fixed the bug by adjusting the equals() method as follows:\n```\npublic static boolean equals(double x, double y) {\n    return equals(x, y, 1);\n}\n```\nIn the fixed code, the method leverages another pre-existing version of equals() that takes three parameters - two double numbers and a positive integer. This form of equals() includes a provision for a small tolerance when comparing double values, therefore properly handling NaN values and preventing the junit.framework.AssertionFailedError.\n\nTo artificially generate similar bugs, developers could intentionally misuse the conditions required for comparing special floating-point values such as NaN or Infinity, or overlook precision issues inherent in floating-point comparisons.\n"
+}

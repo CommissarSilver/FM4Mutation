@@ -1,0 +1,18 @@
+{
+    "bug_id": 32,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        clone.classNames();",
+    "code": "    public Element clone() {\n        Element clone = (Element) super.clone();\n        clone.classNames();\n        return clone;\n    }",
+    "fixed_code": "    public Element clone() {\n        Element clone = (Element) super.clone();\n        clone.classNames = null; // derived on first hit, otherwise gets a pointer to source classnames\n        return clone;\n    }",
+    "fixed_lines": "        clone.classNames = null; // derived on first hit, otherwise gets a pointer to source classnames",
+    "masked_code": "    public Element clone() {\n        Element clone = (Element) super.clone();\n>>> [ INFILL ] <<<\n        return clone;\n    }",
+    "project": "Jsoup",
+    "test_error_message": "junit.framework.AssertionFailedError",
+    "test_framework": "defects4j",
+    "test_line": "        assertTrue(classes.contains(\"one\"));",
+    "test_name": "testClonesClassnames",
+    "test_suite": "org.jsoup.nodes.ElementTest",
+    "time_buggy": "2012-12-23 14:02:21 -0800",
+    "time_fixed": "2012-12-23 14:03:05 -0800",
+    "bug_description": "Bug Description:\n\nBug ID: 32 is related to the Jsoup project. The bug type reported is SL SH SF which typically indicates declaration/assignment and statement sequence issues in writing the code. \n\nIn the provided buggy code, there's a function named `clone()`. This function is cloning an instance of `Element` class using the statement `Element clone = (Element) super.clone();`. After cloning the object, it attempts to call the `classNames()` method on this cloned element.\n\nThe error message returned from the Test Suite is `junit.framework.AssertionFailedError`. This is a generic error in JUnit tests that means an assertion statement (a true or false statement) in a test is false.\n\nAfter investigation, the main issue was found in the following line:\n```java\nclone.classNames();\n```\nThe error occurs due to the `classNames()` method being invoked on the cloned object but no operation is performed to handle the return value of this method or nullify this. \n\nThe bug was resolved by specifically setting `clone.classNames` to `null` right after cloning the object:\n```java\nclone.classNames = null; \n// Comment by developer: derived on first hit, otherwise gets a pointer to source classnames\n```\nThis ensures that the `classNames` state of the cloned element is not tied to the original object post-cloning.\n\nTo generate artificial Java bugs of similar nature:\n\n1. Create methods that are supposed to clone or copy objects and intentionally miss the initialization or nullification of some properties after cloning.\n\n2. Use these poorly cloned objects in test case scenarios where the unhandled or improperly initialized properties will certainly cause failures.\n\n3. Run test suite and diagnose errors coming from the handling or usage of these improperly cloned object properties.\n\n4. Fix the bugs by correctly handling the initialization and nullification of the copied/cloned object's properties."
+}

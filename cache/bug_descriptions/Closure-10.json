@@ -1,0 +1,18 @@
+{
+    "bug_id": 10,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "      return allResultsMatch(n, MAY_BE_STRING_PREDICATE);",
+    "code": "  static boolean mayBeString(Node n, boolean recurse) {\n    if (recurse) {\n      return allResultsMatch(n, MAY_BE_STRING_PREDICATE);\n    } else {\n      return mayBeStringHelper(n);\n    }\n  }",
+    "fixed_code": "  static boolean mayBeString(Node n, boolean recurse) {\n    if (recurse) {\n      return anyResultsMatch(n, MAY_BE_STRING_PREDICATE);\n    } else {\n      return mayBeStringHelper(n);\n    }\n  }",
+    "fixed_lines": "      return anyResultsMatch(n, MAY_BE_STRING_PREDICATE);",
+    "masked_code": "  static boolean mayBeString(Node n, boolean recurse) {\n    if (recurse) {\n>>> [ INFILL ] <<<\n    } else {\n      return mayBeStringHelper(n);\n    }\n  }",
+    "project": "Closure",
+    "test_error_message": "junit.framework.AssertionFailedError:",
+    "test_framework": "defects4j",
+    "test_line": "    testSame(js);",
+    "test_name": "testIssue821",
+    "test_suite": "com.google.javascript.jscomp.PeepholeFoldConstantsTest",
+    "time_buggy": "2012-09-21 18:51:22 +0000",
+    "time_fixed": "2012-09-21 17:50:43 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 10\nProject: Closure\nBug Type: Semantic Bug(SL SH SF)\n\nIn the Closure project, a semantic bug was identified.\n\nThe original code was expected to check if any results match with the predicate (MAY_BE_STRING_PREDICATE) when the \"recurse\" flag is set to true. However, it was wrongly written to check if all results match with the predicate.\n\nThe erroneous code in question is: \n```\nreturn allResultsMatch(n, MAY_BE_STRING_PREDICATE);\n```\n\nThis piece of code is encapsulated within the 'mayBeString' method. This function is supposed to behave differently depending on the Boolean flag \"recurse\". In case \"recurse\" is true, it should return true if any of the results match the predicate 'MAY_BE_STRING_PREDICATE'. However, the buggy code instead checked if all results match the predicate. \n\nThis leads to a junit.framework.AssertionFailedError at the test phase because of not meeting the expected results.\n\nThe faulty method looks like this: \n\n```java\n  static boolean mayBeString(Node n, boolean recurse) {\n  if (recurse) {\n    return allResultsMatch(n, MAY_BE_STRING_PREDICATE);\n  } else {\n    return mayBeStringHelper(n);\n  }\n```\n\nThe fix for this bug involves changing the method 'allResultsMatch()' to 'anyResultsMatch()'. \n\nThe corrected code now correctly checks if any results match the predicate 'MAY_BE_STRING_PREDICATE' when the \"recurse\" flag is set to true. \n\nThe corrected code looks like this:\n\n```java\n  static boolean mayBeString(Node n, boolean recurse) {\n  if (recurse) {\n    return anyResultsMatch(n, MAY_BE_STRING_PREDICATE);\n  } else {\n    return mayBeStringHelper(n);\n  }\n```\n\nThis change ensures that the logic now correctly matches with the intended one and the junit.framework.AssertionFailedError should be resolved."
+}

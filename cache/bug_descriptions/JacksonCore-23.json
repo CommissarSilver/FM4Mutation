@@ -1,0 +1,18 @@
+{
+    "bug_id": 23,
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "        if (getClass() != DefaultPrettyPrinter.class) { // since 2.10\n            throw new IllegalStateException(\"Failed `createInstance()`: \"+getClass().getName()\n                    +\" does not override method; it has to\");\n        }",
+    "masked_code": "",
+    "project": "JacksonCore",
+    "test_error_message": "junit.framework.AssertionFailedError: Should not pass",
+    "test_framework": "defects4j",
+    "test_line": "            fail(\"Should not pass\");",
+    "test_name": "testInvalidSubClass",
+    "test_suite": "com.fasterxml.jackson.core.util.TestDefaultPrettyPrinter",
+    "time_buggy": "2018-12-08 14:26:29 -0800",
+    "time_fixed": "2018-12-11 22:06:44 -0800",
+    "bug_description": "Bug Description:\n\nBug ID: 23\nProject: JacksonCore\nBug Type: Statistical hypothesis testing error (SH SF)\n\nError Overview:\nA test case flagged an error related to statistical hypothesis in the JacksonCore project. The error is specified as a \"Should not pass\" type, indicating that a particular condition or set of conditions that should have failed the tests, unfortunately, passed them and this results in a failing test case.\n\nError Detail:\nThe error in question is a junit.framework.AssertionFailedError. JUnit is a widely-used testing tool for Java programming, and AssertionFailedError indicates that an assertion statement (a true-or-false statement that the program checks while running) has turned out to be false. \n\nIn this specific case, a test case's assertion that some code (\"Should not pass\") is incorrect when in fact, during the test, the program showed that the code did pass. This means that the specific chunk of code associated with this error message returned an outcome that does not align with what the test case expects.\n\nUnfortunately, without the actual Buggy Lines of code, the Fixed code, and further context, a more specific description cannot be provided.\n\nRecommended Steps:\n1. Isolate the specific test case and chunk of code causing this error, making sure that the code, in fact, leads to the junit.framework.AssertionFailedError: Should not pass error message.\n2. Thoroughly review this segment of code and the corresponding test case to determine why the returned outcome does not meet the test case's expectations. The problem is likely connected to how the assertion is defined in the test case.\n3. Debug, edit the code, and/or adjust the assertions in the test case as needed to resolve the discrepancy.\n4. Retest the program to ensure the same error doesn't occur and that the issue is resolved.\n5. Continue to monitor related tests in order to catch any additional cases where this error recurs.\n\nThis detailed bug report aims to ensure that developers can recognize this type of error and work to resolve it, thus improving the functionality and reliability of the associated software."
+}

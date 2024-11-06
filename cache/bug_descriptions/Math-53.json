@@ -1,0 +1,18 @@
+{
+    "bug_id": 53,
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "    public Complex add(Complex rhs)\n        throws NullArgumentException {\n        MathUtils.checkNotNull(rhs);\n        return createComplex(real + rhs.getReal(),\n            imaginary + rhs.getImaginary());\n    }",
+    "fixed_code": "    public Complex add(Complex rhs)\n        throws NullArgumentException {\n        MathUtils.checkNotNull(rhs);\n        if (isNaN || rhs.isNaN) {\n            return NaN;\n        }\n        return createComplex(real + rhs.getReal(),\n            imaginary + rhs.getImaginary());\n    }",
+    "fixed_lines": "        if (isNaN || rhs.isNaN) {\n            return NaN;\n        }",
+    "masked_code": "    public Complex add(Complex rhs)\n        throws NullArgumentException {\n        MathUtils.checkNotNull(rhs);\n>>> [ INFILL ] <<<\n        return createComplex(real + rhs.getReal(),\n            imaginary + rhs.getImaginary());\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError",
+    "test_framework": "defects4j",
+    "test_line": "        Assert.assertTrue(Double.isNaN(w.getReal()));",
+    "test_name": "testAddNaN",
+    "test_suite": "org.apache.commons.math.complex.ComplexTest",
+    "time_buggy": "2011-07-14 05:32:41 +0000",
+    "time_fixed": "2011-07-14 06:08:05 +0000",
+    "bug_description": "\nBug Description:\n\nBug ID: 53\nProject: Math\nBug Type: Semantic, Short-Circuit Evaluation Error (SH SF)\n\nSummary:\n\nThe bug leads to an \"AssertionFailedError\" error when the input value is NaN (Not a Number), the add function doesn't handle correctly, as no check for NaN is performed before executing the addition.\n\nDescription:\n\nIn the buggy version of the code, the function 'add(Complex rhs)' adds the real and imaginary parts of the complex numbers, i.e., 'this' object and 'rhs'. However, the function does not check whether 'rhs' or 'this' object itself is NaN. As a result, if either of the complex numbers is NaN, the function throws a \"junit.framework.AssertionFailedError\" exception. \n\nSteps to Reproduce:\n1. Create an instance of the Complex class, let's say 'a', with any real and imaginary part.\n2. Create another instance of the Complex class, let's say 'b', with the real or imaginary part as NaN.\n3. Call the method 'add(rhs)' on 'a' with 'b' as an argument.\n\nExpected Result:\nThe method should return NaN, since adding NaN to any number should result in NaN. \n\nActual Result:\nThe method throws a \"junit.framework.AssertionFailedError\". \n\nSolution:\n\nIn the fixed code, a check for NaN is added by the line 'if (isNaN || rhs.isNaN)'. As a result, if either of the complex numbers is NaN, the function will return NaN and will no longer throw an \"AssertionFailedError\" exception."
+}

@@ -1,0 +1,18 @@
+{
+    "bug_id": 7,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return StringUtils.newStringUtf8(encodeBase64(binaryData, true));",
+    "code": "    public static String encodeBase64String(byte[] binaryData) {\n        return StringUtils.newStringUtf8(encodeBase64(binaryData, true));\n    }",
+    "fixed_code": "    public static String encodeBase64String(byte[] binaryData) {\n        return StringUtils.newStringUtf8(encodeBase64(binaryData, false));\n    }",
+    "fixed_lines": "        return StringUtils.newStringUtf8(encodeBase64(binaryData, false));",
+    "masked_code": "    public static String encodeBase64String(byte[] binaryData) {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Codec",
+    "test_error_message": "junit.framework.ComparisonFailure: byteToString static Hello World expected:<SGVsbG8gV29ybGQ=[]> but was:<SGVsbG8gV29ybGQ=[",
+    "test_framework": "defects4j",
+    "test_line": "        assertEquals(\"byteToString static Hello World\", \"SGVsbG8gV29ybGQ=\", Base64.encodeBase64String(b1));",
+    "test_name": "testByteToStringVariations",
+    "test_suite": "org.apache.commons.codec.binary.Base64Test",
+    "time_buggy": "2011-01-22 05:57:53 +0000",
+    "time_fixed": "2011-01-23 05:52:42 +0000",
+    "bug_description": "Bug Description:\n\nBug ID: 7 \n\nProject: Codec \n\nBug Type: Semantic, Syntax, and Software bug (SL SH SF)\n\nWhen running tests, the error message: \"junit.framework.ComparisonFailure: byteToString static Hello World expected:<SGVsbG8gV29ybGQ=[]> but was:<SGVsbG8gV29ybGQ=\" appears which indicates that the function called 'encodeBase64String' is generating different output as compared to the expected one within the byteToString static test. \n\nAffected Component: The issue lies within the method 'encodeBase64String' in the 'Codec' project.\n\nIssue:\n\nThe function 'encodeBase64String' is used to encode the binaryData to a base 64 string. However, the bug is causing it to generate an incorrect string during the test 'byteToString static Hello World'. \n\nThe incorrect line of code (_Buggy line_):\n `return StringUtils.newStringUtf8(encodeBase64(binaryData, true));` \n\nExplanation: The method `newStringUtf8` is being called from the `StringUtils` class and it is taking `encodeBase64(binaryData, true)` as an argument. The boolean `true` in `encodeBase64` pair is a flag for `isChunked` which when true adds a newline character (`\\n`) after every 76 characters in the output. The encoded string generated is adding an unexpected newline that fails the comparison test of 'byteToString static Hello World'.\n\nHow the bug was resolved:\n\nThe fixed line of Code is: `return StringUtils.newStringUtf8(encodeBase64(binaryData, false));`\n\nThe fix changes the boolean flag `true` to `false` in the `encodeBase64` method. Now, no extra newline is added to the encoded string, thus it now correctly passes the test 'byteToString static Hello World'."
+}

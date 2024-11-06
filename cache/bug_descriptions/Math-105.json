@@ -1,0 +1,18 @@
+{
+    "bug_id": 105,
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return sumYY - sumXY * sumXY / sumXX;",
+    "code": "    public double getSumSquaredErrors() {\n        return sumYY - sumXY * sumXY / sumXX;\n    }",
+    "fixed_code": "    public double getSumSquaredErrors() {\n        return Math.max(0d, sumYY - sumXY * sumXY / sumXX);\n    }",
+    "fixed_lines": "        return Math.max(0d, sumYY - sumXY * sumXY / sumXX);",
+    "masked_code": "    public double getSumSquaredErrors() {\n>>> [ INFILL ] <<<\n    }",
+    "project": "Math",
+    "test_error_message": "junit.framework.AssertionFailedError",
+    "test_framework": "defects4j",
+    "test_line": "        assertTrue(reg.getSumSquaredErrors() >= 0.0);",
+    "test_name": "testSSENonNegative",
+    "test_suite": "org.apache.commons.math.stat.regression.SimpleRegressionTest",
+    "time_buggy": "2006-07-06 04:47:23 +0000",
+    "time_fixed": "2006-07-06 05:10:49 +0000",
+    "bug_description": "Bug ID: 105\nProject: Math\nBug Type: SL SH SF (Semantic Errors)\n\nDescription: \nThe problem in the code arises due to how operations are prioritized. There is an instance where division gets higher precedence and that's where the issue is.\n\nAffected Code:\n```java\npublic double getSumSquaredErrors() {\n    return sumYY - sumXY * sumXY / sumXX;\n}\n```\n\nThe above method is in the Math project. The method `getSumSquaredErrors()` is expected to calculate the sum of the squared errors. However, it is possible for this method to return a negative value due to division having higher precedence than subtraction in Java.\n\nSpecifically, `sumXY * sumXY / sumXX` stands out in the code. The multiplication operation (`sumXY * sumXY`) happens first, then the division operation (`... / sumXX`). After these operations, the subtraction operation (`sumYY - ...`) is processed. The issue is: if `sumXY * sumXY / sumXX` results in a value greater than `sumYY`, a negative value is returned which doesn't match the expected non-negative result of a squared sum.\n\nError Message: \nThe error message thrown is `junit.framework.AssertionFailedError`. It can potentially happen when test assertions comparing the output of the `getSumSquaredErrors()` method to the expected positive value fail, due to negative return values from this method.\n\nResolution:\nThe code was fixed by ensuring that if the result becomes negative due to the subtraction operation, zero is returned by using Java\u2019s Math.max function, guaranteeing the result is only non-negative values.\n\nFixed Code:\n```java\npublic double getSumSquaredErrors() {\n    return Math.max(0d, sumYY - sumXY * sumXY / sumXX);\n}\n```\n\nThis provides the mechanic to compare two values (0 and the subtraction expression `sumYY - sumXY * sumXY / sumXX`) and return the maximum between these two values. Therefore, if the subtraction operation results in a negative value, Math.max will return the first argument, 0. This way, the method effectively never returns a negative value, ensuring that the sum of square errors remains non-negative.\n\nTo avoid this bug the developers need to ensure that in situations where operations precedence can affect the result, it is mandatory to consider the mathematical order of operations (BIDMAS/BODMAS) or use parentheses to make the order explicit. In addition, when dealing with mathematical operations where negative results are counterintuitive or cause errors, preventive measures similar to the Math.max solution used here can be employed."
+}

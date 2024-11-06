@@ -1,0 +1,18 @@
+{
+    "bug_id": 5,
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "    static String stripLeadingHyphens(String str)\n    {\n        if (str.startsWith(\"--\"))\n        {\n            return str.substring(2, str.length());\n        }\n        else if (str.startsWith(\"-\"))\n        {\n            return str.substring(1, str.length());\n        }\n\n        return str;\n    }",
+    "fixed_code": "    static String stripLeadingHyphens(String str)\n    {\n        if (str == null) {\n            return null;\n        }\n        if (str.startsWith(\"--\"))\n        {\n            return str.substring(2, str.length());\n        }\n        else if (str.startsWith(\"-\"))\n        {\n            return str.substring(1, str.length());\n        }\n\n        return str;\n    }",
+    "fixed_lines": "        if (str == null) {\n            return null;\n        }",
+    "masked_code": "    static String stripLeadingHyphens(String str)\n    {\n>>> [ INFILL ] <<<\n        if (str.startsWith(\"--\"))\n        {\n            return str.substring(2, str.length());\n        }\n        else if (str.startsWith(\"-\"))\n        {\n            return str.substring(1, str.length());\n        }\n\n        return str;\n    }",
+    "project": "Cli",
+    "test_error_message": "java.lang.NullPointerException",
+    "test_framework": "defects4j",
+    "test_line": "        assertNull(Util.stripLeadingHyphens(null));",
+    "test_name": "testStripLeadingHyphens",
+    "test_suite": "org.apache.commons.cli.UtilTest",
+    "time_buggy": "2007-06-05 04:44:56 +0000",
+    "time_fixed": "2007-06-06 07:10:30 +0000",
+    "bug_description": "Bug ID: 5\nTitle: NullPointerException in the Cli project\nSource File: Unknown (Not provided)\n\nBug Description:\n\nThe bug occurs in the Cli project, specifically in the function named 'stripLeadingHyphens'. The bug type has been classified as SH SF in the bug report. The error message revealed from the tests is a 'java.lang.NullPointerException'. This points to an attempt within the code to reference a null object as though it were an instantiable object.\n\nUpon inspection of the function's original code, it seems that the function takes a string as a parameter and checks with the methods 'startsWith' whether the string begins with \"--\" or \"-\". If either of these conditions matches, the string's leading hyphens are removed. If no condition matches, the original input string is returned.\n\nThe problem arises if the input string itself is null. The reference to the null string object causes a null pointer exception at runtime. 'startsWith' is a method that is invoked using an object reference. So if str is null, trying to call str.startsWith will throw a NullPointerException, as null values aren't allowed to use methods in Java.\n\nSteps to reproduce:\n\n1. Initialize the function 'stripLeadingHyphens' with null value.\n2. The function attempts to execute startsWith on the null parameter.\n3. This raises a java.lang.NullPointerException error since `startsWith` is being called on a null object.\n\nFix: \n\nTo fix this issue, an initial condition has been added at the beginning of the 'stripLeadingHyphens' function checking if the str parameter is null. If it is null, the function immediately returns null, preventing any methods from being executed on a null object. This fix ensures the function becomes null-safe and robust against null inputs. \n\nThis adjustment also highlights the importance of implementing null-checks when dealing with references. It's always better to prevent a null pointer exception rather than dealing with it after it has been thrown."
+}

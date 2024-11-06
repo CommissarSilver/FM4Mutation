@@ -1,0 +1,18 @@
+{
+    "bug_id": 22,
+    "bug_type": "SH SF",
+    "buggy_lines": "        if (o1 == null || o2 == null) {",
+    "code": "    public static boolean areEqual(Object o1, Object o2) {\n        if (o1 == null || o2 == null) {\n            return o1 == null && o2 == null;\n        } else if (isArray(o1)) {\n            return isArray(o2) && areArraysEqual(o1, o2);\n        } else {\n            return o1.equals(o2);\n        }\n    }",
+    "fixed_code": "    public static boolean areEqual(Object o1, Object o2) {\n        if (o1 == o2 ) {\n            return true;\n\t} else if (o1 == null || o2 == null) {\n            return o1 == null && o2 == null;\n        } else if (isArray(o1)) {\n            return isArray(o2) && areArraysEqual(o1, o2);\n        } else {\n            return o1.equals(o2);\n        }\n    }",
+    "fixed_lines": "        if (o1 == o2 ) {\n            return true;\n\t} else if (o1 == null || o2 == null) {",
+    "masked_code": "    public static boolean areEqual(Object o1, Object o2) {\n>>> [ INFILL ] <<<\n            return o1 == null && o2 == null;\n        } else if (isArray(o1)) {\n            return isArray(o2) && areArraysEqual(o1, o2);\n        } else {\n            return o1.equals(o2);\n        }\n    }",
+    "project": "Mockito",
+    "test_error_message": "java.lang.RuntimeException",
+    "test_framework": "defects4j",
+    "test_line": "\t      throw new RuntimeException();",
+    "test_name": "shouldKnowIfObjectsAreEqual",
+    "test_suite": "org.mockito.internal.matchers.EqualityTest",
+    "time_buggy": "2014-04-12 16:09:17 +0200",
+    "time_fixed": "2014-04-12 16:09:33 +0200",
+    "bug_description": "Bug ID: 22\n\nProject: Mockito\n\nBug Type: Semantic Error (SH SF)\n\nDescription:\n\nIn the Mockito project, a Semantic Error (SH SF type) was recorded with Bug ID 22. The mistake is in the \"areEqual\" method in the code.\n\nBehavior:\n\nThe \"areEqual\" method takes two objects as its input and checks for equality between them. The code has an issue when comparing two null objects. The error occurs in the following lines of the code:\n\n    if (o1 == null || o2 == null) {\n        return o1 == null && o2 == null;\n}\n\nThis code checks if either o1 or o2 is null and then proceeds to return true only if both are null. However, in Java, comparing a null value to anything will always result in false. As such, the check for equality will implicate this line of code is not behaving as one might initially expect.\n\nException Thrown:\n\nThe issue caused a java.lang.RuntimeException error as a result of how it handled null object checks.\n\nResolution:\n\nIn the corrected version of the code, the null comparison was modified in a way that first checks for the equality of both objects. If o1 and o2 are the same in the memory (including both being null), the code would return true.\n\n    if (o1 == o2 ) {\n        return true;\n\t} else if (o1 == null || o2 == null) {\n        return o1 == null && o2 == null;\n    }\n\nThis adjustment prevents throwing of a RuntimeException and handles the equality checks in a more standard way."
+}
