@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-8638bc8ab98f",
+    "bug_type": "SH SF",
+    "buggy_lines": "\n                    position.set(Position.KEY_EVENT, buf.readUnsignedShort());\n                    buf.skipBytes(length - 2);",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "\n                    int event = buf.readUnsignedShort();\n                    position.set(Position.KEY_EVENT, event);\n                    if (event >= 0x0061 && event <= 0x0066) {\n                        buf.skipBytes(6); // lock id\n                        stringValue = buf.readCharSequence(8, StandardCharsets.US_ASCII).toString();\n                        position.set(Position.KEY_DRIVER_UNIQUE_ID, stringValue);\n                    }\n                    break;\n                case 0x63:\n                    for (int i = 1; i <= length / 11; i++) {\n                        position.set(\"lock\" + i + \"Id\", ByteBufUtil.hexDump(buf.readSlice(6)));\n                        position.set(\"lock\" + i + \"Battery\", buf.readUnsignedShort() * 0.001);\n                        position.set(\"lock\" + i + \"Seal\", buf.readUnsignedByte() == 0x31);\n                        buf.readUnsignedByte(); // physical state\n                        buf.readUnsignedByte(); // rssi\n                    }",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    org.opentest4j.AssertionFailedError at HuabaoProtocolDecoderTest.java:14",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode()",
+    "test_suite": "org.traccar.protocol.HuabaoProtocolDecoderTest",
+    "time_buggy": "2023-09-22 18:43:00 -0700",
+    "time_fixed": "2023-09-25 20:55:27 -0700"
+}

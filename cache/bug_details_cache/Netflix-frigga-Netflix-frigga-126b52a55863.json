@@ -1,0 +1,17 @@
+{
+    "bug_id": "Netflix-frigga-126b52a55863",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "\n            + \"]+)-([0-9.a-zA-Z~]+)-(\\\\w+)(?:[.](\\\\w+))?(?:\\\\/([\" + NameConstants.NAME_HYPHEN_CHARS + \"]+)\\\\/([0-9]+))?\");",
+    "code": "    private static final Pattern APP_VERSION_PATTERN = Pattern.compile(\n            \"([\" + NameConstants.NAME_HYPHEN_CHARS\n-              \"]+)-([0-9.a-zA-Z~]+)-(\\\\w+)(?:[.](\\\\w+))?(?:\\\\/([\" + NameConstants.NAME_HYPHEN_CHARS + \"]+)\\\\/([0-9]+))?\");\n\n\n    private String packageName;\n    private String version;\n    private String buildJobName;\n    private String buildNumber;\n    private String commit;\n\n    private AppVersion() {\n    }",
+    "fixed_code": "    private static final Pattern APP_VERSION_PATTERN = Pattern.compile(\n            \"([\" + NameConstants.NAME_HYPHEN_CHARS\n+            + \"]+) ([0-9.a-zA-Z~]+)-(\\\\w+)(?:[.](\\\\w+))?(?:~[\" + NameConstants.NAME_HYPHEN_CHARS + \"]+)?(?:\\\\/([\" + NameConstants.NAME_HYPHEN_CHARS + \"]+)\\\\/([0-9]+))?\");\n\n\n    private String packageName;\n    private String version;\n    private String buildJobName;\n    private String buildNumber;\n    private String commit;\n\n    private AppVersion() {\n    }",
+    "fixed_lines": "\n            + \"]+)-([0-9.a-zA-Z~]+)-(\\\\w+)(?:[.](\\\\w+))?(?:~[\" + NameConstants.NAME_HYPHEN_CHARS + \"]+)?(?:\\\\/([\" + NameConstants.NAME_HYPHEN_CHARS + \"]+)\\\\/([0-9]+))?\");",
+    "masked_code": "    private static final Pattern APP_VERSION_PATTERN = Pattern.compile(\n            \"([\" + NameConstants.NAME_HYPHEN_CHARS\n>>> [ INFILL ] <<<\n\n\n    private String packageName;\n    private String version;\n    private String buildJobName;\n    private String buildNumber;\n    private String commit;\n\n    private AppVersion() {\n    }",
+    "project": "Netflix-frigga",
+    "test_error_message": "    java.lang.NullPointerException: Cannot get property 'packageName' on null object",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "should parse appName-0.1-h150.9b3bc237~focal to appName, 0.1, 9b3bc237, 150, null",
+    "test_suite": "com.netflix.frigga.ami.AppVersionTest",
+    "time_buggy": "2023-01-19 14:39:53 -0800",
+    "time_fixed": "2023-01-23 15:39:32 -0800"
+}

@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-5c26f25b3b0a",
+    "bug_type": "SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    org.opentest4j.AssertionFailedError at MeitrackProtocolDecoderTest.java:14",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode()",
+    "test_suite": "org.traccar.protocol.MeitrackProtocolDecoderTest",
+    "time_buggy": "2023-03-31 07:05:21 -0700",
+    "time_fixed": "2023-03-31 17:26:13 -0700"
+}

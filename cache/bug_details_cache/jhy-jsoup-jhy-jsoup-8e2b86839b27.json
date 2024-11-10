@@ -1,0 +1,17 @@
+{
+    "bug_id": "jhy-jsoup-8e2b86839b27",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "        return tag.formatAsBlock() || (parent() != null && parent().tag().formatAsBlock()) || out.outline();",
+    "code": "    private boolean isFormatAsBlock(Document.OutputSettings out) {\n-        return tag.formatAsBlock() || (parent() != null && parent().tag().formatAsBlock()) || out.outline();\n    }",
+    "fixed_code": "    private boolean isFormatAsBlock(Document.OutputSettings out) {\n+        return tag.isBlock() || (parent() != null && parent().tag().formatAsBlock()) || out.outline();\n    }",
+    "fixed_lines": "        return tag.isBlock() || (parent() != null && parent().tag().formatAsBlock()) || out.outline();",
+    "masked_code": "    private boolean isFormatAsBlock(Document.OutputSettings out) {\n>>> [ INFILL ] <<<\n    }",
+    "project": "jhy-jsoup",
+    "test_error_message": "org.opentest4j.AssertionFailedError: ",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "nestedFormatAsInlinePrintsAsBlock",
+    "test_suite": "org.jsoup.nodes.ElementTest",
+    "time_buggy": "2023-04-26 20:53:45 +1000",
+    "time_fixed": "2023-04-29 12:25:07 +1000"
+}

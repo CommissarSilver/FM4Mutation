@@ -1,0 +1,17 @@
+{
+    "bug_id": "jhy-jsoup-111919256590",
+    "bug_type": "SH SF",
+    "buggy_lines": "            && !out.outline();",
+    "code": "    private boolean isInlineable(Document.OutputSettings out) {\n        if (!tag.isInline())\n            return false;\n        return (parent() == null || parent().isBlock())\n            && !isEffectivelyFirst()\n-            && !out.outline();\n    }",
+    "fixed_code": "    private boolean isInlineable(Document.OutputSettings out) {\n        if (!tag.isInline())\n            return false;\n        return (parent() == null || parent().isBlock())\n            && !isEffectivelyFirst()\n+            && !out.outline()\n+            && !isNode(\"br\");\n    }",
+    "fixed_lines": "            && !out.outline()\n            && !isNode(\"br\");",
+    "masked_code": "    private boolean isInlineable(Document.OutputSettings out) {\n        if (!tag.isInline())\n            return false;\n        return (parent() == null || parent().isBlock())\n            && !isEffectivelyFirst()\n>>> [ INFILL ] <<<\n    }",
+    "project": "jhy-jsoup",
+    "test_error_message": "org.opentest4j.AssertionFailedError: ",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDoesNotForceSelfClosingKnownTags",
+    "test_suite": "org.jsoup.parser.XmlTreeBuilderTest",
+    "time_buggy": "2023-03-09 16:03:18 +1100",
+    "time_fixed": "2023-03-09 16:28:34 +1100"
+}

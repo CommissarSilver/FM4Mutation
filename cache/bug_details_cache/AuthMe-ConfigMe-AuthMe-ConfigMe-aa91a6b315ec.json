@@ -1,0 +1,17 @@
+{
+    "bug_id": "AuthMe-ConfigMe-aa91a6b315ec",
+    "bug_type": "SH SF",
+    "buggy_lines": "\n        comments.put(path, Collections.unmodifiableList(Arrays.asList(commentLines)));",
+    "code": "    public void setComment(@NotNull String path, @NotNull String... commentLines) {\n-        comments.put(path, Collections.unmodifiableList(Arrays.asList(commentLines)));\n    }",
+    "fixed_code": "    public void setComment(@NotNull String path, @NotNull String... commentLines) {\n+        List<String> replaced = comments.put(path, Collections.unmodifiableList(Arrays.asList(commentLines)));\n+        \n+        if (replaced != null) {\n+            throw new IllegalStateException(\"Comment lines already exists for the path '\" + path + \"'\");\n+        }\n    }",
+    "fixed_lines": "\n        List<String> replaced = comments.put(path, Collections.unmodifiableList(Arrays.asList(commentLines)));\n        \n        if (replaced != null) {\n            throw new IllegalStateException(\"Comment lines already exists for the path '\" + path + \"'\");\n        }",
+    "masked_code": "    public void setComment(@NotNull String path, @NotNull String... commentLines) {\n>>> [ INFILL ] <<<\n    }",
+    "project": "AuthMe-ConfigMe",
+    "test_error_message": "org.opentest4j.AssertionFailedError: Expected java.lang.IllegalStateException to be thrown, but nothing was thrown.",
+    "test_framework": "gitbugjava",
+    "test_line": "        IllegalStateException ex = assertThrows(IllegalStateException.class, ()-> conf.setComment(\"com.acme\", \"Acme new comment\", \"1, 2, 3\"));",
+    "test_name": "shouldOverrideExistingComment",
+    "test_suite": "ch.jalu.configme.configurationdata.CommentsConfigurationTest",
+    "time_buggy": "2023-09-03 10:33:16 +0200",
+    "time_fixed": "2023-09-04 11:49:14 +0200"
+}

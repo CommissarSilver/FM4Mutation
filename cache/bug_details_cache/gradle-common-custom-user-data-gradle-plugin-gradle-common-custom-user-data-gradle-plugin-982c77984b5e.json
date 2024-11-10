@@ -1,0 +1,17 @@
+{
+    "bug_id": "gradle-common-custom-user-data-gradle-plugin-982c77984b5e",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "",
+    "masked_code": "",
+    "project": "gradle-common-custom-user-data-gradle-plugin",
+    "test_error_message": "No match found or invalid line number.",
+    "test_framework": "gitbugjava",
+    "test_line": "        assertEquals(Optional.of(expectedWebRepoUri), toWebRepoUri(String.format(repositoryUri, repositoryHost)));",
+    "test_name": "[2] github, https://user:secret@%s.com/acme-inc/my-project",
+    "test_suite": "com.gradle.UtilsTest",
+    "time_buggy": "2023-07-03 09:38:38 +0200",
+    "time_fixed": "2023-07-05 12:15:58 -0500"
+}

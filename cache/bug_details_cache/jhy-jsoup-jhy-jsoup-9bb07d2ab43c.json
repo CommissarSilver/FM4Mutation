@@ -1,0 +1,17 @@
+{
+    "bug_id": "jhy-jsoup-9bb07d2ab43c",
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "    protected void replaceChild(Node out, Node in) {\n        Validate.isTrue(out.parentNode == this);\n        Validate.notNull(in);\n        if (in.parentNode != null)\n            in.parentNode.removeChild(in);\n\n        final int index = out.siblingIndex;\n        ensureChildNodes().set(index, in);\n        in.parentNode = this;\n        in.setSiblingIndex(index);\n        out.parentNode = null;\n    }",
+    "fixed_code": "    protected void replaceChild(Node out, Node in) {\n        Validate.isTrue(out.parentNode == this);\n        Validate.notNull(in);\n+        if (out == in) return; // no op self replacement\n+\n        if (in.parentNode != null)\n            in.parentNode.removeChild(in);\n\n        final int index = out.siblingIndex;\n        ensureChildNodes().set(index, in);\n        in.parentNode = this;\n        in.setSiblingIndex(index);\n        out.parentNode = null;\n    }",
+    "fixed_lines": "\n        if (out == in) return; // no-op self replacement",
+    "masked_code": "    protected void replaceChild(Node out, Node in) {\n        Validate.isTrue(out.parentNode == this);\n        Validate.notNull(in);\n>>> [ INFILL ] <<<\n        if (in.parentNode != null)\n            in.parentNode.removeChild(in);\n\n        final int index = out.siblingIndex;\n        ensureChildNodes().set(index, in);\n        in.parentNode = this;\n        in.setSiblingIndex(index);\n        out.parentNode = null;\n    }",
+    "project": "jhy-jsoup",
+    "test_error_message": "org.opentest4j.AssertionFailedError: expected: <<p>Two</p>> but was: <null>",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "replaceWithSelf",
+    "test_suite": "org.jsoup.nodes.ElementTest",
+    "time_buggy": "2023-01-19 16:41:45 +1100",
+    "time_fixed": "2023-01-19 16:58:45 +1100"
+}

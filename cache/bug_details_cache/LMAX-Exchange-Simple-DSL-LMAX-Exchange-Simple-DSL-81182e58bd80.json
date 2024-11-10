@@ -1,0 +1,17 @@
+{
+    "bug_id": "LMAX-Exchange-Simple-DSL-81182e58bd80",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "",
+    "masked_code": "",
+    "project": "LMAX-Exchange-Simple-DSL",
+    "test_error_message": "    org.opentest4j.AssertionFailedError at DslParamsParserTest.java:513",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "shouldBeAbleToSpecifyMultipleValuesForParamInGroupUsingTheDefaultSeparator()",
+    "test_suite": "com.lmax.simpledsl.internal.DslParamsParserTest",
+    "time_buggy": "2022-08-23 19:39:23 +0100",
+    "time_fixed": "2023-01-09 11:00:47 +0000"
+}

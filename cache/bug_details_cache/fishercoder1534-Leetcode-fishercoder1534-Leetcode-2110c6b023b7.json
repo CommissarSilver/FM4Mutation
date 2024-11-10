@@ -1,0 +1,17 @@
+{
+    "bug_id": "fishercoder1534-Leetcode-2110c6b023b7",
+    "bug_type": "SH SF",
+    "buggy_lines": "\n            if ((root.val - p.val) * (root.val - q.val) > 0) {\n                if (root.val - p.val > 0) {\n                    return lowestCommonAncestor(root.left, p, q);\n                }",
+    "code": "        public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n            if (root == null || p == root || q == root) {\n                return root;\n            }\n-            if ((root.val - p.val) * (root.val - q.val) > 0) {\n-                if (root.val - p.val > 0) {\n-                    return lowestCommonAncestor(root.left, p, q);\n-                }\n                return lowestCommonAncestor(root.right, p, q);\n            }\n            return root;\n        }",
+    "fixed_code": "        public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n            if (root == null || p == root || q == root) {\n                return root;\n            }\n+            if (root.val > p.val && root.val > q.val) {\n+                return lowestCommonAncestor(root.left, p, q);\n+            } else if (root.val < p.val && root.val < q.val) {\n                return lowestCommonAncestor(root.right, p, q);\n            }\n            return root;\n        }",
+    "fixed_lines": "\n            if (root.val > p.val && root.val > q.val) {\n                return lowestCommonAncestor(root.left, p, q);\n            } else if (root.val < p.val && root.val < q.val) {",
+    "masked_code": "        public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n            if (root == null || p == root || q == root) {\n                return root;\n            }\n>>> [ INFILL ] <<<\n                return lowestCommonAncestor(root.right, p, q);\n            }\n            return root;\n        }",
+    "project": "fishercoder1534-Leetcode",
+    "test_error_message": "    java.lang.AssertionError at _235Test.java:64",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "test3",
+    "test_suite": "com.fishercoder._235Test",
+    "time_buggy": "2023-02-05 13:20:31 -0800",
+    "time_fixed": "2023-02-11 08:27:12 -0800"
+}

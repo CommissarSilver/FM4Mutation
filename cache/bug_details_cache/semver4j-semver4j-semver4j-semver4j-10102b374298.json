@@ -1,0 +1,17 @@
+{
+    "bug_id": "semver4j-semver4j-10102b374298",
+    "bug_type": "SH SF",
+    "buggy_lines": "\n            .collect(joining(OR_JOINER));",
+    "code": "    public String toString() {\n        return rangesList.stream()\n            .map(RangesList::formatRanges)\n-            .collect(joining(OR_JOINER));\n    }",
+    "fixed_code": "    public String toString() {\n        return rangesList.stream()\n            .map(RangesList::formatRanges)\n+            .collect(joining(OR_JOINER))\n+            .replaceAll(\"^\\\\(([^()]+)\\\\)$\", \"$1\");\n    }",
+    "fixed_lines": "\n            .collect(joining(OR_JOINER))\n            .replaceAll(\"^\\\\(([^()]+)\\\\)$\", \"$1\");",
+    "masked_code": "    public String toString() {\n        return rangesList.stream()\n            .map(RangesList::formatRanges)\n>>> [ INFILL ] <<<\n    }",
+    "project": "semver4j-semver4j",
+    "test_error_message": "org.opentest4j.AssertionFailedError: ",
+    "test_framework": "gitbugjava",
+    "test_line": "        assertThat(rangesList.toString()).isEqualTo(\">=3.0.0 and <=3.0.1\");",
+    "test_name": "shouldOmitOuterParentheses",
+    "test_suite": "org.semver4j.RangesListTest",
+    "time_buggy": "2022-12-29 08:54:44 +0100",
+    "time_fixed": "2023-01-05 08:57:55 +0100"
+}

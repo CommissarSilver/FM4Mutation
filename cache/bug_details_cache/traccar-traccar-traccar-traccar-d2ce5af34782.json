@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-d2ce5af34782",
+    "bug_type": "SH SF",
+    "buggy_lines": "                decodeLbs(position, buf, type, hasStatus(type) && type != MSG_LBS_ALARM && type != MSG_LBS_STATUS);",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "                boolean hasLength = hasStatus(type)\n                        && type != MSG_LBS_STATUS\n                        && type != MSG_LBS_ALARM\n                        && (type != MSG_GPS_LBS_STATUS_1 || variant != Variant.VXT01);\n                decodeLbs(position, buf, type, hasLength);",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    org.opentest4j.AssertionFailedError at Gt06ProtocolDecoderTest.java:20",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode()",
+    "test_suite": "org.traccar.protocol.Gt06ProtocolDecoderTest",
+    "time_buggy": "2023-07-09 06:37:34 -0700",
+    "time_fixed": "2023-07-09 07:32:49 -0700"
+}

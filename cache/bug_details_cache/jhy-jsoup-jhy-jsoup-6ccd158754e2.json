@@ -1,0 +1,17 @@
+{
+    "bug_id": "jhy-jsoup-6ccd158754e2",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "    private static void appendToAscii(String s, boolean spaceAsPlus, StringBuilder sb) throws UnsupportedEncodingException {\n        // minimal normalization of Unicode -> Ascii, and space normal. Existing escapes are left as-is.\n        for (int i = 0; i < s.length(); i++) {\n            int c = s.codePointAt(i);\n            if (c == ' ') {\n                sb.append(spaceAsPlus ? '+' : \"%20\");\n            } else if (c > 127) { // out of ascii range\n                sb.append(URLEncoder.encode(new String(Character.toChars(c)), UTF_8.name()));\n                // ^^ is a bit heavy-handed - if perf critical, we could optimize\n            } else {\n                sb.append((char) c);\n            }\n        }\n    }",
+    "fixed_code": "    private static void appendToAscii(String s, boolean spaceAsPlus, StringBuilder sb) throws UnsupportedEncodingException {\n        // minimal normalization of Unicode -> Ascii, and space normal. Existing escapes are left as-is.\n        for (int i = 0; i < s.length(); i++) {\n            int c = s.codePointAt(i);\n            if (c == ' ') {\n                sb.append(spaceAsPlus ? '+' : \"%20\");\n            } else if (c > 127) { // out of ascii range\n                sb.append(URLEncoder.encode(new String(Character.toChars(c)), UTF_8.name()));\n                // ^^ is a bit heavy-handed - if perf critical, we could optimize\n+                if (Character.charCount(c) == 2) i++; // advance past supplemental\n            } else {\n                sb.append((char) c);\n            }\n        }\n    }",
+    "fixed_lines": "\n                if (Character.charCount(c) == 2) i++; // advance past supplemental",
+    "masked_code": "    private static void appendToAscii(String s, boolean spaceAsPlus, StringBuilder sb) throws UnsupportedEncodingException {\n        // minimal normalization of Unicode -> Ascii, and space normal. Existing escapes are left as-is.\n        for (int i = 0; i < s.length(); i++) {\n            int c = s.codePointAt(i);\n            if (c == ' ') {\n                sb.append(spaceAsPlus ? '+' : \"%20\");\n            } else if (c > 127) { // out of ascii range\n                sb.append(URLEncoder.encode(new String(Character.toChars(c)), UTF_8.name()));\n                // ^^ is a bit heavy-handed - if perf critical, we could optimize\n>>> [ INFILL ] <<<\n            } else {\n                sb.append((char) c);\n            }\n        }\n    }",
+    "project": "jhy-jsoup",
+    "test_error_message": "org.opentest4j.AssertionFailedError: expected: <https://example.com/tools/test%F0%9F%92%A9.html> but was: <https://example.com/tools/test%F0%9F%92%A9%3F.html>",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "encodeUrlSupplementary",
+    "test_suite": "org.jsoup.helper.HttpConnectionTest",
+    "time_buggy": "2023-10-20 12:08:20 +1100",
+    "time_fixed": "2023-10-20 12:30:46 +1100"
+}

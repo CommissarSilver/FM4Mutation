@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-046076aeb6f0",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "            if (hasLbs(type)) {",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "            if (hasLbs(type) && buf.readableBytes() > 6) {",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    java.lang.IndexOutOfBoundsException at Gt06ProtocolDecoderTest.java:20",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode",
+    "test_suite": "org.traccar.protocol.Gt06ProtocolDecoderTest",
+    "time_buggy": "2023-01-02 15:01:37 -0800",
+    "time_fixed": "2023-01-03 09:36:23 -0800"
+}

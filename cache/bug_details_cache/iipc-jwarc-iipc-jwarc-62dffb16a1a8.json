@@ -1,0 +1,17 @@
+{
+    "bug_id": "iipc-jwarc-62dffb16a1a8",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "",
+    "masked_code": "",
+    "project": "iipc-jwarc",
+    "test_error_message": "java.lang.AssertionError: expected:<Optional[494]> but was:<Optional[charset494]>",
+    "test_framework": "gitbugjava",
+    "test_line": "        assertEquals(Optional.of(\"494\"), parser.headers().sole(\"Content-Length\"));",
+    "test_name": "testParsingArcWithBogusMime",
+    "test_suite": "org.netpreserve.jwarc.WarcParserTest",
+    "time_buggy": "2023-07-26 15:10:08 +0900",
+    "time_fixed": "2023-07-26 16:44:26 +0900"
+}

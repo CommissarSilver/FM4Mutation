@@ -1,0 +1,17 @@
+{
+    "bug_id": "vmzakharov-dataframe-ec-12af99192d24",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "\n        return '\"' + this.value + '\"';",
+    "code": "    public String asStringLiteral()\n    {\n-        return '\"'   this.value + '\"';\n    }",
+    "fixed_code": "    public String asStringLiteral()\n    {\n+        return this.value.indexOf('\\\"') ==  1 ? '\"' + this.value + '\"' : '\\'' + this.value + '\\'';\n    }",
+    "fixed_lines": "\n        return this.value.indexOf('\\\"') == -1 ? '\"' + this.value + '\"' : '\\'' + this.value + '\\'';",
+    "masked_code": "    public String asStringLiteral()\n    {\n>>> [ INFILL ] <<<\n    }",
+    "project": "vmzakharov-dataframe-ec",
+    "test_error_message": "org.junit.ComparisonFailure: expected:<(\"foo\" in (\"qux\", ['ba\"r'], \"baz\", \"wal'do\"))> but was:<(\"foo\" in (\"qux\", [\"ba\"r\"], \"baz\", \"wal'do\"))>",
+    "test_framework": "gitbugjava",
+    "test_line": "        Assert.assertEquals(\"(\\\"foo\\\" in (\\\"qux\\\", 'ba\\\"r', \\\"baz\\\", \\\"wal'do\\\"))\", result);",
+    "test_name": "nestedQuotes",
+    "test_suite": "io.github.vmzakharov.ecdataframe.dsl.PrettyPrintingTest",
+    "time_buggy": "2023-02-01 22:46:32 -0500",
+    "time_fixed": "2023-02-08 22:07:17 -0500"
+}

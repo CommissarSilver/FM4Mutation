@@ -1,0 +1,17 @@
+{
+    "bug_id": "jitterted-ensembler-0963194c9ebc",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "\n                    \"Switch to Participant &#x1f44b;\",",
+    "code": "    public static ParticipantAction from(MemberStatus memberStatus, boolean disabled) {\n        return switch (memberStatus) {\n            case UNKNOWN, DECLINED -> new ParticipantAction(\n                    \"/member/accept\",\n                    \"Participate in Rotation &#x2328;\",\n                    disabled);\n            case PARTICIPANT -> new ParticipantAction(\n                    \"/member/decline\",\n                    \"Leave Rotation &#x1f44b;\",\n                    false); // can always leave\n            case SPECTATOR -> new ParticipantAction(\n                    \"/member/accept\",\n-                    \"Switch to Participant &#x1f44b;\",\n                    disabled);\n        };\n    }",
+    "fixed_code": "    public static ParticipantAction from(MemberStatus memberStatus, boolean disabled) {\n        return switch (memberStatus) {\n            case UNKNOWN, DECLINED -> new ParticipantAction(\n                    \"/member/accept\",\n                    \"Participate in Rotation &#x2328;\",\n                    disabled);\n            case PARTICIPANT -> new ParticipantAction(\n                    \"/member/decline\",\n                    \"Leave Rotation &#x1f44b;\",\n                    false); // can always leave\n            case SPECTATOR -> new ParticipantAction(\n                    \"/member/accept\",\n+                    \"Switch to Participant &#x2328;\",\n                    disabled);\n        };\n    }",
+    "fixed_lines": "\n                    \"Switch to Participant &#x2328;\",",
+    "masked_code": "    public static ParticipantAction from(MemberStatus memberStatus, boolean disabled) {\n        return switch (memberStatus) {\n            case UNKNOWN, DECLINED -> new ParticipantAction(\n                    \"/member/accept\",\n                    \"Participate in Rotation &#x2328;\",\n                    disabled);\n            case PARTICIPANT -> new ParticipantAction(\n                    \"/member/decline\",\n                    \"Leave Rotation &#x1f44b;\",\n                    false); // can always leave\n            case SPECTATOR -> new ParticipantAction(\n                    \"/member/accept\",\n>>> [ INFILL ] <<<\n                    disabled);\n        };\n    }",
+    "project": "jitterted-ensembler",
+    "test_error_message": "org.opentest4j.AssertionFailedError: ",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "switchToParticipantWhenMemberIsSpectator",
+    "test_suite": "com.jitterted.mobreg.adapter.in.web.member.EnsembleSummaryViewActionTest$ParticipantActionIs",
+    "time_buggy": "2023-10-02 14:12:23 -0700",
+    "time_fixed": "2023-10-07 14:55:03 -0700"
+}

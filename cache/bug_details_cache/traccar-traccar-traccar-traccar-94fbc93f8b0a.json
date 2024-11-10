@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-94fbc93f8b0a",
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "                case \"IN0\":\n                    position.set(Position.KEY_IGNITION, buf.readUnsignedByte() > 0);\n                    break;\n                case \"IN1\":\n                case \"IN2\":\n                case \"IN3\":\n                    position.set(Position.PREFIX_IN + key.charAt(2), buf.readUnsignedByte() > 0);\n                    break;\n                case \"HA\":\n                    position.set(Position.KEY_ALARM, buf.readUnsignedByte() > 0 ? Position.ALARM_ACCELERATION : null);\n                    break;\n                case \"HB\":\n                    position.set(Position.KEY_ALARM, buf.readUnsignedByte() > 0 ? Position.ALARM_BRAKING : null);\n                    break;\n                case \"HC\":\n                    position.set(Position.KEY_ALARM, buf.readUnsignedByte() > 0 ? Position.ALARM_CORNERING : null);\n                    break;",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    java.lang.IllegalArgumentException at AtrackProtocolDecoderTest.java:46",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode()",
+    "test_suite": "org.traccar.protocol.AtrackProtocolDecoderTest",
+    "time_buggy": "2023-06-13 08:28:58 -0700",
+    "time_fixed": "2023-06-14 22:21:25 -0700"
+}

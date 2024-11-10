@@ -1,0 +1,17 @@
+{
+    "bug_id": "cloudsimplus-cloudsimplus-61c8b942d1ec",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "\n        this(defaultBwCapacity, defaultStorageCapacity, new HarddriveStorage(defaultRamCapacity), peList, activate);",
+    "code": "    public HostAbstract(final List<Pe> peList, final boolean activate) {\n-        this(defaultBwCapacity, defaultStorageCapacity, new HarddriveStorage(defaultRamCapacity), peList, activate);\n    }",
+    "fixed_code": "    public HostAbstract(final List<Pe> peList, final boolean activate) {\n+        this(defaultRamCapacity, defaultBwCapacity, new HarddriveStorage(defaultStorageCapacity), peList, activate);\n    }",
+    "fixed_lines": "\n        this(defaultRamCapacity, defaultBwCapacity, new HarddriveStorage(defaultStorageCapacity), peList, activate);",
+    "masked_code": "    public HostAbstract(final List<Pe> peList, final boolean activate) {\n>>> [ INFILL ] <<<\n    }",
+    "project": "cloudsimplus-cloudsimplus",
+    "test_error_message": "org.opentest4j.AssertionFailedError: Only 1 VMs should had failed to be created due to lack of resources but 2 failed ==> expected: <1> but was: <2>",
+    "test_framework": "gitbugjava",
+    "test_line": "        assertEquals(expectedFailedVms, numberOfVmCreationFailures, msg);",
+    "test_name": "integrationTest",
+    "test_suite": "org.cloudsimplus.integrationtests.VmCreationFailureIntegrationTest",
+    "time_buggy": "2023-05-10 12:15:12 -0300",
+    "time_fixed": "2023-05-10 12:15:12 -0300"
+}

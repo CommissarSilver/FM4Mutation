@@ -1,0 +1,17 @@
+{
+    "bug_id": "snowflakedb-snowflake-jdbc-f2c8eba73535",
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "  static boolean isNonRetryableHTTPCode(CloseableHttpResponse response, boolean retryHTTP403) {\n    return response != null\n        && (response.getStatusLine().getStatusCode() < 500\n            || // service unavailable\n            response.getStatusLine().getStatusCode() >= 600)\n        && // gateway timeout\n        response.getStatusLine().getStatusCode() != 408\n        && // request timeout\n        (!retryHTTP403 || response.getStatusLine().getStatusCode() != 403);\n  }",
+    "fixed_code": "  static boolean isNonRetryableHTTPCode(CloseableHttpResponse response, boolean retryHTTP403) {\n    return response != null\n        && (response.getStatusLine().getStatusCode() < 500\n            || // service unavailable\n            response.getStatusLine().getStatusCode() >= 600)\n        && // gateway timeout\n        response.getStatusLine().getStatusCode() != 408\n+        && // retry\n+        response.getStatusLine().getStatusCode() != 429\n        && // request timeout\n        (!retryHTTP403 || response.getStatusLine().getStatusCode() != 403);\n  }",
+    "fixed_lines": "\n        && // retry\n        response.getStatusLine().getStatusCode() != 429",
+    "masked_code": "  static boolean isNonRetryableHTTPCode(CloseableHttpResponse response, boolean retryHTTP403) {\n    return response != null\n        && (response.getStatusLine().getStatusCode() < 500\n            || // service unavailable\n            response.getStatusLine().getStatusCode() >= 600)\n        && // gateway timeout\n        response.getStatusLine().getStatusCode() != 408\n>>> [ INFILL ] <<<\n        && // request timeout\n        (!retryHTTP403 || response.getStatusLine().getStatusCode() != 403);\n  }",
+    "project": "snowflakedb-snowflake-jdbc",
+    "test_error_message": "java.lang.AssertionError: Result must be false but true: HTTP Code: 429, RetryHTTP403: false",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testIsNonRetryableHTTPCode",
+    "test_suite": "net.snowflake.client.jdbc.RestRequestTest",
+    "time_buggy": "2022-12-16 09:18:35 -0800",
+    "time_fixed": "2023-01-11 13:41:01 -0800"
+}

@@ -1,0 +1,17 @@
+{
+    "bug_id": "jitterted-ensembler-60ec3bf0273b",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "    public void joinAsSpectator(MemberId memberId) {\n        membersAsSpectators.add(memberId);\n        membersWhoAccepted.remove(memberId);\n    }",
+    "fixed_code": "    public void joinAsSpectator(MemberId memberId) {\n        membersAsSpectators.add(memberId);\n        membersWhoAccepted.remove(memberId);\n+        membersWhoDeclined.remove(memberId);\n    }",
+    "fixed_lines": "\n        membersWhoDeclined.remove(memberId);",
+    "masked_code": "    public void joinAsSpectator(MemberId memberId) {\n        membersAsSpectators.add(memberId);\n        membersWhoAccepted.remove(memberId);\n>>> [ INFILL ] <<<\n    }",
+    "project": "jitterted-ensembler",
+    "test_error_message": "java.lang.AssertionError: ",
+    "test_framework": "gitbugjava",
+    "test_line": "                .isEmpty();",
+    "test_name": "declinedMemberWhenJoinAsSpectatorRemovesFromDeclined",
+    "test_suite": "com.jitterted.mobreg.domain.EnsembleMembersTest",
+    "time_buggy": "2023-05-14 11:33:39 -0700",
+    "time_fixed": "2023-05-14 11:42:50 -0700"
+}

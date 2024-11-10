@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-3b6900a95342",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "\n        if (type == MSG_DATA) {",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "\n        if (type == MSG_DATA || type == MSG_SERVICES) {",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    org.opentest4j.AssertionFailedError at Minifinder2ProtocolDecoderTest.java:27",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode()",
+    "test_suite": "org.traccar.protocol.Minifinder2ProtocolDecoderTest",
+    "time_buggy": "2023-06-27 07:21:23 -0700",
+    "time_fixed": "2023-06-27 22:33:54 -0700"
+}

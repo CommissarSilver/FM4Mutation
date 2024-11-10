@@ -1,0 +1,17 @@
+{
+    "bug_id": "jhy-jsoup-d126488db626",
+    "bug_type": "SF",
+    "buggy_lines": "\n                if (sq.length() > 0)\n                    tq.consume();\n            else",
+    "code": "    private String consumeSubQuery() {\n        StringBuilder sq = StringUtil.borrowBuilder();\n        while (!tq.isEmpty()) {\n            if (tq.matches(\"(\"))\n                sq.append(\"(\").append(tq.chompBalanced('(', ')')).append(\")\");\n            else if (tq.matches(\"[\"))\n                sq.append(\"[\").append(tq.chompBalanced('[', ']')).append(\"]\");\n            else if (tq.matchesAny(Combinators))\n-                if (sq.length() > 0)\n                    break;\n                else\n-                    tq.consume();\n-            else\n                sq.append(tq.consume());\n        }\n        return StringUtil.releaseBuilder(sq);\n    }",
+    "fixed_code": "    private String consumeSubQuery() {\n        StringBuilder sq = StringUtil.borrowBuilder();\n+        boolean seenNonCombinator = false; // eat until we hit a combinator after eating something else\n        while (!tq.isEmpty()) {\n            if (tq.matches(\"(\"))\n                sq.append(\"(\").append(tq.chompBalanced('(', ')')).append(\")\");\n            else if (tq.matches(\"[\"))\n                sq.append(\"[\").append(tq.chompBalanced('[', ']')).append(\"]\");\n            else if (tq.matchesAny(Combinators))\n+                if (seenNonCombinator)\n                    break;\n                else\n+                    sq.append(tq.consume());\n+            else {\n+                seenNonCombinator = true;\n                sq.append(tq.consume());\n+            }\n        }\n        return StringUtil.releaseBuilder(sq);\n    }",
+    "fixed_lines": "\n        boolean seenNonCombinator = false; // eat until we hit a combinator after eating something else\n                if (seenNonCombinator)\n                    sq.append(tq.consume());\n            else {\n                seenNonCombinator = true;\n            }",
+    "masked_code": "    private String consumeSubQuery() {\n        StringBuilder sq = StringUtil.borrowBuilder();\n        while (!tq.isEmpty()) {\n            if (tq.matches(\"(\"))\n                sq.append(\"(\").append(tq.chompBalanced('(', ')')).append(\")\");\n            else if (tq.matches(\"[\"))\n                sq.append(\"[\").append(tq.chompBalanced('[', ']')).append(\"]\");\n            else if (tq.matchesAny(Combinators))\n                    break;\n                else\n                sq.append(tq.consume());\n>>> [ INFILL ] <<<\n        }\n        return StringUtil.releaseBuilder(sq);\n    }",
+    "project": "jhy-jsoup",
+    "test_error_message": "org.opentest4j.AssertionFailedError: expected: <2> but was: <3>",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "rootImmediateParentSubquery",
+    "test_suite": "org.jsoup.select.SelectorTest",
+    "time_buggy": "2023-10-25 10:54:15 +1100",
+    "time_fixed": "2023-10-30 12:20:38 +1100"
+}

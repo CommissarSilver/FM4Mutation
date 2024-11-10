@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-b3c6e22fc19c",
+    "bug_type": "SH SF",
+    "buggy_lines": "                    position.set(Position.KEY_ALARM, decodeAlarm(buf.readUnsignedByte()));",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "                    short alarmExtension = buf.readUnsignedByte();\n                    if (variant != Variant.VXT01) {\n                        position.set(Position.KEY_ALARM, decodeAlarm(alarmExtension));\n                    }",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    org.opentest4j.AssertionFailedError at Gt06ProtocolDecoderTest.java:20",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode()",
+    "test_suite": "org.traccar.protocol.Gt06ProtocolDecoderTest",
+    "time_buggy": "2023-07-11 06:27:12 -0700",
+    "time_fixed": "2023-07-12 06:24:15 -0700"
+}

@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-d244b4bc4999",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "\n            Object value = attributes.containsKey(key);",
+    "code": "    public String getString(String key, String defaultValue) {\n        if (attributes.containsKey(key)) {\n-            Object value = attributes.containsKey(key);\n            return value != null ? value.toString() : null;\n        } else {\n            return defaultValue;\n        }\n    }",
+    "fixed_code": "    public String getString(String key, String defaultValue) {\n        if (attributes.containsKey(key)) {\n+            Object value = attributes.get(key);\n            return value != null ? value.toString() : null;\n        } else {\n            return defaultValue;\n        }\n    }",
+    "fixed_lines": "\n            Object value = attributes.get(key);",
+    "masked_code": "    public String getString(String key, String defaultValue) {\n        if (attributes.containsKey(key)) {\n>>> [ INFILL ] <<<\n            return value != null ? value.toString() : null;\n        } else {\n            return defaultValue;\n        }\n    }",
+    "project": "traccar-traccar",
+    "test_error_message": "    org.opentest4j.AssertionFailedError at ComputedAttributesTest.java:63",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testComputedAttributes()",
+    "test_suite": "org.traccar.handler.ComputedAttributesTest",
+    "time_buggy": "2023-05-29 16:05:39 +0100",
+    "time_fixed": "2023-05-29 18:07:31 +0100"
+}

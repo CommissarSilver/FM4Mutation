@@ -1,0 +1,17 @@
+{
+    "bug_id": "iipc-jwarc-6c7083b72172",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "",
+    "masked_code": "",
+    "project": "iipc-jwarc",
+    "test_error_message": "java.lang.AssertionError",
+    "test_framework": "gitbugjava",
+    "test_line": "        assertFalse(parser.isError());",
+    "test_name": "testParsingArcWithCorruptDates",
+    "test_suite": "org.netpreserve.jwarc.WarcParserTest",
+    "time_buggy": "2023-09-14 16:45:16 +0900",
+    "time_fixed": "2023-09-15 16:07:43 +0900"
+}

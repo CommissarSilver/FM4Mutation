@@ -1,0 +1,17 @@
+{
+    "bug_id": "jitterted-ensembler-14a39138787f",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "    public void acceptedBy(MemberId memberId) {\n        requireNotCompleted();\n        requireNotCanceled();\n        requireHasSpace();\n        membersWhoAccepted.add(memberId);\n        membersWhoDeclined.remove(memberId);\n    }",
+    "fixed_code": "    public void acceptedBy(MemberId memberId) {\n        requireNotCompleted();\n        requireNotCanceled();\n        requireHasSpace();\n        membersWhoAccepted.add(memberId);\n        membersWhoDeclined.remove(memberId);\n+        membersAsSpectators.remove(memberId);\n    }",
+    "fixed_lines": "\n        membersAsSpectators.remove(memberId);",
+    "masked_code": "    public void acceptedBy(MemberId memberId) {\n        requireNotCompleted();\n        requireNotCanceled();\n        requireHasSpace();\n        membersWhoAccepted.add(memberId);\n        membersWhoDeclined.remove(memberId);\n>>> [ INFILL ] <<<\n    }",
+    "project": "jitterted-ensembler",
+    "test_error_message": "java.lang.AssertionError: ",
+    "test_framework": "gitbugjava",
+    "test_line": "                .isEmpty();",
+    "test_name": "spectatorWhenAcceptRemovesFromSpectators",
+    "test_suite": "com.jitterted.mobreg.domain.EnsembleMembersTest",
+    "time_buggy": "2023-05-14 11:42:50 -0700",
+    "time_fixed": "2023-05-14 11:51:17 -0700"
+}

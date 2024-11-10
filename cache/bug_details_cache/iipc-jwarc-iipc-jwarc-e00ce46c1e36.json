@@ -1,0 +1,17 @@
+{
+    "bug_id": "iipc-jwarc-e00ce46c1e36",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "",
+    "masked_code": "",
+    "project": "iipc-jwarc",
+    "test_error_message": "[INFO] Using 'UTF-8' encoding to copy filtered resources.",
+    "test_framework": "gitbugjava",
+    "test_line": "            assertEquals(\"Case \" + i, cases[i].expected, CdxRequestEncoder.encode(cases[i].request()));",
+    "test_name": "test",
+    "test_suite": "org.netpreserve.jwarc.cdx.CdxRequestEncoderTest",
+    "time_buggy": "2023-06-19 18:57:05 +0900",
+    "time_fixed": "2023-06-20 15:00:07 +0900"
+}

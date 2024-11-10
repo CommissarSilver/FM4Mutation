@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-9a1cbeb7b754",
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    java.lang.IndexOutOfBoundsException at MeitrackProtocolDecoderTest.java:14",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode",
+    "test_suite": "org.traccar.protocol.MeitrackProtocolDecoderTest",
+    "time_buggy": "2023-02-25 16:17:43 -0800",
+    "time_fixed": "2023-02-25 22:11:51 -0800"
+}

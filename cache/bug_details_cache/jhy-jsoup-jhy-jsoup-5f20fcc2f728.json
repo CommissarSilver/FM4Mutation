@@ -1,0 +1,17 @@
+{
+    "bug_id": "jhy-jsoup-5f20fcc2f728",
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "    public Safelist addTags(String... tags) {\n        Validate.notNull(tags);\n\n        for (String tagName : tags) {\n            Validate.notEmpty(tagName);\n            tagNames.add(TagName.valueOf(tagName));\n        }\n        return this;\n    }",
+    "fixed_code": "    public Safelist addTags(String... tags) {\n        Validate.notNull(tags);\n\n        for (String tagName : tags) {\n            Validate.notEmpty(tagName);\n+            Validate.isFalse(tagName.equalsIgnoreCase(\"noscript\"),\n+                \"noscript is unsupported in Safelists, due to incompatibilities between parsers with and without script mode enabled\");\n            tagNames.add(TagName.valueOf(tagName));\n        }\n        return this;\n    }",
+    "fixed_lines": "\n            Validate.isFalse(tagName.equalsIgnoreCase(\"noscript\"),\n                \"noscript is unsupported in Safelists, due to incompatibilities between parsers with and without script-mode enabled\");",
+    "masked_code": "    public Safelist addTags(String... tags) {\n        Validate.notNull(tags);\n\n        for (String tagName : tags) {\n            Validate.notEmpty(tagName);\n>>> [ INFILL ] <<<\n            tagNames.add(TagName.valueOf(tagName));\n        }\n        return this;\n    }",
+    "project": "jhy-jsoup",
+    "test_error_message": "org.opentest4j.AssertionFailedError: expected: <true> but was: <false>",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "noscriptIsBlocked",
+    "test_suite": "org.jsoup.safety.SafelistTest",
+    "time_buggy": "2023-10-18 12:51:39 +1100",
+    "time_fixed": "2023-10-18 13:08:38 +1100"
+}

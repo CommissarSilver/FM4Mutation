@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-5da3b8fcb480",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "                case 0xE1:",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    org.opentest4j.AssertionFailedError at HuabaoProtocolDecoderTest.java:17",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode()",
+    "test_suite": "org.traccar.protocol.HuabaoProtocolDecoderTest",
+    "time_buggy": "2023-04-06 07:38:08 -0700",
+    "time_fixed": "2023-04-06 19:39:56 -0700"
+}

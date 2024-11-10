@@ -1,0 +1,17 @@
+{
+    "bug_id": "stellar-java-stellar-sdk-15cc6d2c8131",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "\n    return this.mPrivateKey.equals(other.mPrivateKey) &&",
+    "code": "  public boolean equals(Object object) {\n    if (!(object instanceof KeyPair)) {\n      return false;\n    }\n\n    KeyPair other = (KeyPair) object;\n-    return this.mPrivateKey.equals(other.mPrivateKey) &&\n            this.mPublicKey.equals(other.mPublicKey);\n\n  }",
+    "fixed_code": "  public boolean equals(Object object) {\n    if (!(object instanceof KeyPair)) {\n      return false;\n    }\n\n    KeyPair other = (KeyPair) object;\n+    return Objects.equal(this.mPrivateKey, other.mPrivateKey) &&\n            this.mPublicKey.equals(other.mPublicKey);\n\n  }",
+    "fixed_lines": "\n    return Objects.equal(this.mPrivateKey, other.mPrivateKey) &&",
+    "masked_code": "  public boolean equals(Object object) {\n    if (!(object instanceof KeyPair)) {\n      return false;\n    }\n\n    KeyPair other = (KeyPair) object;\n>>> [ INFILL ] <<<\n            this.mPublicKey.equals(other.mPublicKey);\n\n  }",
+    "project": "stellar-java-stellar-sdk",
+    "test_error_message": "    java.lang.NullPointerException at KeyPairTest.java:128",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testPublicEqual",
+    "test_suite": "org.stellar.sdk.KeyPairTest",
+    "time_buggy": "2023-03-22 16:55:59 +0000",
+    "time_fixed": "2023-04-19 14:26:38 -0700"
+}

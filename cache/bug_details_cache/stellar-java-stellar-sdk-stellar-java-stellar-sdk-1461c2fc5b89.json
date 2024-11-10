@@ -1,0 +1,17 @@
+{
+    "bug_id": "stellar-java-stellar-sdk-1461c2fc5b89",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "\n        || op instanceof BumpSequenceOperation",
+    "code": "  public boolean isSorobanTransaction() {\n    if (mOperations.length != 1) {\n      return false;\n    }\n\n    Operation op = mOperations[0];\n    return op instanceof InvokeHostFunctionOperation\n-        || op instanceof BumpSequenceOperation\n        || op instanceof RestoreFootprintOperation;\n  }",
+    "fixed_code": "  public boolean isSorobanTransaction() {\n    if (mOperations.length != 1) {\n      return false;\n    }\n\n    Operation op = mOperations[0];\n    return op instanceof InvokeHostFunctionOperation\n+        || op instanceof BumpFootprintExpirationOperation\n        || op instanceof RestoreFootprintOperation;\n  }",
+    "fixed_lines": "\n        || op instanceof BumpFootprintExpirationOperation",
+    "masked_code": "  public boolean isSorobanTransaction() {\n    if (mOperations.length != 1) {\n      return false;\n    }\n\n    Operation op = mOperations[0];\n    return op instanceof InvokeHostFunctionOperation\n>>> [ INFILL ] <<<\n        || op instanceof RestoreFootprintOperation;\n  }",
+    "project": "stellar-java-stellar-sdk",
+    "test_error_message": "    java.lang.AssertionError at TransactionTest.java:448",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testIsSorobanTransactionBumpSequenceOperation",
+    "test_suite": "org.stellar.sdk.TransactionTest",
+    "time_buggy": "2023-08-23 16:16:15 -0700",
+    "time_fixed": "2023-09-01 10:49:51 -0700"
+}

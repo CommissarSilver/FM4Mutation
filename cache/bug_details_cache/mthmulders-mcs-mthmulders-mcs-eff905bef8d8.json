@@ -1,0 +1,17 @@
+{
+    "bug_id": "mthmulders-mcs-eff905bef8d8",
+    "bug_type": "SL SH SF",
+    "buggy_lines": "\n        table.addRowValues(doc.id(), lastUpdated);",
+    "code": "    private void printRow(final Help.TextTable table, final SearchResponse.Response.Doc doc) {\n        var lastUpdated = DATE_TIME_FORMATTER.format(\n                Instant.ofEpochMilli(doc.timestamp()).atZone(ZoneId.systemDefault())\n        );\n\n-        table.addRowValues(doc.id(), lastUpdated);\n    }",
+    "fixed_code": "    private void printRow(final Help.TextTable table, final SearchResponse.Response.Doc doc) {\n        var lastUpdated = DATE_TIME_FORMATTER.format(\n                Instant.ofEpochMilli(doc.timestamp()).atZone(ZoneId.systemDefault())\n        );\n\n+        table.addRowValues(doc.id() + \":\" + doc.latestVersion(), lastUpdated);\n    }",
+    "fixed_lines": "\n        table.addRowValues(doc.id() + \":\" + doc.latestVersion(), lastUpdated);",
+    "masked_code": "    private void printRow(final Help.TextTable table, final SearchResponse.Response.Doc doc) {\n        var lastUpdated = DATE_TIME_FORMATTER.format(\n                Instant.ofEpochMilli(doc.timestamp()).atZone(ZoneId.systemDefault())\n        );\n\n>>> [ INFILL ] <<<\n    }",
+    "project": "mthmulders-mcs",
+    "test_error_message": "java.lang.AssertionError: ",
+    "test_framework": "gitbugjava",
+    "test_line": "        assertThat(table).contains(\"org.codehaus.plexus:plexus-utils:3.4.1\");",
+    "test_name": "should_print_gav",
+    "test_suite": "it.mulders.mcs.search.printer.TabularOutputPrinterTest",
+    "time_buggy": "2023-07-11 21:50:10 +0200",
+    "time_fixed": "2023-07-11 21:50:20 +0200"
+}

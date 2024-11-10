@@ -1,0 +1,17 @@
+{
+    "bug_id": "jhy-jsoup-45ed00232722",
+    "bug_type": "SH SF",
+    "buggy_lines": "\n            //  odd way to encode urls, but it works!\n            String urlS = u.toExternalForm(); // URL external form may have spaces which is illegal in new URL() (odd asymmetry)\n            urlS = urlS.replace(\" \", \"%20\");\n            final URI uri = new URI(urlS);\n            return new URL(uri.toASCIIString());",
+    "code": "    static URL encodeUrl(URL u) {\n\t    u = punyUrl(u);\n        try {\n-            //  odd way to encode urls, but it works!\n-            String urlS = u.toExternalForm(); // URL external form may have spaces which is illegal in new URL() (odd asymmetry)\n-            urlS = urlS.replace(\" \", \"%20\");\n-            final URI uri = new URI(urlS);\n-            return new URL(uri.toASCIIString());\n        } catch (URISyntaxException | MalformedURLException e) {\n            // give up and return the original input\n            return u;\n        }\n    }",
+    "fixed_code": "    static URL encodeUrl(URL u) {\n\t    u = punyUrl(u);\n        try {\n+            // run the URL through URI, so components are encoded\n+            URI uri = new URI(u.getProtocol(), u.getUserInfo(), u.getHost(), u.getPort(), u.getPath(), u.getQuery(), u.getRef());\n+            return uri.toURL();\n        } catch (URISyntaxException | MalformedURLException e) {\n            // give up and return the original input\n            return u;\n        }\n    }",
+    "fixed_lines": "\n            // run the URL through URI, so components are encoded\n            URI uri = new URI(u.getProtocol(), u.getUserInfo(), u.getHost(), u.getPort(), u.getPath(), u.getQuery(), u.getRef());\n            return uri.toURL();",
+    "masked_code": "    static URL encodeUrl(URL u) {\n\t    u = punyUrl(u);\n        try {\n>>> [ INFILL ] <<<\n        } catch (URISyntaxException | MalformedURLException e) {\n            // give up and return the original input\n            return u;\n        }\n    }",
+    "project": "jhy-jsoup",
+    "test_error_message": "org.opentest4j.AssertionFailedError: expected: <https://test.com/foo%20bar/%5BOne%5D?q=white%20space#frag> but was: <https://test.com/foo bar/[One]?q=white space#frag>",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "encodeUrl",
+    "test_suite": "org.jsoup.helper.HttpConnectionTest",
+    "time_buggy": "2023-01-05 11:31:04 +1100",
+    "time_fixed": "2023-01-05 13:20:47 +1100"
+}

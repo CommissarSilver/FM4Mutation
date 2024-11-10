@@ -1,0 +1,17 @@
+{
+    "bug_id": "traccar-traccar-0f8dd92a6b1b",
+    "bug_type": "SH SF",
+    "buggy_lines": "",
+    "code": "",
+    "fixed_code": "",
+    "fixed_lines": "            } else if (subType == 0x04) {\n\n                CharSequence content = buf.readCharSequence(buf.readableBytes() - 4 - 2, StandardCharsets.US_ASCII);\n                String[] values = content.toString().split(\";\");\n                for (String value : values) {\n                    String[] pair = value.split(\"=\");\n                    switch (pair[0]) {\n                        case \"ALM1\":\n                        case \"ALM2\":\n                        case \"ALM3\":\n                            position.set(\"alarm\" + pair[0].charAt(3) + \"Status\", Integer.parseInt(pair[1], 16));\n                        case \"STA1\":\n                            position.set(\"otherStatus\", Integer.parseInt(pair[1], 16));\n                            break;\n                        case \"DYD\":\n                            position.set(\"engineStatus\", Integer.parseInt(pair[1], 16));\n                            break;\n                        default:\n                            break;\n                    }\n                }\n                return position;",
+    "masked_code": "",
+    "project": "traccar-traccar",
+    "test_error_message": "    org.opentest4j.AssertionFailedError at Gt06ProtocolDecoderTest.java:20",
+    "test_framework": "gitbugjava",
+    "test_line": "",
+    "test_name": "testDecode()",
+    "test_suite": "org.traccar.protocol.Gt06ProtocolDecoderTest",
+    "time_buggy": "2023-04-29 13:56:51 -0700",
+    "time_fixed": "2023-04-29 14:20:38 -0700"
+}
